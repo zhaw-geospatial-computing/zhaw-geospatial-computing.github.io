@@ -50,22 +50,16 @@ image: /AGI_HS25_Netzwerk1/_page_4_Picture_0.jpeg
 ---
 
 ---
-layout: two-cols
+{}
 ---
 
-# Netzwerke 
+# Netzwerke
 
 Topologie im GIS basic Kurs
 
-
-- ÖV-Karten (GIS BSc)
-- Pfadberechnungen (GIS BSc) (→ Netzwerkanalyse II)
-- Gewässernetze (GIS BSc)
-
-::right::
-
-<img src="/AGI_HS25_Netzwerk1/_page_5_Picture_8.jpeg" class="h-40 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_5_Picture_9.jpeg" class="h-40 object-contain" />
+| ÖV-Karten (GIS BSc) | Pfadberechnungen (GIS BSc) | Gewässernetze (GIS BSc) |
+|:---:|:---:|:---:|
+| ![](/AGI_HS25_Netzwerk1/zvv.jpg) | ![](/AGI_HS25_Netzwerk1/google-maps.png) | ![](/AGI_HS25_Netzwerk1/river-network.png) |
 
 ---
 
@@ -75,8 +69,9 @@ Topologie im GIS basic Kurs
 
 <small>Quelle: sbb.ch</small>
 
+
 ---
-layout: two-cols
+layout: three-cols-header
 ---
 
 # Netzwerke
@@ -86,18 +81,25 @@ layout: two-cols
   - z.B. notime delivery
   - z.B. Dispatching Schutz & Rettung
 
+::left::
+
+![](/AGI_HS25_Netzwerk1/_page_7_Picture_9.jpeg)
+
+
+
+::center::
+
+![](/AGI_HS25_Netzwerk1/_page_7_Picture_10.jpeg) 
+
 ::right::
 
-<div class="flex gap-2">
-  <img src="/AGI_HS25_Netzwerk1/_page_7_Picture_9.jpeg" class="h-52 object-contain" />
-  <img src="/AGI_HS25_Netzwerk1/_page_7_Picture_10.jpeg" class="h-52 object-contain" />
-  <img src="/AGI_HS25_Netzwerk1/_page_7_Picture_11.jpeg" class="h-52 object-contain" />
-</div>
+![](/AGI_HS25_Netzwerk1/_page_7_Picture_11.jpeg)
 
-<small>Quellen: stadt-zuerich.ch, uber.com, notime.ch</small>
+
+<!-- <small>Quellen: stadt-zuerich.ch, uber.com, notime.ch</small> -->
 
 ---
-layout: two-cols
+layout: three-cols-header
 ---
 
 # Netzwerke
@@ -107,15 +109,17 @@ layout: two-cols
   - Reisezeiten (→ Netzwerkanalyse III)
   - Geomarketing und Immobilien-Bewertung
 
+::left::
+
+![](/AGI_HS25_Netzwerk1/_page_8_Figure_9.jpeg)
+
+::center::
+
+![](/AGI_HS25_Netzwerk1/_page_8_Picture_10.jpeg)
+
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_8_Figure_9.jpeg" class="h-36 object-contain mb-1" />
-<div class="flex gap-1">
-  <img src="/AGI_HS25_Netzwerk1/_page_8_Picture_10.jpeg" class="h-32 object-contain" />
-  <img src="/AGI_HS25_Netzwerk1/_page_8_Figure_11.jpeg" class="h-32 object-contain" />
-</div>
-
-<small>Quellen: walkalytics.com, esri.ch</small>
+![](/AGI_HS25_Netzwerk1/_page_8_Figure_11.jpeg)
 
 ---
 layout: two-cols
@@ -141,6 +145,7 @@ layout: two-cols
 ---
 layout: image
 image: /AGI_HS25_Netzwerk1/_page_11_Picture_0.jpeg
+backgroundSize: contain
 ---
 
 ---
@@ -158,12 +163,8 @@ layout: two-cols
   - Pfade durch Graphen
   - Zentralitätsmasse
 
-::right::
+<!-- check with slide 13 -->
 
-<img src="/AGI_HS25_Netzwerk1/_page_12_Picture_4.jpeg" class="h-40 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_12_Picture_9.jpeg" class="h-40 object-contain" />
-
-<small>Quelle: gitta.info</small>
 
 ---
 
@@ -200,7 +201,9 @@ layout: two-cols
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_14_Picture_16.jpeg" class="h-44 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_15_Picture_16.jpeg" class="h-44 object-contain mb-2" />
+
+
 <img src="/AGI_HS25_Netzwerk1/_page_14_Picture_17.jpeg" class="h-44 object-contain" />
 
 <small>Quelle: Lipschutz & Lipson (1997)</small>

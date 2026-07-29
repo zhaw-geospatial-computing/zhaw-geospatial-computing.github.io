@@ -6,7 +6,12 @@ Slidev-based slide decks for the BSc Umweltingenieurwesen course *Angewandte Geo
 
 ```bash
 pnpm install
-pnpm run dev AGI_HS25_Netzwerk1.md   # or Netzwerk2/3
+
+# dev server (one deck at a time)
+npx slidev AGI_HS25_Netzwerk1.md
+
+# build all decks at once
+npx slidev build *.md
 ```
 
 Visit <http://localhost:3030>
@@ -18,6 +23,7 @@ Visit <http://localhost:3030>
 | `AGI_HS25_Netzwerk1.md` | Netzwerkanalysen I – Graphentheorie, Zentralitätsmasse, QGIS |
 | `AGI_HS25_Netzwerk2.md` | Netzwerkanalysen II |
 | `AGI_HS25_Netzwerk3.md` | Netzwerkanalysen III |
+| `layouts-demo.md` | Reference deck for all built-in Slidev layouts |
 
 ## Custom layouts
 
