@@ -1,0 +1,590 @@
+---
+theme: default
+title: Netzwerkanalysen I
+transition: none
+layout: zhaw-cover
+subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik
+authors: Nils Ratnaweera
+email: rata@zhaw.ch
+heading: Netzwerkanalysen I
+sections:
+  - Einleitender Rundgang – Netzwerke in der Geoinformatik
+  - Graphentheorie 1.0 für die Netzwerkanalyse
+  - Zentralitätsmasse
+  - QGIS
+---
+
+<!--
+title slide: content is defined in frontmatter
+-->
+
+---
+layout: lernziele
+---
+
+# Lernziele
+
+- Sie kennen 3-4 **Anwendungsbereiche** von Netzwerk-Geodaten und können dabei in eigenen Worten erklären, welchen Nutzen die Verwendung von Netzwerkdaten in besagten Anwendungen haben.
+- Sie sind in der Lage einfache **Graphen** mit gegebenen Eigenschaften selber zu skizzieren.
+- Sie sind in der Lage drei verschieden **Zentralitätsmasse** von Netzwerken/Graphen in eigenen Worten zu erklären und für einfache Graphen zu berechnen.
+- Sie können einfache Vektordaten in QGIS **laden** und **editieren**
+- Sie können einfache **Berechnungen** von Zentralitätsmassen in QGIS ausführen.
+
+---
+
+# Zeitplan heute
+
+| Zeitplan | Was | Form |
+|----------|-----|------|
+| 13:00 – 13:45 | **Theorie** Graphentheorie und Zentralität | Theorie-Recap |
+| 14:00 – 15:00 | **Gruppenarbeit** Zentralitätsmasse selber berechnen | Gruppenarbeit in 3er/4er Gruppen |
+| 15:10 – 16:35 | **QGIS-Übung** Zentralitätsmasse mit QGIS berechnen für Wädenswil | Übungen, betreute Einzelarbeit |
+
+---
+
+<Inhalt :active="1" />
+
+---
+layout: image
+image: /AGI_HS25_Netzwerk1/_page_4_Picture_0.jpeg
+---
+
+---
+layout: two-cols
+---
+
+# Netzwerke 
+
+Topologie im GIS basic Kurs
+
+
+- ÖV-Karten (GIS BSc)
+- Pfadberechnungen (GIS BSc) (→ Netzwerkanalyse II)
+- Gewässernetze (GIS BSc)
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_5_Picture_8.jpeg" class="h-40 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_5_Picture_9.jpeg" class="h-40 object-contain" />
+
+---
+
+# Routensuche: Fahrplanabfrage SBB
+
+<img src="/AGI_HS25_Netzwerk1/_page_6_Figure_5.jpeg" class="w-full h-80 object-contain" />
+
+<small>Quelle: sbb.ch</small>
+
+---
+layout: two-cols
+---
+
+# Netzwerke
+
+- Vehicle Routing
+  - z.B. Uber
+  - z.B. notime delivery
+  - z.B. Dispatching Schutz & Rettung
+
+::right::
+
+<div class="flex gap-2">
+  <img src="/AGI_HS25_Netzwerk1/_page_7_Picture_9.jpeg" class="h-52 object-contain" />
+  <img src="/AGI_HS25_Netzwerk1/_page_7_Picture_10.jpeg" class="h-52 object-contain" />
+  <img src="/AGI_HS25_Netzwerk1/_page_7_Picture_11.jpeg" class="h-52 object-contain" />
+</div>
+
+<small>Quellen: stadt-zuerich.ch, uber.com, notime.ch</small>
+
+---
+layout: two-cols
+---
+
+# Netzwerke
+
+- Einzugsgebiete und nächste Einrichtung
+  - Walkalytics
+  - Reisezeiten (→ Netzwerkanalyse III)
+  - Geomarketing und Immobilien-Bewertung
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_8_Figure_9.jpeg" class="h-36 object-contain mb-1" />
+<div class="flex gap-1">
+  <img src="/AGI_HS25_Netzwerk1/_page_8_Picture_10.jpeg" class="h-32 object-contain" />
+  <img src="/AGI_HS25_Netzwerk1/_page_8_Figure_11.jpeg" class="h-32 object-contain" />
+</div>
+
+<small>Quellen: walkalytics.com, esri.ch</small>
+
+---
+layout: two-cols
+---
+
+# Netzwerk-Informations-Systeme (NIS)
+
+- Versorgungsnetzwerke für Strom
+- Z.B. Firma NIS.ch
+  - Smallworld GIS, GE Grid Solutions
+  - Applikationen für Netzinformationssysteme
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_9_Figure_9.jpeg" class="w-full object-contain" />
+
+<small>Quelle: nis.ch</small>
+
+---
+
+<Inhalt :active="2" />
+
+---
+layout: image
+image: /AGI_HS25_Netzwerk1/_page_11_Picture_0.jpeg
+---
+
+---
+layout: two-cols
+---
+
+# Graphen
+
+- Graphentheorie: math. Grundlage von Netzwerken
+- Ein Graph wird gebildet aus einer Menge (*engl.* set) von **Kanten** (*engl.* edges) und einer Menge von **Knoten** (*engl.* nodes)
+  - Rückblick auf BSc GIS Topologie
+- Grundlegende Probleme
+  - Grade von Knoten
+  - Nachbarschaft von Knoten und Kanten
+  - Pfade durch Graphen
+  - Zentralitätsmasse
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_12_Picture_4.jpeg" class="h-40 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_12_Picture_9.jpeg" class="h-40 object-contain" />
+
+<small>Quelle: gitta.info</small>
+
+---
+
+# Graphen-Typen
+
+| Typ | Beschreibung | Anwendung |
+|-----|-------------|-----------|
+| **zyklisch** | Zyklus ist ein Pfad, bei dem erster und letzter Knoten identisch sind | Verkehrsnetze |
+| **gerichtet** | Kanten sind gerichtet, können nur in einer Richtung durchquert werden | Strassennetz mit Einbahnstrassen |
+| **gewichtet** | Kanten oder Knoten haben Gewichte resp. Durchquerungs-Kosten | Höchstgeschwindigkeiten pro Kante, Maut pro Kante |
+| **planar** | Graphen, die auf einer Ebene abgebildet werden können, ohne dass ihre Kanten sich schneiden | Im planaren Strassennetz kreuzen alle Kanten in Knoten |
+| **hierarchisch («Bäume»)** | Ein Graph ohne Zyklen | Baumstrukturen zur Indizierung von Geodaten (quadtree, R-tree) |
+
+<small>Quelle: gitta.info</small>
+
+---
+layout: two-cols
+---
+
+# Knotengrade
+
+**im ungerichteten Graph**
+- Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
+- Loops (wie in B) werden 2 mal gezählt.
+
+**im gerichteten Graph**
+- indegree: Anzahl gerichteter Kanten, die im Knoten enden
+- outdegree: Anzahl gerichteter Kanten, die am Knoten starten
+- $\sum$ indegree = $\sum$ outdegree = 7
+- Quellen und Senken
+  - **Quelle** (source): Knoten mit indegree = 0
+  - **Senke** (sink): Knoten mit outdegree = 0
+  - C ist eine Senke, Quellen hat es keine
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_14_Picture_16.jpeg" class="h-44 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_14_Picture_17.jpeg" class="h-44 object-contain" />
+
+<small>Quelle: Lipschutz & Lipson (1997)</small>
+
+---
+layout: two-cols
+---
+
+# Knotengrade
+
+**im ungerichteten Graph**
+- Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
+- Loops (wie in B) werden 2 mal gezählt. **(B = 6)**
+
+**im gerichteten Graph**
+- indegree: Anzahl gerichteter Kanten, die im Knoten enden
+- outdegree: Anzahl gerichteter Kanten, die am Knoten starten
+- $\sum$ indegree = $\sum$ outdegree = 7
+- Quellen und Senken
+  - Quelle (source): Knoten mit indegree = 0
+  - Senke (sink): Knoten mit outdegree = 0
+  - C ist eine Senke, Quellen hat es keine **(B: indegree=3, outdegree=2)**
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_15_Picture_16.jpeg" class="h-44 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_15_Picture_17.jpeg" class="h-44 object-contain" />
+
+<small>Quelle: Lipschutz & Lipson (1997)</small>
+
+---
+layout: two-cols
+---
+
+# Nachbarschaft
+
+- Die Nachbarschafts-Matrix zeigt, welche Knoten in einem Graphen benachbart sind.
+  - 1 heisst, es gibt eine Kante zwischen zwei Knoten (z.B. von *a* nach *b*)
+  - 0 heisst, es gibt keine Kante (z.B. zwischen a und d)
+- Zusätzlich können die Kanten auch gewichtet werden (Durchquerungs-Kosten oder –Zeiten)
+  - Im Beispiel sind die Gewichte symmetrisch (von *a* nach *b* kostet 80, von *b* nach *a* kostet auch 80)
+  - Gewichte könnten auch asymmetrisch sein (von *d* nach *e* kostet 200, von *e* nach *d* kostet 225)
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_16_Figure_8.jpeg" class="h-36 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_16_Figure_12.jpeg" class="h-36 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Pfade durch Graphen
+
+- Reisezeiten können auch über die direkte Nachbarschaft hinaus in einer Matrix angegeben werden.
+  - Picton → Dunedin: 5.00 + 2.10 + 2.50 = **10.0**
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_17_Figure_8.jpeg" class="h-96 object-contain" />
+
+<small>Quelle: kiwiway.com</small>
+
+---
+layout: two-cols
+---
+
+# Königsberger Brücken 1736
+
+**Aufgabe (3:00)**
+
+Zeichne einen Pfad durch das Netzwerk rechts, sodass alle Kanten genau einmal durchquert werden.
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_18_Picture_7.jpeg" class="h-80 object-contain" />
+
+---
+
+# Zusammenfassung
+
+- Netzwerkdaten werden in GIS verwendet zur Modellierung von Nachbarschaft, Konnektivität und Zentralität.
+- Anwendungsbereiche reichen von der Analyse von Verkehrsnetzen, über die Gewässerkunde bis hin zum Geomarketing.
+- Die Grundlagen der Netzwerkanalyse beruhen auf der mathematischen Disziplin der Graphentheorie.
+- Graphen bestehen aus Knoten und den sie verbindenden Kanten.
+
+---
+
+<Inhalt :active="3" />
+
+---
+layout: image
+image: /AGI_HS25_Netzwerk1/_page_21_Picture_0.jpeg
+---
+
+---
+layout: two-cols
+---
+
+# Zentralitätsmasse
+
+Masse zur Beschreibung der relativen Wichtigkeit («Zentralität») eines Knotens in einem Graphen resp. Netzwerk.
+
+**Anwendungen**
+- Verkehrsknoten
+- Soziale Netzwerke (influencer…)
+
+**Wir betrachten vier Zentralitätsmasse**
+- Degree Centrality
+- Closeness Centrality
+- Betweenness Centrality
+- Straightness Centrality
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_22_Picture_15.jpeg" class="h-44 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_22_Figure_16.jpeg" class="h-44 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Zentralitätsmasse: Degree centrality
+
+Entspricht dem Knotengrad im ungerichteten Graphen, d.h. der Anzahl Kanten, die am Knoten zusammenlaufen.
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_23_Picture_6.jpeg" class="h-48 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_23_Picture_7.jpeg" class="h-48 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Zentralitätsmasse: Closeness centrality
+
+Misst wie nahe ein Knoten an allen anderen Knoten im Netzwerk liegt, entlang der kürzesten Pfade durch das Netzwerk.
+
+$$C_{i}^{C} = \frac{N-1}{\sum_{j=1: j \neq i}^{N} d_{ij}}$$
+
+- *N* Anzahl Knoten im Netzwerk
+- *dij* Distanz des kürzesten Pfads zwischen Knoten *i* und *j*
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_24_Figure_9.jpeg" class="h-80 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Zentralitätsmasse: Betweenness centrality
+
+- Misst wie oft ein Knoten von allen kürzesten Pfaden zwischen allen Knotenpaaren im Netzwerk durchquert wird.
+- Zeigt welche Knoten im Netzwerk die wichtigen Brücken- resp. Verbindungsknoten sind.
+
+$$C_i^B = \frac{1}{(N-1)(N-2)} \sum_{j=1; k=1; j \neq k \neq i}^{N} \frac{n_{jk}(i)}{n_{jk}}$$
+
+- *N* Anzahl Knoten, *njk* Anzahl kürzeste Pfade zwischen *j* und *k*, *njk(i)* davon durch *i*
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_25_Figure_11.jpeg" class="h-80 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Zentralitätsmasse: Straightness centrality
+
+- Misst wie stark alle kürzesten Pfade von einem Knoten zu allen anderen Knoten von der Luftlinienverbindung (Euklidische Distanz) abweicht.
+- «Wie direkt (sprich geradeaus) kann ein Knoten erreicht werden?»
+
+$$C_i^S = \frac{1}{N-1} \sum_{j=1, j \neq i}^{N} \frac{d_{ij}^{Eucl}}{d_{ij}}$$
+
+- $d_{ij}^{Eucl}$ Euklidische Distanz zwischen Knoten *i* und *j*
+- $d_{ij}$ kürzester Pfad zwischen Knoten *i* und *j*
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_26_Figure_10.jpeg" class="h-80 object-contain" />
+
+---
+
+# Vergleich der Zentralitätsmasse
+
+<img src="/AGI_HS25_Netzwerk1/_page_27_Figure_5.jpeg" class="h-80 object-contain mx-auto" />
+
+---
+layout: two-cols
+---
+
+# Kurze Kontext-Aufgabe
+
+## Aufgabe (5 Min)
+
+«Welche GIS-Techniken, die Du kennst, haben die Autoren im Paper verwendet?»
+
+::right::
+
+
+---
+
+<Inhalt :active="4" />
+
+---
+layout: image
+image: /AGI_HS25_Netzwerk1/_page_30_Picture_0.jpeg
+---
+
+---
+layout: two-cols
+---
+
+# QGIS
+
+- Professionelle GIS-Anwendung auf Basis von Free/Open-Source-Software (GNU License)
+- Läuft unter Linux, Unix, Mac OSX, Windows und Android
+- Unterstützt viele Vektor-, Raster- und Datenbankformate
+- Kompatibel mit PostGIS, GRASS GIS, und MapServer
+- Entwickelt von Freiwilligen aus Industrie und Forschung (qgis.org)
+- Unzählige Plugins zur Geodatenverarbeitung
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_31_Picture_4.jpeg" class="h-44 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_31_Picture_5.jpeg" class="h-44 object-contain" />
+
+---
+
+# QGIS vs. ArcGIS
+
+| | QGIS | ArcGIS |
+|----|------|--------|
+| Kosten | gratis | teuer |
+| Betriebssysteme | Linux, Unix, Mac OSX, Windows, Android | nur Windows |
+| Datenformate | viele unterschiedliche Formate | proprietäre Datenformate |
+| Benutzerfreundlichkeit | z.T. noch umständlich | ausgereift, in ArcGIS Pro noch besser |
+| Dokumentation | o.k., aber nicht grossartig | sehr gut und ausführlich |
+| Vielseitigkeit | über unzählige Plugins (v.a. Vektordaten) | breites Angebot an Tools |
+| Geschwindigkeit | lädt und rechnet schneller | — |
+| 3D | es gibt ein Plugin… | deutlich besser, v.a. ArcGIS Pro |
+
+---
+{}
+---
+
+# Und was sagt ChatGPT?
+
+
+
+*"Please write a comparison between ESRI ArcGIS Pro and QGIS, with 6-8 strengths and weaknesses of both platforms."*
+
+**ArcGIS Pro (Esri)**
+
+**Strengths**
+- Enterprise integration with ArcGIS Online/Enterprise
+- Highly polished interface & cartography tools
+- Extensive analytical toolboxes (Spatial, Network, 3D, Image
+- Strong data editing, topology, versioning
+- Excellent 3D and imagery workflows
+- Robust performance and stability
+- Professional support, training, and documentation
+
+**Weaknesses**
+- High cost (licenses + extensions)
+- Windows-only environment
+- Vendor lock-in (proprietary formats/services)
+- Some tools require paid extensions
+- Closed ecosystem limits transparency
+- Limited collaboration without ArcGIS Online
+
+
+
+**QGIS (Open Source)**
+
+**Strengths**
+- Free and open-source (no licensing fees)
+- Cross-platform (Windows, macOS, Linux)
+- Broad format support (via GDAL/OGR)
+- Rich plugin ecosystem (SAGA, GRASS, Mergin, etc.)
+- Strong cartographic flexibility
+- Powerful Python automation (PyQGIS)
+- Transparent development and active community
+
+**Weaknesses**
+No unified enterprise environment (DIY integrations)
+Slower with very large datasets
+3D and imagery less advanced than ArcGIS Pro
+Plugin quality varies
+Limited official technical support
+Complex setup for enterprise-level workflows
+
+
+
+---
+
+# Zusammenfassung
+
+- Zentralitätsmasse beschreiben die relative Wichtigkeit («Zentralität») eines Knotens in einem Graphen resp. Netzwerk.
+- Merken Sie sich v.a. die closeness centrality und die betweenness centrality.
+- QGIS ist *die* open source Alternative zu kommerziellen GIS-Softwaren wie ArcGIS oder ArcGIS Pro. Wer sich bereits mit ArcGIS auskennt, kommt schnell rein in die Verwendung von QGIS.
+
+---
+layout: two-cols
+---
+
+# Praktischer Teil
+
+- **Gruppenarbeit** Zentralitätsmasse für einen einfachen Graphen selber berechnen.
+- **Übungen mit QGIS** Zentralitätsmasse für OSM-Strassendaten von Wädenswil mit QGIS berechnen.
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_36_Picture_8.jpeg" class="h-48 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_36_Figure_9.jpeg" class="h-48 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Praktischer Teil
+
+**Gruppenarbeit** Zentralitätsmasse für einen einfachen Graphen selber berechnen.
+
+1. Bildet Gruppen mit Nachbarn
+2. Tragt Euch ein in der Liste
+3. Bearbeitet Euer Google Spreadsheet
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_37_Figure_10.jpeg" class="h-48 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_37_Figure_11.jpeg" class="h-48 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Lesematerial & Literatur
+
+- Wang, F., Antipova, A., & Porta, S. (2011). Street centrality and land use intensity in Baton Rouge, Louisiana. *Journal of Transport Geography*, **19**(2), 285-293.
+- Heywood, I., Cornelius, S., & Carver, S. (2011). An introduction to GIS. Pearson Education, Kapitel zu Network Analysis, Seiten 218-219.
+- Big Data Analytics by Anuradha Bhatia: https://www.youtube.com/watch?v=ptqt2zr9ZRE
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_38_Picture_5.jpeg" class="h-64 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Königsberger Brücken 1736
+
+«Gibt es einen Rundweg, bei dem man alle sieben Brücken der Stadt über den Pregel genau einmal überquert und wieder zum Ausgangspunkt gelangt?»
+
+**Eulers Überlegungen:**
+1. Knoten stehen für Landregionen, Kanten für Brücken.
+2. Ausser am Start und am Ende muss ein solcher Pfad auf einer Kante in einen Knoten und auf einer Kante wieder hinausführen.
+3. Die Knotengrade der Knoten müssten alle gerade sein — sie sind aber alle ungerade.
+4. D.h. es kann keinen derartigen Pfad geben.
+
+*Leonhard Euler, Schweizer Mathematiker (1707-1783)*
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_39_Picture_11.jpeg" class="h-44 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_39_Picture_12.jpeg" class="h-44 object-contain" />
+
+---
+layout: two-cols
+---
+
+# Kurze Kontext-Aufgabe — Lösung
+
+**Welche GIS-Techniken haben die Autoren im Paper verwendet?**
+
+- Vektor zu Raster-Umwandlung (District Choroplethen-Karten zu Dichtenkarten)
+- Fokale Operation: KDE Kernel density estimation
+- Map algebra (Verrechnen von Layern):
+  *combined density = employment density + population density × LPR*
+
+::right::
+
+<img src="/AGI_HS25_Netzwerk1/_page_40_Picture_11.jpeg" class="h-48 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_40_Picture_16.jpeg" class="h-48 object-contain" />
