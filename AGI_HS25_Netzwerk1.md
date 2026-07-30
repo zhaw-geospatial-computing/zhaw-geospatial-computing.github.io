@@ -50,25 +50,37 @@ image: /AGI_HS25_Netzwerk1/_page_4_Picture_0.jpeg
 ---
 
 ---
-{}
+layout: three-cols-header
 ---
 
 # Netzwerke
 
 Topologie im GIS basic Kurs
 
-| ÖV-Karten (GIS BSc) | Pfadberechnungen (GIS BSc) | Gewässernetze (GIS BSc) |
-|:---:|:---:|:---:|
-| ![](/AGI_HS25_Netzwerk1/zvv.jpg) | ![](/AGI_HS25_Netzwerk1/google-maps.png) | ![](/AGI_HS25_Netzwerk1/river-network.png) |
+::left::
+
+ÖV-Karten (GIS BSc)
+
+![](/AGI_HS25_Netzwerk1/zvv.jpg)
+
+::center::
+
+
+Pfadberechnungen (GIS BSc)
+
+![](/AGI_HS25_Netzwerk1/google-maps.png)
+
+::right::
+
+Gewässernetze (GIS BSc)
+
+![](/AGI_HS25_Netzwerk1/river-network.png)
 
 ---
 
 # Routensuche: Fahrplanabfrage SBB
 
-<img src="/AGI_HS25_Netzwerk1/_page_6_Figure_5.jpeg" class="w-full h-80 object-contain" />
-
-<small>Quelle: sbb.ch</small>
-
+![](/AGI_HS25_Netzwerk1/_page_6_Figure_5.jpeg)
 
 ---
 layout: three-cols-header
@@ -76,10 +88,7 @@ layout: three-cols-header
 
 # Netzwerke
 
-- Vehicle Routing
-  - z.B. Uber
-  - z.B. notime delivery
-  - z.B. Dispatching Schutz & Rettung
+Vehicle Routing, z.B Uber, notime delivery oder Dispatching Schutz & Rettung
 
 ::left::
 
@@ -96,7 +105,7 @@ layout: three-cols-header
 ![](/AGI_HS25_Netzwerk1/_page_7_Picture_11.jpeg)
 
 
-<!-- <small>Quellen: stadt-zuerich.ch, uber.com, notime.ch</small> -->
+<SlideFooter>Quellen: stadt-zuerich.ch, uber.com, notime.ch</SlideFooter>
 
 ---
 layout: three-cols-header
@@ -104,20 +113,23 @@ layout: three-cols-header
 
 # Netzwerke
 
-- Einzugsgebiete und nächste Einrichtung
-  - Walkalytics
-  - Reisezeiten (→ Netzwerkanalyse III)
-  - Geomarketing und Immobilien-Bewertung
+Einzugsgebiete und nächste Einrichtung
 
 ::left::
+
+Walkalytics
 
 ![](/AGI_HS25_Netzwerk1/_page_8_Figure_9.jpeg)
 
 ::center::
 
+Reisezeiten (Netzwerkanalyse 3)
+
 ![](/AGI_HS25_Netzwerk1/_page_8_Picture_10.jpeg)
 
 ::right::
+
+Geomarketing und Immobilien-Bewertung
 
 ![](/AGI_HS25_Netzwerk1/_page_8_Figure_11.jpeg)
 
@@ -136,7 +148,7 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk1/_page_9_Figure_9.jpeg" class="w-full object-contain" />
 
-<small>Quelle: nis.ch</small>
+<SlideFooter>Quelle: nis.ch</SlideFooter>
 
 ---
 
@@ -149,14 +161,11 @@ backgroundSize: contain
 ---
 
 ---
-layout: two-cols
----
 
 # Graphen
 
 - Graphentheorie: math. Grundlage von Netzwerken
-- Ein Graph wird gebildet aus einer Menge (*engl.* set) von **Kanten** (*engl.* edges) und einer Menge von **Knoten** (*engl.* nodes)
-  - Rückblick auf BSc GIS Topologie
+- Ein Graph wird gebildet aus einer Menge (*engl.* set) von **Kanten** (*engl.* edges) und einer Menge von **Knoten** (*engl.* nodes) → Rückblick auf BSc GIS Topologie
 - Grundlegende Probleme
   - Grade von Knoten
   - Nachbarschaft von Knoten und Kanten
@@ -172,71 +181,47 @@ layout: two-cols
 
 | Typ | Beschreibung | Anwendung |
 |-----|-------------|-----------|
-| **zyklisch** | Zyklus ist ein Pfad, bei dem erster und letzter Knoten identisch sind | Verkehrsnetze |
-| **gerichtet** | Kanten sind gerichtet, können nur in einer Richtung durchquert werden | Strassennetz mit Einbahnstrassen |
-| **gewichtet** | Kanten oder Knoten haben Gewichte resp. Durchquerungs-Kosten | Höchstgeschwindigkeiten pro Kante, Maut pro Kante |
-| **planar** | Graphen, die auf einer Ebene abgebildet werden können, ohne dass ihre Kanten sich schneiden | Im planaren Strassennetz kreuzen alle Kanten in Knoten |
-| **hierarchisch («Bäume»)** | Ein Graph ohne Zyklen | Baumstrukturen zur Indizierung von Geodaten (quadtree, R-tree) |
+| zyklisch | Zyklus ist ein Pfad, bei dem erster und letzter Knoten identisch sind | Verkehrsnetze |
+| gerichtet | Kanten sind gerichtet, können nur in einer Richtung durchquert werden | Strassennetz mit Einbahnstrassen |
+| gewichtet | Kanten oder Knoten haben Gewichte resp. Durchquerungs-Kosten | Höchstgeschwindigkeiten pro Kante, Maut pro Kante |
+| planar | Graphen, die auf einer Ebene abgebildet werden können, ohne dass ihre Kanten sich schneiden | Im planaren Strassennetz kreuzen alle Kanten in Knoten |
+| hierarchisch | Ein Graph ohne Zyklen | Baumstrukturen zur Indizierung von Geodaten (quadtree, R-tree) |
 
-<small>Quelle: gitta.info</small>
+<SlideFooter>Quelle: gitta.info</SlideFooter>
 
 ---
-layout: two-cols
----
+
 
 # Knotengrade
 
-**im ungerichteten Graph**
-- Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
-- Loops (wie in B) werden 2 mal gezählt.
 
-**im gerichteten Graph**
-- indegree: Anzahl gerichteter Kanten, die im Knoten enden
-- outdegree: Anzahl gerichteter Kanten, die am Knoten starten
-- $\sum$ indegree = $\sum$ outdegree = 7
-- Quellen und Senken
-  - **Quelle** (source): Knoten mit indegree = 0
-  - **Senke** (sink): Knoten mit outdegree = 0
-  - C ist eine Senke, Quellen hat es keine
+- **im ungerichteten Graph**
+  - Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
+  - Loops (wie in B) werden 2 mal gezählt.
 
-::right::
-
-<img src="/AGI_HS25_Netzwerk1/_page_15_Picture_16.jpeg" class="h-44 object-contain mb-2" />
-
-
-<img src="/AGI_HS25_Netzwerk1/_page_14_Picture_17.jpeg" class="h-44 object-contain" />
-
-<small>Quelle: Lipschutz & Lipson (1997)</small>
-
----
-layout: two-cols
----
-
-# Knotengrade
-
-**im ungerichteten Graph**
-- Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
-- Loops (wie in B) werden 2 mal gezählt. **(B = 6)**
-
-**im gerichteten Graph**
-- indegree: Anzahl gerichteter Kanten, die im Knoten enden
-- outdegree: Anzahl gerichteter Kanten, die am Knoten starten
-- $\sum$ indegree = $\sum$ outdegree = 7
-- Quellen und Senken
-  - Quelle (source): Knoten mit indegree = 0
-  - Senke (sink): Knoten mit outdegree = 0
-  - C ist eine Senke, Quellen hat es keine **(B: indegree=3, outdegree=2)**
+- **im gerichteten Graph**
+  - indegree: Anzahl gerichteter Kanten, die im Knoten enden
+  - outdegree: Anzahl gerichteter Kanten, die am Knoten starten
+  - $\sum$ indegree = $\sum$ outdegree = 7
+  - Quellen und Senken
+    - **Quelle** (source): Knoten mit indegree = 0
+    - **Senke** (sink): Knoten mit outdegree = 0
+    - C ist eine Senke, Quellen hat es keine
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_15_Picture_16.jpeg" class="h-44 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_15_Picture_17.jpeg" class="h-44 object-contain" />
+<!-- check with slide 15 -->
 
-<small>Quelle: Lipschutz & Lipson (1997)</small>
+<!-- ![](/AGI_HS25_Netzwerk1/_page_15_Picture_16.jpeg) -->
+
+
+<!-- <img src="/AGI_HS25_Netzwerk1/_page_14_Picture_17.jpeg" class="h-44 object-contain" /> -->
+
+<SlideFooter>Quelle: Lipschutz & Lipson (1997)</SlideFooter>
+
 
 ---
-layout: two-cols
----
+
 
 # Nachbarschaft
 
@@ -247,10 +232,9 @@ layout: two-cols
   - Im Beispiel sind die Gewichte symmetrisch (von *a* nach *b* kostet 80, von *b* nach *a* kostet auch 80)
   - Gewichte könnten auch asymmetrisch sein (von *d* nach *e* kostet 200, von *e* nach *d* kostet 225)
 
-::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_16_Figure_8.jpeg" class="h-36 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_16_Figure_12.jpeg" class="h-36 object-contain" />
+<!-- <img src="/AGI_HS25_Netzwerk1/_page_16_Figure_8.jpeg" class="h-36 object-contain mb-2" />
+<img src="/AGI_HS25_Netzwerk1/_page_16_Figure_12.jpeg" class="h-36 object-contain" /> -->
 
 ---
 layout: two-cols
@@ -265,7 +249,7 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk1/_page_17_Figure_8.jpeg" class="h-96 object-contain" />
 
-<small>Quelle: kiwiway.com</small>
+<SlideFooter>Quelle: kiwiway.com</SlideFooter>
 
 ---
 layout: two-cols
@@ -281,6 +265,8 @@ Zeichne einen Pfad durch das Netzwerk rechts, sodass alle Kanten genau einmal du
 
 <img src="/AGI_HS25_Netzwerk1/_page_18_Picture_7.jpeg" class="h-80 object-contain" />
 
+---
+layout: zusammenfassung
 ---
 
 # Zusammenfassung
@@ -300,43 +286,45 @@ image: /AGI_HS25_Netzwerk1/_page_21_Picture_0.jpeg
 ---
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Zentralitätsmasse
 
 Masse zur Beschreibung der relativen Wichtigkeit («Zentralität») eines Knotens in einem Graphen resp. Netzwerk.
 
-**Anwendungen**
-- Verkehrsknoten
-- Soziale Netzwerke (influencer…)
+::left::
 
-**Wir betrachten vier Zentralitätsmasse**
-- Degree Centrality
-- Closeness Centrality
-- Betweenness Centrality
-- Straightness Centrality
+- **Anwendungen**
+  - Verkehrsknoten
+  - Soziale Netzwerke (influencer...)
+- **Wir betrachten vier Zentralitätsmasse**
+  - Degree Centrality
+  - Closeness Centrality
+  - Betweenness Centrality
+  - Straightness Centrality
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_22_Picture_15.jpeg" class="h-44 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_22_Figure_16.jpeg" class="h-44 object-contain" />
+![](/AGI_HS25_Netzwerk1/_page_22_Picture_15.jpeg)
+
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Zentralitätsmasse: Degree centrality
 
 Entspricht dem Knotengrad im ungerichteten Graphen, d.h. der Anzahl Kanten, die am Knoten zusammenlaufen.
 
+::left::
+
+![](/AGI_HS25_Netzwerk1/_page_23_Picture_6.jpeg)
+
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_23_Picture_6.jpeg" class="h-48 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_23_Picture_7.jpeg" class="h-48 object-contain" />
+![](/AGI_HS25_Netzwerk1/_page_23_Picture_7.jpeg)
 
----
-layout: two-cols
 ---
 
 # Zentralitätsmasse: Closeness centrality
@@ -348,15 +336,17 @@ $$C_{i}^{C} = \frac{N-1}{\sum_{j=1: j \neq i}^{N} d_{ij}}$$
 - *N* Anzahl Knoten im Netzwerk
 - *dij* Distanz des kürzesten Pfads zwischen Knoten *i* und *j*
 
-::right::
+
 
 <img src="/AGI_HS25_Netzwerk1/_page_24_Figure_9.jpeg" class="h-80 object-contain" />
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Zentralitätsmasse: Betweenness centrality
+
+::left::
 
 - Misst wie oft ein Knoten von allen kürzesten Pfaden zwischen allen Knotenpaaren im Netzwerk durchquert wird.
 - Zeigt welche Knoten im Netzwerk die wichtigen Brücken- resp. Verbindungsknoten sind.
@@ -370,10 +360,12 @@ $$C_i^B = \frac{1}{(N-1)(N-2)} \sum_{j=1; k=1; j \neq k \neq i}^{N} \frac{n_{jk}
 <img src="/AGI_HS25_Netzwerk1/_page_25_Figure_11.jpeg" class="h-80 object-contain" />
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Zentralitätsmasse: Straightness centrality
+
+::left::
 
 - Misst wie stark alle kürzesten Pfade von einem Knoten zu allen anderen Knoten von der Luftlinienverbindung (Euklidische Distanz) abweicht.
 - «Wie direkt (sprich geradeaus) kann ein Knoten erreicht werden?»
@@ -394,7 +386,7 @@ $$C_i^S = \frac{1}{N-1} \sum_{j=1, j \neq i}^{N} \frac{d_{ij}^{Eucl}}{d_{ij}}$$
 <img src="/AGI_HS25_Netzwerk1/_page_27_Figure_5.jpeg" class="h-80 object-contain mx-auto" />
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Kurze Kontext-Aufgabe
@@ -402,8 +394,6 @@ layout: two-cols
 ## Aufgabe (5 Min)
 
 «Welche GIS-Techniken, die Du kennst, haben die Autoren im Paper verwendet?»
-
-::right::
 
 
 ---
@@ -416,8 +406,7 @@ image: /AGI_HS25_Netzwerk1/_page_30_Picture_0.jpeg
 ---
 
 ---
-layout: two-cols
----
+
 
 # QGIS
 
@@ -430,8 +419,6 @@ layout: two-cols
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_31_Picture_4.jpeg" class="h-44 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_31_Picture_5.jpeg" class="h-44 object-contain" />
 
 ---
 
@@ -449,14 +436,17 @@ layout: two-cols
 | 3D | es gibt ein Plugin… | deutlich besser, v.a. ArcGIS Pro |
 
 ---
-{}
+layout: 
+  - two-cols-header
 ---
 
 # Und was sagt ChatGPT?
 
-
-
 *"Please write a comparison between ESRI ArcGIS Pro and QGIS, with 6-8 strengths and weaknesses of both platforms."*
+
+::left::
+
+<small>
 
 **ArcGIS Pro (Esri)**
 
@@ -469,15 +459,13 @@ layout: two-cols
 - Robust performance and stability
 - Professional support, training, and documentation
 
-**Weaknesses**
-- High cost (licenses + extensions)
-- Windows-only environment
-- Vendor lock-in (proprietary formats/services)
-- Some tools require paid extensions
-- Closed ecosystem limits transparency
-- Limited collaboration without ArcGIS Online
 
 
+</small>
+
+::right::
+
+<small>
 
 **QGIS (Open Source)**
 
@@ -490,16 +478,52 @@ layout: two-cols
 - Powerful Python automation (PyQGIS)
 - Transparent development and active community
 
+
+
+</small>
+
+
+---
+layout: two-cols-header
+---
+
+
+
+::left::
+
+<small>
+
+**ArcGIS Pro (Esri)**
+
 **Weaknesses**
-No unified enterprise environment (DIY integrations)
-Slower with very large datasets
-3D and imagery less advanced than ArcGIS Pro
-Plugin quality varies
-Limited official technical support
-Complex setup for enterprise-level workflows
+- High cost (licenses + extensions)
+- Windows-only environment
+- Vendor lock-in (proprietary formats/services)
+- Some tools require paid extensions
+- Closed ecosystem limits transparency
+- Limited collaboration without ArcGIS Online
+
+</small>
+
+::right::
 
 
+<small>
 
+**QGIS (Open Source)**
+
+**Weaknesses**
+- No unified enterprise environment (DIY integrations)
+- Slower with very large datasets
+- 3D and imagery less advanced than ArcGIS Pro
+- Plugin quality varies
+- Limited official technical support
+- Complex setup for enterprise-level workflows
+
+</small>
+
+---
+layout: zusammenfassung
 ---
 
 # Zusammenfassung
@@ -523,12 +547,14 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk1/_page_36_Figure_9.jpeg" class="h-48 object-contain" />
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Praktischer Teil
 
 **Gruppenarbeit** Zentralitätsmasse für einen einfachen Graphen selber berechnen.
+
+::left::
 
 1. Bildet Gruppen mit Nachbarn
 2. Tragt Euch ein in der Liste
@@ -540,8 +566,7 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk1/_page_37_Figure_11.jpeg" class="h-48 object-contain" />
 
 ---
-layout: two-cols
----
+
 
 # Lesematerial & Literatur
 
@@ -549,17 +574,16 @@ layout: two-cols
 - Heywood, I., Cornelius, S., & Carver, S. (2011). An introduction to GIS. Pearson Education, Kapitel zu Network Analysis, Seiten 218-219.
 - Big Data Analytics by Anuradha Bhatia: https://www.youtube.com/watch?v=ptqt2zr9ZRE
 
-::right::
-
-<img src="/AGI_HS25_Netzwerk1/_page_38_Picture_5.jpeg" class="h-64 object-contain" />
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
 # Königsberger Brücken 1736
 
 «Gibt es einen Rundweg, bei dem man alle sieben Brücken der Stadt über den Pregel genau einmal überquert und wieder zum Ausgangspunkt gelangt?»
+
+::left::
 
 **Eulers Überlegungen:**
 1. Knoten stehen für Landregionen, Kanten für Brücken.
@@ -567,16 +591,15 @@ layout: two-cols
 3. Die Knotengrade der Knoten müssten alle gerade sein — sie sind aber alle ungerade.
 4. D.h. es kann keinen derartigen Pfad geben.
 
-*Leonhard Euler, Schweizer Mathematiker (1707-1783)*
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_39_Picture_11.jpeg" class="h-44 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_39_Picture_12.jpeg" class="h-44 object-contain" />
+![](/AGI_HS25_Netzwerk1/_page_39_Picture_11.jpeg)
+
+![](/AGI_HS25_Netzwerk1/_page_39_Picture_12.jpeg)
 
 ---
-layout: two-cols
----
+
 
 # Kurze Kontext-Aufgabe — Lösung
 
@@ -589,5 +612,3 @@ layout: two-cols
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_40_Picture_11.jpeg" class="h-48 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_40_Picture_16.jpeg" class="h-48 object-contain" />

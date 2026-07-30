@@ -1,0 +1,5 @@
+/* The default theme dims any <p> directly after <h1> to 50% opacity.
+   Restore full opacity when that paragraph contains only an image. */
+.slidev-layout h1 + p:has(> img:only-child) {
+  opacity: 1;
+}

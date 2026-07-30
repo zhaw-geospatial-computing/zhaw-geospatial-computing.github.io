@@ -22,16 +22,21 @@
   min-height: 0;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .slidev-layout.three-cols-header .col p {
-  height: 100%;
+  margin: 0;
+}
+
+.slidev-layout.three-cols-header .col p:has(img) {
+  flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
 }
 
 .slidev-layout.three-cols-header .col img {
