@@ -37,7 +37,7 @@ jobs:
       - name: Build decks
         run: |
           mkdir -p dist
-          EXCLUDE="README.md layouts-demo.md"
+          EXCLUDE="README.md LLM.md layouts-demo.md"
           for deck in *.md; do
             # skip non-deck files
             if echo "$EXCLUDE" | grep -qw "$deck"; then continue; fi
