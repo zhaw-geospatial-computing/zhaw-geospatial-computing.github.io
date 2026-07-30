@@ -37,9 +37,9 @@ npx slidev build *.md
 ## Foliensätze
 
 - `Paths-and-Flows-1.md` – Netzwerkanalysen I: Graphentheorie, Zentralitätsmasse, QGIS
-- `Paths-and-Flows-2.md` – Netzwerkanalysen II
-- `Paths-and-Flows-3.md` – Netzwerkanalysen III
-- `layouts-demo.md` – Referenzfoliensatz für alle eigenen Layouts (nicht publiziert)
+- `_Paths-and-Flows-2.md` – Netzwerkanalysen II *(in Bearbeitung, nicht publiziert)*
+- `_Paths-and-Flows-3.md` – Netzwerkanalysen III *(in Bearbeitung, nicht publiziert)*
+- `layouts-demo.md` – Referenzfoliensatz für alle eigenen und eingebauten Layouts
 
 ## Eigene Layouts
 
@@ -48,6 +48,7 @@ Alle Layouts liegen im Ordner `layouts/` und werden in den Folien per `layout:`-
 - `zhaw-cover` – Titelfolie. Frontmatter-Felder: `heading`, `subtitle`, `authors`, `email`, `logo`
 - `lernziele` – Lernziele mit grünen Häkchen
 - `zusammenfassung` – Zusammenfassung mit blauen Pfeilen
+- `exercises` – Aufgabenfolie mit orangem Akzent
 - `three-cols-header` – Drei Spalten mit gemeinsamem Kopf (`::left::`, `::center::`, `::right::`)
 - `two-cols-header` – Zwei Spalten mit gemeinsamem Kopf (`::left::`, `::right::`)
 

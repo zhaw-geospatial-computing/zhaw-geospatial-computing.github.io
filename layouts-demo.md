@@ -1,12 +1,12 @@
 ---
-title: Slidev Built-in Layouts
+title: Slidev Layouts – Built-in und Custom
 theme: default
 transition: none
 ---
 
-# Slidev Built-in Layouts
+# Slidev Layouts
 
-A reference for all 19 built-in layouts
+A reference for all built-in and custom layouts
 
 ---
 layout: center
@@ -212,3 +212,55 @@ Center — `::center::` slot.
 ::right::
 
 Right — `::right::` slot.
+
+---
+layout: two-cols-header
+---
+
+# `two-cols-header` *(custom)*
+
+Header row spans both columns — default slot.
+
+::left::
+
+Left — `::left::` slot.
+
+::right::
+
+Right — `::right::` slot.
+
+---
+layout: zhaw-cover
+heading: Titel der Vorlesung
+subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik
+authors: Nils Ratnaweera
+email: rata@zhaw.ch
+---
+
+---
+layout: lernziele
+---
+
+# Lernziele *(custom)*
+
+- Sie können das Layout `lernziele` verwenden.
+- Sie verstehen den Unterschied zwischen Lernzielen und Zusammenfassungen.
+
+---
+layout: zusammenfassung
+---
+
+# Zusammenfassung *(custom)*
+
+- Das Layout `zusammenfassung` verwendet blaue Pfeile als Aufzählungszeichen.
+- Es eignet sich für abschliessende Rückblicke am Ende eines Abschnitts.
+
+---
+layout: exercises
+---
+
+# Aufgabe *(custom)*
+
+## Aufgabe (5 Min)
+
+Beschreibe in eigenen Worten den Unterschied zwischen den vier Zentralitätsmassen.
