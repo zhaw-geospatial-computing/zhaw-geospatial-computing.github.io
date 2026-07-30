@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { computed } from 'vue'
+
+const props = defineProps({
   heading: { type: String, default: '' },
   subtitle: { type: String, default: '' },
   authors: { type: String, default: '' },
@@ -8,8 +10,10 @@ defineProps({
   institution: { type: String, default: 'ZHAW Zürcher Hochschule für Angewandte Wissenschaften' },
   address: { type: String, default: 'Grüental, Postfach, CH-8820 Wädenswil' },
   email: { type: String, default: '' },
-  logo: { type: String, default: '/zhaw-logo.jpeg' },
+  logo: { type: String, default: null },
 })
+
+const logoSrc = computed(() => props.logo ?? `${import.meta.env.BASE_URL}zhaw-logo.jpeg`)
 </script>
 
 <template>
@@ -22,7 +26,7 @@ defineProps({
     <!-- Bottom white section -->
     <div class="bottom flex items-center px-16 gap-12">
       <div class="shrink-0">
-        <img :src="logo" class="h-28 object-contain" alt="ZHAW Logo" />
+        <img :src="logoSrc" class="h-28 object-contain" alt="ZHAW Logo" />
       </div>
       <div class="info">
         <p v-if="authors" class="font-bold">{{ authors }}</p>
