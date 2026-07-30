@@ -1,6 +1,7 @@
 ---
 theme: default
 title: Path and Flows 1
+favicon: /favicon.png
 transition: none
 layout: zhaw-cover
 subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik

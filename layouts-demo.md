@@ -1,6 +1,7 @@
 ---
 title: Slidev Layouts – Built-in und Custom
 theme: default
+favicon: /favicon.png
 transition: none
 ---
 
