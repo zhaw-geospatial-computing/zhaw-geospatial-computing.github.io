@@ -1,0 +1,97 @@
+name: Deploy Slides to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build decks
+        run: |
+          mkdir -p dist
+          EXCLUDE="README.md layouts-demo.md"
+          for deck in *.md; do
+            # skip non-deck files
+            if echo "$EXCLUDE" | grep -qw "$deck"; then continue; fi
+            name="${deck%.md}"
+            echo "Building $deck -> dist/$name"
+            npx slidev build "$deck" \
+              --base "${{ steps.pages.outputs.base_path }}/$name/" \
+              --out "dist/$name"
+          done
+
+      - name: Create index page
+        run: |
+          cat > dist/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="de">
+          <head>
+            <meta charset="UTF-8">
+            <title>Geospatial Computing – Folien</title>
+            <style>
+              body { font-family: sans-serif; max-width: 600px; margin: 4rem auto; padding: 0 1rem; }
+              h1 { font-size: 1.5rem; }
+              ul { line-height: 2; }
+            </style>
+          </head>
+          <body>
+            <h1>Geospatial Computing – Folien</h1>
+            <ul id="decks"></ul>
+            <script>
+              // list siblings of this index (directories = built decks)
+              // we inline the list at build time below
+            </script>
+          </body>
+          </html>
+          EOF
+
+          # replace placeholder with actual links
+          links=""
+          for dir in dist/*/; do
+            name=$(basename "$dir")
+            links="$links<li><a href=\"$name/\">$name</a></li>\n"
+          done
+          sed -i "s|<ul id=\"decks\"></ul>|<ul id=\"decks\">$links</ul>|" dist/index.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
