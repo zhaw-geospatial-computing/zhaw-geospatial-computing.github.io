@@ -38,14 +38,17 @@ jobs:
         run: |
           mkdir -p dist
           EXCLUDE="README.md LLM.md"
+          # strip trailing slash from base_path (*.github.io repos return "/" or "")
+          BASE="${{ steps.pages.outputs.base_path }}"
+          BASE="${BASE%/}"
           for deck in *.md; do
             # skip non-deck files and drafts (underscore prefix)
             if echo "$EXCLUDE" | grep -qw "$deck"; then continue; fi
             if [[ "$deck" == _* ]]; then continue; fi
             name="${deck%.md}"
-            echo "Building $deck -> dist/$name"
+            echo "Building $deck -> dist/$name (base: $BASE/$name/)"
             npx slidev build "$deck" \
-              --base "${{ steps.pages.outputs.base_path }}/$name/" \
+              --base "$BASE/$name/" \
               --out "dist/$name"
           done
 
