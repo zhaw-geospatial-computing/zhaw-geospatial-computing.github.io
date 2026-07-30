@@ -36,8 +36,10 @@ npx slidev build *.md
 
 ## Foliensätze
 
-- `Paths-and-Flows-1.md` bis `Paths-and-Flows-3.md`
-- `layouts-demo.md` – Referenzfoliensatz für alle eigenen Layouts
+- `Paths-and-Flows-1.md` – Netzwerkanalysen I: Graphentheorie, Zentralitätsmasse, QGIS
+- `Paths-and-Flows-2.md` – Netzwerkanalysen II
+- `Paths-and-Flows-3.md` – Netzwerkanalysen III
+- `layouts-demo.md` – Referenzfoliensatz für alle eigenen Layouts (nicht publiziert)
 
 ## Eigene Layouts
 
