@@ -1,66 +1,86 @@
-# Modul Geospatial Computing – Slides
+# Modul Geospatial Computing – Folien
 
-Slidev-based slide decks for the BSc Umweltingenieurwesen course *Angewandte Geoinformatik* at ZHAW.
+Slidev-basierte Foliensätze für den BSc-Kurs *Angewandte Geoinformatik* (Umweltingenieurwesen) an der ZHAW.
 
-## Getting started
+## Voraussetzungen
+
+Siehe auch: https://sli.dev/guide/
+
+- [Node.js](https://nodejs.org/) (LTS-Version empfohlen, z.B. über [nvm](https://github.com/nvm-sh/nvm))
+- [pnpm](https://pnpm.io/) als Paketmanager: `npm install -g pnpm`
+- [Visual Studio Code](https://code.visualstudio.com/) mit der Erweiterung [Slidev](https://marketplace.visualstudio.com/items?itemName=antfu.slidev) – ermöglicht Folienvorschau und Navigation direkt im Editor
+- Ein LLM mit Tool-Use und MCP-Unterstützung, z.B. [Claude Code](https://claude.ai/code) – kann Folien direkt bearbeiten, Layouts anpassen und über den Slidev-MCP-Server mit dem laufenden Dev-Server interagieren, siehe auch: https://sli.dev/guide/work-with-ai
+
+
+## Installation
 
 ```bash
 pnpm install
+```
 
-# dev server (one deck at a time)
-npx slidev AGI_HS25_Netzwerk1.md
+## Entwicklungsserver starten
 
-# build all decks at once
+```bash
+npx slidev Paths-and-Flows-1.md # z.B.
+```
+
+Danach die Präsentation im Browser unter <http://localhost:3030> öffnen.
+
+Jeweils nur ein Foliensatz gleichzeitig. Den Dateinamen einfach anpassen.
+
+## Alle Foliensätze bauen
+
+```bash
 npx slidev build *.md
 ```
 
-Visit <http://localhost:3030>
+## Foliensätze
 
-## Slide decks
+- `Paths-and-Flows-1.md` bis `Paths-and-Flows-3.md`
+- `layouts-demo.md` – Referenzfoliensatz für alle eigenen Layouts
 
-| File | Topic |
-|------|-------|
-| `AGI_HS25_Netzwerk1.md` | Netzwerkanalysen I – Graphentheorie, Zentralitätsmasse, QGIS |
-| `AGI_HS25_Netzwerk2.md` | Netzwerkanalysen II |
-| `AGI_HS25_Netzwerk3.md` | Netzwerkanalysen III |
-| `layouts-demo.md` | Reference deck for all built-in Slidev layouts |
+## Eigene Layouts
 
-## Custom layouts
+Alle Layouts liegen im Ordner `layouts/` und werden in den Folien per `layout:`-Frontmatter eingebunden.
 
-Located in `layouts/`:
+- `zhaw-cover` – Titelfolie. Frontmatter-Felder: `heading`, `subtitle`, `authors`, `email`, `logo`
+- `lernziele` – Lernziele mit grünen Häkchen
+- `zusammenfassung` – Zusammenfassung mit blauen Pfeilen
+- `three-cols-header` – Drei Spalten mit gemeinsamem Kopf (`::left::`, `::center::`, `::right::`)
+- `two-cols-header` – Zwei Spalten mit gemeinsamem Kopf (`::left::`, `::right::`)
 
-| Layout | Usage | Key props |
-|--------|-------|-----------|
-| `zhaw-cover` | Title slide | `heading`, `subtitle`, `authors`, `email`, `logo` |
-| `lernziele` | Learning objectives | *(none — uses slot)* |
+## Eigene Komponenten
 
-## Components
+Alle Komponenten liegen im Ordner `components/` und sind in allen Folien automatisch verfügbar.
 
-Located in `components/`:
+### `Inhalt`
 
-| Component | Usage |
-|-----------|-------|
-| `Inhalt` | TOC slide — reads `sections:` list from slide 1 frontmatter, highlights `:active` item |
+Inhaltsverzeichnis-Folie. Liest die `sections:`-Liste aus dem globalen Frontmatter (Folie 1) und hebt den aktiven Abschnitt hervor.
 
-### Inhalt usage
-
-Define sections once in slide 1's global frontmatter:
+Einmalig im globalen Frontmatter definieren:
 
 ```yaml
 sections:
-  - Einleitender Rundgang
-  - Graphentheorie
-  - Zentralitätsmasse
-  - QGIS
+  - Abschnitt 1 blabla
+  - Abschnitt 2 usw
+  - Abschnitt 3 letztes thema
 ```
 
-Then on each TOC slide:
+Auf jeder Inhaltsfolie einbinden:
 
 ```
 <Inhalt :active="2" />
 ```
 
+### `SlideFooter`
+
+Quellenangabe am unteren Rand einer Folie, z.B. für Bildquellen.
+
+```
+<SlideFooter>Quelle: stadt-zuerich.ch · uber.com</SlideFooter>
+```
+
 ## Assets
 
-- `public/zhaw-logo.jpeg` — shared ZHAW logo, used by `zhaw-cover` by default
-- `public/<deck>/` — images extracted from original PowerPoint per deck
+- `public/zhaw-logo.jpeg` – ZHAW-Logo, wird von `zhaw-cover` standardmässig verwendet
+- `public/<deck>/` – Bilder aus dem ursprünglichen PowerPoint, je Foliensatz ein Unterordner
