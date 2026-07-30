@@ -1,12 +1,12 @@
 ---
 theme: default
-title: Netzwerkanalysen I
+title: Path and Flows 1
 transition: none
 layout: zhaw-cover
 subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik
 authors: Nils Ratnaweera
 email: rata@zhaw.ch
-heading: Netzwerkanalysen I
+heading: Path and Flows 1
 sections:
   - Einleitender Rundgang – Netzwerke in der Geoinformatik
   - Graphentheorie 1.0 für die Netzwerkanalyse
@@ -14,9 +14,7 @@ sections:
   - QGIS
 ---
 
-<!--
-title slide: content is defined in frontmatter
--->
+<!-- title slide: content is defined in frontmatter -->
 
 ---
 layout: lernziele
