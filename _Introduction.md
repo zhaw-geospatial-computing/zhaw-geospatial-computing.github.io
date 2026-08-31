@@ -9,10 +9,10 @@ authors: Nils Ratnaweera
 email: rata@zhaw.ch
 heading: Introduction
 sections:
-  - Course Overview
-  - Technical Setup
-  - Coordinate Reference Systems
-  - "Hands-on: CRS in Practice"
+  - Course Overview (Lesson 1)
+  - Technical Setup (Lesson 1 & 2)
+  - Coordinate Reference Systems (Lesson 3)
+  - "Hands-on: CRS in Practice (Lesson 4)"
 ---
 
 <!-- title slide: content is defined in frontmatter -->
@@ -128,17 +128,34 @@ Installed or updated
 
 # Verify: R & RStudio
 
-<!-- Live check: open RStudio, run library(sf) -->
-<!-- Expected output / how to spot a broken install -->
-<!-- Common issues: missing system libs on Linux/Mac, Rtools on Windows -->
+Open RStudio and run:
+
+```r
+library(sf)
+library(terra)
+library(dplyr)
+library(ggplot2)
+library(tmap)
+```
+
+All five should load without errors. A `Warning` is fine — an `Error` is not.
+
+<!--
+If sf fails on Linux: missing system libraries — sudo apt install libgdal-dev libgeos-dev
+
+If sf fails on Windows: install Rtools from cran.r-project.org/bin/windows/Rtools
+-->
 
 ---
 
 # Verify: QGIS
 
-<!-- Open QGIS, load a sample dataset -->
-<!-- Check that the layer appears in the right place -->
-<!-- Quick tour of the QGIS interface for those who haven't used it recently -->
+- Open QGIS and check the version number: **Help → About**
+- Switch the UI language to English: **Settings → Options → General → User Interface Translation → American English** → restart QGIS
+
+<!--
+Switching to English makes it much easier to search for help online and to debug problems together in class.
+-->
 
 ---
 
@@ -154,67 +171,144 @@ Installed or updated
 
 ---
 
-# Why CRS Still Trips People Up
+# What You Already Know
 
-<!-- Brief framing: students have seen CRS before (GIS module, D&I 2) -->
-<!-- But: common source of silent errors in practice -->
-<!-- Goal of this lesson: build a mental model, not just rules -->
+&nbsp;
+
+Already covered *Geoinformatik und GIS* last year:
+
+- Coordinates are meaningless without a CRS — EPSG codes identify which one
+- The same point in Bern: **2'600'000 E / 1'200'000 N** (LV95) or **7.45° E / 46.95° N** (WGS84)
+- You can transform between CRS in QGIS: *Vector → Data Management → Reproject Layer*
+
+**Open question:** Why are different numbers (i.e. CRS used), and why does it matter?
 
 ---
 
 # The Shape of the Earth
 
-<!-- Earth is not a sphere — it's an oblate spheroid (flatter at poles) -->
-<!-- We need a mathematical model: the ellipsoid -->
-<!-- Different ellipsoids fit different regions better (Bessel 1841 for CH historically) -->
-<!-- The datum defines: which ellipsoid + where is the origin -->
+&nbsp;
+
+- The Earth is not a sphere — it's an **oblate spheroid** (slightly flatter at the poles).
+- To do spatial maths, we need a simplified mathematical model: an **ellipsoid**.
+- A **datum** specifies the ellipsoid shape and how it is positioned relative to the real Earth.
+
+| Datum   | Ellipsoid           |
+| ------- | ------------------- |
+| CH1903  | Bessel 1841         |
+| CH1903+ | GRS80               |
+| WGS84   | GRS80 (≈ identical) |
+
+<!-- CH1903+ is Switzerland's modern datum, aligned with ETRS89. Bessel 1841 and GRS80 are the *ellipsoids* — the datum is what ties the ellipsoid to the actual Earth. -->
+
+---
+layout: image
+image: /Introduction/oblate-spheroid.png
+backgroundSize: contain
+---
+
+---
+layout: image
+image: /Introduction/datum-positioning.png
+backgroundSize: contain
+---
+
+---
+
+# Datum, Ellipsoid, Projection, CRS
+
+Four concepts that are easy to confuse:
+
+- **Ellipsoid**: the mathematical shape of the Earth model (e.g. Bessel 1841, GRS80)
+- **Datum**: the ellipsoid + how it is positioned relative to the real Earth (e.g. CH1903, WGS84)
+- **Projection**: the method for flattening the curved surface onto a 2D plane (e.g. Mercator, which is cylindrical)
+- **CRS**: A CRS combines datum + projection:
+
+| CRS               | Datum                | Projection                     |
+| ----------------- | -------------------- | ------------------------------ |
+| LV03 (EPSG:21781) | CH1903 (Bessel 1841) | Oblique Mercator (cylindrical) |
+| LV95 (EPSG:2056)  | CH1903+ (GRS80)      | Oblique Mercator (cylindrical) |
+| WGS84 (EPSG:4326) | WGS84 (GRS80)        | none (geographic)              |
+
+CH1903 is the datum — Bessel 1841 is the ellipsoid it's built on. 
 
 ---
 
 # Geographic vs. Projected CRS
 
-<!-- Geographic CRS: coordinates in degrees (lon/lat) on the ellipsoid surface -->
-<!--   - WGS84 (EPSG:4326): global standard, used by GPS -->
-<!-- Projected CRS: coordinates in metres on a flat 2D surface -->
-<!--   - Requires a projection: mathematical transformation from curved to flat -->
-<!--   - All projections introduce distortion (area, shape, distance, direction) -->
-<!-- Rule of thumb: never compute distances or areas in a geographic CRS -->
+**Geographic CRS** — coordinates in **degrees**
+- Latitude / longitude on the ellipsoid surface
+- WGS84 (EPSG:4326): the global standard, used by GPS
+
+**Projected CRS** — coordinates in **metres**
+- A mathematical transformation flattens the curved surface onto a 2D plane
+- All projections distort something: area, shape, distance, or direction
+
+**Plate carrée** — the silent default
+- What you get when degrees are treated as x/y pixel coordinates
+- Not a property of EPSG:4326 — just what happens when software skips the projection step
+- Massively distorts areas near the poles
+
+---
+
+# Degrees Are Not Metres
+
+1° of **latitude** is always ≈ **111 km**
+
+1° of **longitude** shrinks toward the poles:
+
+$$\text{km per 1° lon} = \frac{40075 \cdot \cos(\phi)}{360}$$
+
+| Latitude     | 1° longitude |
+| ------------ | ------------ |
+| 0° (equator) | 111 km       |
+| 45°          | 78 km        |
+| 47° (Zurich) | 76 km        |
+| 90° (pole)   | 0 km         |
+
+→ A raster resolution of *0.167°* means something very different at the equator vs. at 60°N
 
 ---
 
 # Swiss Coordinate Systems
 
-<!-- LV95 (EPSG:2056): current Swiss national CRS, projected, origin near Bern -->
-<!--   - Easting (X) ~2'600'000 m, Northing (Y) ~1'200'000 m -->
-<!--   - Prefix digits (2/1) intentionally different from LV03 to avoid mix-ups -->
-<!-- LV03 (EPSG:21781): old system, still in historical/legacy data -->
-<!-- WGS84 (EPSG:4326): geographic, used for GPS and data exchange -->
-<!-- Web Mercator (EPSG:3857): for web tile backgrounds only — never analyse in this -->
+| CRS          | EPSG     | Type              | Use                                 |
+| ------------ | -------- | ----------------- | ----------------------------------- |
+| WGS84        | 4326     | Geographic (°)    | GPS, data exchange, global datasets |
+| **LV95**     | **2056** | **Projected (m)** | **Swiss work — default choice**     |
+| LV03         | 21781    | Projected (m)     | Legacy — older swisstopo data       |
+| Web Mercator | 3857     | Projected (m)     | Web tile backgrounds only           |
+
+LV95 coordinates for Switzerland: Easting ~2'600'000 m, Northing ~1'200'000 m
+
+The "2" and "1" prefixes were chosen deliberately to distinguish LV95 from LV03 at a glance.
 
 ---
 
 # The Axis Order Trap
 
-<!-- Geographic CRS: mathematically defined as (latitude, longitude) -->
-<!--   - lat = north-south, lon = east-west -->
-<!-- But most software uses (x, y) = (lon, lat) -->
-<!-- GeoJSON spec: always (lon, lat) -->
-<!-- EPSG registry: (lat, lon) for geographic CRS -->
-<!-- Result: same numbers, swapped axes → point ends up in the wrong hemisphere -->
-<!-- sf in R: follows EPSG axis order — be explicit when reading external data -->
+Geographic coordinates are ordered differently depending on who you ask:
+
+| Convention         | Order                 | Used by                     |
+| ------------------ | --------------------- | --------------------------- |
+| Mathematics / EPSG | (latitude, longitude) | ISO standard, EPSG registry |
+| Software / GeoJSON | (longitude, latitude) | Most APIs, GeoJSON spec     |
+
+Same numbers, swapped axes → your point ends up in the wrong hemisphere.
+
+`sf` in R follows the EPSG axis order. When reading external data (CSV, APIs, GeoJSON), always check which order the coordinates are in.
 
 ---
 
 # On-the-Fly Reprojection in QGIS
 
-<!-- QGIS can display layers in any CRS regardless of the layer's native CRS -->
-<!-- "On-the-fly" = visual only; the data on disk is unchanged -->
-<!-- Danger: layers look aligned but spatial operations will fail or give wrong results -->
-<!-- Fix: always reproject to a common CRS before any analysis -->
+QGIS can display any layer in any CRS, regardless of what CRS the data is stored in.
 
----
+This is **visual only** — the data on disk is not changed.
 
-<!-- TODO: additional CRS slides based on discussion of open questions -->
+The danger: layers look perfectly aligned on screen, but spatial operations (intersect, buffer, distance) work on raw coordinate values — which are in different CRS.
+
+→ Always reproject to a common CRS before any analysis.
 
 ---
 layout: zusammenfassung
@@ -222,7 +316,11 @@ layout: zusammenfassung
 
 # CRS — Key Takeaways
 
-<!-- Summary of the 3-4 most important points from this lesson -->
+- Coordinates need a CRS to have meaning — the datum defines the Earth model, the projection defines the 2D transformation
+- Geographic CRS (degrees) ≠ Projected CRS (metres): never compute distances or areas in degrees
+- 1° longitude is not a fixed distance — it shrinks from 111 km at the equator to 0 at the poles
+- For Swiss work: use **LV95 (EPSG:2056)** by default
+- QGIS on-the-fly reprojection is visual only — reproject before analysis
 
 ---
 
@@ -234,10 +332,22 @@ layout: exercises
 
 # Hands-on: CRS in Practice
 
-<!-- Exercise 1: load two layers with mismatched CRS, observe the misalignment -->
-<!-- Exercise 2: measure a distance in WGS84 → compare to correct result in LV95 -->
-<!-- Exercise 3: reproject to LV95, redo the measurement, confirm -->
-<!-- Stretch: QGIS on-the-fly trap — run a spatial join on visually aligned but unrerojected layers -->
+Open `crs-experiments.R` and run it section by section.
+
+## Experiment 1 — Real-world size of a 1° cell
+
+How large is one degree on the globe, and how does it vary with direction and latitude?
+
+## Experiment 2 — Raster resolution in context
+
+Pick a global raster dataset you know (e.g. from *Geoinformatik und GIS*). What is its resolution in degrees? What does that mean in kilometres — at the equator, and at Switzerland's latitude?
+
+## Experiment 3 — Projection distortion
+
+Run the equal-area circles demo. Which projection would you choose if you needed to:
+- Show a map of Switzerland for a report?
+- Compute the area of land cover classes globally?
+- Show a web map with OSM tiles as background?
 
 ---
 layout: zusammenfassung
