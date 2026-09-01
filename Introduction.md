@@ -222,53 +222,127 @@ Four concepts that are easy to confuse:
 - **Ellipsoid**: the mathematical shape of the Earth model (e.g. Bessel 1841, GRS80)
 - **Datum**: the ellipsoid + how it is positioned relative to the real Earth (e.g. CH1903, WGS84)
 - **Projection**: the method for flattening the curved surface onto a 2D plane (e.g. Mercator, which is cylindrical)
-- **CRS**: A CRS combines datum + projection:
+- **CRS**:
+  - **Geographic CRS** = datum + angular coordinate system (lat/lon in degrees, no projection)
+  - **Projected CRS** = geographic CRS + a map projection (Cartesian coordinates in metres)
 
-| CRS               | Datum                | Projection                     |
-| ----------------- | -------------------- | ------------------------------ |
-| LV03 (EPSG:21781) | CH1903 (Bessel 1841) | Oblique Mercator (cylindrical) |
-| LV95 (EPSG:2056)  | CH1903+ (GRS80)      | Oblique Mercator (cylindrical) |
-| WGS84 (EPSG:4326) | WGS84 (GRS80)        | none (geographic)              |
-
-CH1903 is the datum — Bessel 1841 is the ellipsoid it's built on. 
+| CRS               | Datum   | Ellipsoid   | Projection                     |
+| ----------------- | ------- | ----------- | ------------------------------ |
+| LV03 (EPSG:21781) | CH1903  | Bessel 1841 | Oblique Mercator (cylindrical) |
+| LV95 (EPSG:2056)  | CH1903+ | GRS80       | Oblique Mercator (cylindrical) |
+| WGS84 (EPSG:4326) | WGS84   | GRS80       | none (geographic)              |
 
 ---
 
-# Geographic vs. Projected CRS
+# Geographic CRS
 
-**Geographic CRS** — coordinates in **degrees**
-- Latitude / longitude on the ellipsoid surface
-- WGS84 (EPSG:4326): the global standard, used by GPS
+A **geographic CRS** stores coordinates as angles on the ellipsoid — no projection *per se*:
 
-**Projected CRS** — coordinates in **metres**
+- **Latitude** (φ): angle from the equatorial plane, −90° … +90°
+- **Longitude** (λ): angle from the prime meridian, −180° … +180°
+
+The CRS defines which datum / ellipsoid those angles are measured against.
+
+**WGS84 (EPSG:4326)** is the most common geographic CRS — used by GPS and most global datasets.
+
+&nbsp;
+
+> Any geographic CRS has no projection built in. To display it, software must choose one. The default — treating degrees as x/y — is **plate carrée**.
+
+
+
+---
+
+# Switzerland in plate carrée
+
+<img src="/Introduction/platecarre-switzerland.png" style="max-height: 80%; max-width: 100%; object-fit: contain; display: block; margin: 0 auto" />
+
+<SlideFooter>Note how 1° Lat and Lon are of equal distance</SlideFooter>
+
+---
+
+
+
+# World in plate carrée
+
+<img src="/Introduction/platecarre-world.png" style="max-height: 80%; max-width: 100%; object-fit: contain; display: block; margin: 0 auto" />
+
+---
+
+# World in plate carrée
+
+<img src="/Introduction/platecarre-world-circles.png" style="max-height: 80%; max-width: 100%; object-fit: contain; display: block; margin: 0 auto" />
+
+<SlideFooter>Blue circles are 500 km radius — same size on the ground, distorted on screen</SlideFooter>
+
+---
+
+
+
+
+# Projected CRS
+
+&nbsp;
+
 - A mathematical transformation flattens the curved surface onto a 2D plane
 - All projections distort something: area, shape, distance, or direction
+- Coordinates usually in **metres**
 
-**Plate carrée** — the silent default
-- What you get when degrees are treated as x/y pixel coordinates
-- Not a property of EPSG:4326 — just what happens when software skips the projection step
-- Massively distorts areas near the poles
+
+
+
+---
+hide: true
+---
+
+# Conversion vs. Transformation
+
+**Coordinate conversion** — same datum, different representation:
+- Applying or inverting a map projection (e.g. LV03 → LV95 within the CH1903 family)
+- Mathematically exact, no approximation
+
+**Coordinate transformation** — different datums, involves an approximation:
+- A datum shift is applied (translation, rotation, scale)
+- E.g. 2056 → 4326: CH1903+ uses GRS80 aligned to ETRS89; WGS84 is a global geocentric datum
+- The European plate drifts ~2.5 cm/year → by 2026 the offset is ~70–80 cm
+- High-precision work requires specifying an **epoch**
+
+&nbsp;
+
+> "Reprojection" is the common term in GIS software for both — useful shorthand, but it conflates two distinct operations.
+
+<!-- Practical implication: for most GIS work the difference is negligible. For geodetic surveying, cadastral work, or combining datasets from different epochs, it matters. -->
 
 ---
 
-# Degrees Are Not Metres
+# Degrees to Metres
 
-1° of **latitude** is always ≈ **111 km**
+How can we convert degrees to meters?
 
-1° of **longitude** shrinks toward the poles:
+- 1° of **latitude** (North 🡘 South) is always ≈ **111 km** in the real world
+- 1° of **longitude** (East 🡘 West) shrinks toward the poles. 
+- We can calculate the real world distance of 1° lon based on the latitude (φ) as follows (assumes a perfect sphere)
 
-$$\text{km per 1° lon} = \frac{40075 \cdot \cos(\phi)}{360}$$
+$$\text{km per 1° lon} = \frac{40075 \cdot \cos(\varphi)}{360}$$
 
-| Latitude     | 1° longitude |
-| ------------ | ------------ |
-| 0° (equator) | 111 km       |
-| 45°          | 78 km        |
-| 47° (Zurich) | 76 km        |
-| 90° (pole)   | 0 km         |
 
-→ A raster resolution of *0.167°* means something very different at the equator vs. at 60°N
 
 ---
+
+<img src="/Introduction/lon-km-by-lat.png" style="max-height: 85%; object-fit: contain; display: block; margin: 0 auto" />
+
+---
+
+
+> todo:
+> - Raster Resolution explenation
+> - Talk about projection (equal earth, google, etc)
+> - Switch to projected CRS: 
+>   - when are they necessary?
+>   - how do you find a suitable projected CRS?
+
+---
+
 
 # Swiss Coordinate Systems
 

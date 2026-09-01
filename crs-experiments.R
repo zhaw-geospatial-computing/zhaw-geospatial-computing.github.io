@@ -104,87 +104,93 @@ ggsave(
 
 # Datum positioning --------------------------------------------------------
 # A datum positions the ellipsoid in 3D space relative to the real Earth.
-# Geocentric datums (WGS84): origin at Earth's centre of mass — global fit.
-# Local datums (CH1903 / Bessel 1841): origin offset to best fit a region.
-# Same physical point → different position vector → different coordinates.
-# The offset is exaggerated here (actual ~0.8 km on a 6378 km globe).
+# Same ellipsoid shape, two different placements:
+#   Blue (solid)   = geocentric datum (WGS84): centred at Earth's centre of mass
+#   Coral (dashed) = local datum (CH1903): origin offset to best fit a region
 
-theta <- seq(0, 2 * pi, length.out = 1000)
-R     <- 1
+R_e <- 1.00 # normalised "real Earth" radius
+a_e <- 0.86 # ellipsoid equatorial radius (normalised)
+b_e <- 0.82 # ellipsoid polar radius (normalised, slightly flattened)
 
-cx <- 0.13   # exaggerated x-offset of local datum origin
-cy <- 0.08   # exaggerated y-offset of local datum origin
+ox <- 0.09 # local datum x-offset (exaggerated)
+oy <- 0.05 # local datum y-offset (exaggerated)
 
-earth_pts <- tibble(x = R * cos(theta), y = R * sin(theta))
+theta <- seq(0, 2 * pi, length.out = 500)
 
-# Surface point (defined by its geocentric angle)
-angle_geo   <- 40 * pi / 180
-px          <- R * cos(angle_geo)
-py          <- R * sin(angle_geo)
-angle_local <- atan2(py - cy, px - cx)
-
-# Small arcs showing the angle measured from each origin
-arc_r     <- 0.32
-arc_geo   <- tibble(
-  x = arc_r * cos(seq(0, angle_geo,   length.out = 100)),
-  y = arc_r * sin(seq(0, angle_geo,   length.out = 100))
-)
-arc_local <- tibble(
-  x = cx + arc_r * cos(seq(0, angle_local, length.out = 100)),
-  y = cy + arc_r * sin(seq(0, angle_local, length.out = 100))
-)
-
-# Endpoint slightly inside the surface point for arrowhead clearance
-tip_scale  <- 0.96
-local_len  <- sqrt((px - cx)^2 + (py - cy)^2)
-local_tip  <- tibble(
-  x = px - (1 - tip_scale) * (px - cx) / local_len,
-  y = py - (1 - tip_scale) * (py - cy) / local_len
-)
+earth_outline <- tibble(x = R_e * cos(theta), y = R_e * sin(theta))
+ell_geo <- tibble(x = a_e * cos(theta), y = b_e * sin(theta))
+ell_local <- tibble(x = ox + a_e * cos(theta), y = oy + b_e * sin(theta))
 
 datum_plot <- ggplot() +
-  geom_polygon(data = earth_pts, aes(x, y), fill = "#e8f4f8", colour = NA) +
-  geom_path(data = earth_pts,    aes(x, y), colour = "grey55", linewidth = 0.5) +
-  # Angle arcs
-  geom_path(data = arc_geo,   aes(x, y), colour = "steelblue", linewidth = 0.5, linetype = "dotted") +
-  geom_path(data = arc_local, aes(x, y), colour = "coral",     linewidth = 0.5, linetype = "dotted") +
-  # Vectors from each origin to the surface point
-  annotate("segment",
-           x = 0, y = 0, xend = px * tip_scale, yend = py * tip_scale,
-           colour = "steelblue", linewidth = 0.8,
-           arrow = arrow(length = unit(0.18, "cm"), type = "closed")) +
-  annotate("segment",
-           x = cx, y = cy, xend = local_tip$x, yend = local_tip$y,
-           colour = "coral", linewidth = 0.8, linetype = "dashed",
-           arrow = arrow(length = unit(0.18, "cm"), type = "closed")) +
+  geom_polygon(
+    data = earth_outline,
+    aes(x, y),
+    fill = "#e8f4f8",
+    colour = "grey55",
+    linewidth = 0.5
+  ) +
+  geom_path(data = ell_geo, aes(x, y), colour = "steelblue", linewidth = 0.9) +
+  geom_path(
+    data = ell_local,
+    aes(x, y),
+    colour = "coral",
+    linewidth = 0.9,
+    linetype = "dashed"
+  ) +
   # Origins
-  annotate("point", x = 0,  y = 0,  size = 3.5, colour = "steelblue") +
-  annotate("point", x = cx, y = cy, size = 3.5, colour = "coral") +
-  # Surface point
-  annotate("point", x = px, y = py, size = 4, colour = "black") +
+  annotate("point", x = 0, y = 0, size = 3.5, colour = "steelblue") +
+  annotate("point", x = ox, y = oy, size = 3.5, colour = "coral") +
+  # Offset arrow between origins
+  annotate(
+    "segment",
+    x = 0,
+    xend = ox * 0.8,
+    y = 0,
+    yend = oy * 0.8,
+    colour = "grey40",
+    linewidth = 0.4,
+    arrow = arrow(length = unit(0.12, "cm"), type = "closed")
+  ) +
   # Labels
-  annotate("label", x = -0.06, y = -0.07,
-           label = "WGS84\n(geocentric)", size = 2.8,
-           colour = "steelblue", fill = "white", hjust = 1) +
-  annotate("label", x = cx + 0.05, y = cy - 0.08,
-           label = "CH1903\n(local datum)", size = 2.8,
-           colour = "coral", fill = "white", hjust = 0) +
-  annotate("label", x = px + 0.05, y = py,
-           label = "Same physical point\ndifferent coordinates", size = 2.5,
-           fill = "white", hjust = 0) +
-  labs(caption = "Datum offset exaggerated — actual ~0.8 km on a 6378 km globe") +
-  coord_equal(xlim = c(-1.35, 1.55), ylim = c(-1.25, 1.25)) +
+  annotate(
+    "label",
+    x = -0.07,
+    y = -0.10,
+    label = "Geocentric\n(e.g. WGS84)",
+    size = 2.8,
+    colour = "steelblue",
+    fill = "white",
+    label.size = 0,
+    hjust = 1,
+    lineheight = 1.2
+  ) +
+  annotate(
+    "label",
+    x = ox + 0.07,
+    y = oy + 0.10,
+    label = "Local datum\n(e.g. CH1903)",
+    size = 2.8,
+    colour = "coral",
+    fill = "white",
+    label.size = 0,
+    hjust = 0,
+    lineheight = 1.2
+  ) +
+  labs(
+    caption = "Same ellipsoid shape, different placement  |  offset exaggerated for clarity"
+  ) +
+  coord_equal(xlim = c(-1.3, 1.3), ylim = c(-1.3, 1.3)) +
   theme_void() +
   theme(
-    plot.caption = element_text(size = 7.5, colour = "grey60", hjust = 0.5),
-    plot.margin  = margin(15, 15, 10, 15)
+    plot.caption = element_text(colour = "grey60", size = 8, hjust = 0.5),
+    plot.margin = margin(30, 30, 10, 30)
   )
 
 ggsave(
   "public/Introduction/datum-positioning.png",
   datum_plot,
   width = 6,
-  height = 5,
+  height = 6,
   dpi = 150,
   bg = "white"
 )
@@ -266,6 +272,78 @@ expand.grid(lat = seq(-90, 90, 1), lon = seq(-180, 180, 1)) |>
   theme_minimal()
 
 
+# 1° longitude width in km by latitude ------------------------------------
+# Saved as a slide figure to replace the table on the Degrees to Metres slide.
+
+lon_by_lat <- tibble(lat = seq(-90, 90, 0.5)) |>
+  mutate(km = cos(lat * pi / 180) * 40075 / 360)
+
+refs <- tibble(
+  lat = c(-33, 0, 47, 59.3, 64, 90),
+  label = c(
+    "33°S (Cape Town)",
+    "0° (equator)",
+    "47°N (Zürich)",
+    "59°N (Stockholm)",
+    "64°N (Reykjavík)",
+    "90° (pole)"
+  )
+) |>
+  mutate(
+    km = cos(lat * pi / 180) * 40075 / 360,
+    label = paste0(label, " — ", round(km), " km")
+  )
+
+lon_km_plot <- ggplot(lon_by_lat, aes(x = km, y = lat)) +
+  geom_path(colour = "steelblue", linewidth = 0.9) +
+  geom_segment(
+    data = refs,
+    aes(x = 0, xend = km, y = lat, yend = lat),
+    colour = "grey75",
+    linewidth = 0.35,
+    linetype = "dotted"
+  ) +
+  geom_point(
+    data = refs,
+    aes(x = km, y = lat),
+    colour = "steelblue",
+    size = 2.5
+  ) +
+  geom_text(
+    data = refs,
+    aes(x = km + 3, y = lat, label = label),
+    hjust = 0,
+    size = 2.8,
+    colour = "grey30"
+  ) +
+  scale_y_continuous(
+    breaks = seq(-90, 90, 30),
+    labels = \(x) {
+      ifelse(x == 0, "0°", paste0(abs(x), "°", ifelse(x > 0, "N", "S")))
+    }
+  ) +
+  scale_x_continuous(limits = c(0, 160)) +
+  labs(
+    x = "km per 1° longitude",
+    y = NULL,
+    caption = "Spherical approximation — 40 075 × cos(φ) / 360"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.caption = element_text(colour = "grey60", size = 7.5, hjust = 0.5)
+  )
+
+ggsave(
+  "public/Introduction/lon-km-by-lat.png",
+  lon_km_plot,
+  width = 6,
+  height = 7,
+  dpi = 150,
+  bg = "white"
+)
+
+
 # Experiment 2: Raster resolution in context -------------------------------
 # How wide is a raster cell (in km) at each latitude for three common resolutions?
 
@@ -338,3 +416,72 @@ base_map +
     crs = "+proj=ortho +lat_0=45 +lon_0=10 +a=6371000 +b=6371000 +units=m +no_defs"
   ) +
   labs(title = "Orthographic — as seen from space (centred on Europe)")
+
+
+# Plate carrée: world -------------------------------------------------------
+
+base_map_no_circles <- ggplot() +
+  geom_sf(data = world, fill = "grey75", colour = "grey90", linewidth = 0.2) +
+  theme_minimal() +
+  theme(panel.grid = element_line(colour = "grey85", linetype = 2))
+
+ggsave(
+  "public/Introduction/platecarre-world-circles.png",
+  base_map,
+  width = 10,
+  height = 5.5,
+  dpi = 150,
+  bg = "white"
+)
+
+ggsave(
+  "public/Introduction/platecarre-world.png",
+  base_map_no_circles,
+  width = 10,
+  height = 5.5,
+  dpi = 150,
+  bg = "white"
+)
+
+
+# Plate carrée: Switzerland -------------------------------------------------
+# At 47°N: 1° longitude ≈ 76 km, 1° latitude ≈ 111 km.
+# Treating degrees as x/y stretches the shape east–west.
+
+ch <- ne_countries(
+  country = "Switzerland",
+  scale = "medium",
+  returnclass = "sf"
+)
+ch_cantons <- ne_states(country = "Switzerland", returnclass = "sf")
+
+st_crs(ch_cantons) <- NA
+
+
+int_lables <- \(x) {
+  low <- ceiling(min(x))
+  high <- floor(max(x))
+  as.integer(seq(low, high, 1))
+}
+
+platecarre_ch <-
+  ggplot() +
+  geom_sf(
+    data = ch_cantons,
+    fill = "grey85",
+    colour = "white",
+    linewidth = 0.3
+  ) +
+  scale_x_continuous(breaks = int_lables) +
+  scale_y_continuous(breaks = int_lables) +
+  labs(x = "Longitude (°E)", y = "Latitude (°N)") +
+  theme_minimal()
+
+ggsave(
+  "public/Introduction/platecarre-switzerland.png",
+  platecarre_ch,
+  width = 7,
+  height = 5,
+  dpi = 150,
+  bg = "white"
+)
