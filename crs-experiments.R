@@ -485,3 +485,94 @@ ggsave(
   dpi = 150,
   bg = "white"
 )
+
+
+# Experiment 3: Measuring in different CRS ---------------------------------
+# The same geometry gives different (and sometimes wrong) results
+# depending on which CRS is active and how arithmetic is done.
+
+# --- 3a: Distance Zurich – Geneva ---
+
+zurich_coords <- c(8.5417, 47.3769)
+geneva_coords  <- c(6.1432, 46.2044)
+
+# Naive: treat degree differences as if they were a distance
+naive_dist <- sqrt(sum((zurich_coords - geneva_coords)^2))
+cat("Naive degree arithmetic:       ", round(naive_dist, 3),
+    "— no unit, meaningless\n")
+
+zurich <- st_sfc(st_point(zurich_coords), crs = 4326)
+geneva <- st_sfc(st_point(geneva_coords),  crs = 4326)
+
+# sf uses ellipsoidal geometry on geographic CRS by default
+cat("sf geographic CRS (ellipsoid): ", round(st_distance(zurich, geneva) / 1000, 1), "km\n")
+
+# After projecting to LV95 — planar distance on projected CRS
+zurich_lv95 <- st_transform(zurich, 2056)
+geneva_lv95 <- st_transform(geneva, 2056)
+cat("sf projected (LV95):           ", round(st_distance(zurich_lv95, geneva_lv95) / 1000, 1), "km\n")
+
+
+# --- 3b: Area of Switzerland ---
+
+switzerland <- ne_countries(country = "Switzerland", returnclass = "sf")
+
+# Naive: bounding box extent in square degrees
+bbox <- st_bbox(switzerland)
+naive_area_deg2 <- (bbox["xmax"] - bbox["xmin"]) * (bbox["ymax"] - bbox["ymin"])
+cat("\nNaive bbox (°²):                  ", round(naive_area_deg2, 2), "°² — meaningless\n")
+
+# sf with s2 spherical geometry (default): correct even in geographic CRS
+cat("sf geographic CRS (s2 on):        ",
+    round(as.numeric(st_area(switzerland)) / 1e6), "km²\n")
+
+# Disable s2: GEOS uses planar geometry on degrees → wrong answer
+sf_use_s2(FALSE)
+cat("sf geographic CRS (s2 off):       ",
+    round(as.numeric(st_area(switzerland)) / 1e6), "km²\n")
+sf_use_s2(TRUE)
+
+# Project to LV95 first: planar geometry on a projected CRS is correct
+switzerland_lv95 <- st_transform(switzerland, 2056)
+cat("sf projected (LV95, EPSG:2056):   ",
+    round(as.numeric(st_area(switzerland_lv95)) / 1e6), "km²\n")
+cat("Known value:                      ~41 285 km²\n")
+
+
+# Experiment 4: Choosing a projection for other regions --------------------
+# For each region: pick an appropriate CRS and justify the choice.
+# Key questions: what property must be preserved? what is the use case?
+
+# --- Germany: national analysis ---
+# UTM zone 32N (EPSG:25832) — conformal, metre-based, standard in German geodesy
+germany <- ne_countries(country = "Germany", returnclass = "sf")
+
+ggplot(st_transform(germany, 25832)) +
+  geom_sf(fill = "grey85") +
+  labs(
+    title = "Germany — UTM zone 32N (EPSG:25832)",
+    subtitle = "Conformal · metres · standard for German official data"
+  ) +
+  theme_minimal()
+
+# --- Contiguous USA: thematic choropleth map ---
+# Albers Equal-Area Conic (EPSG:5070) — preserves area, standard for US thematic maps
+usa <- ne_countries(country = "United States of America", returnclass = "sf")
+
+ggplot(st_transform(usa, 5070)) +
+  geom_sf(fill = "grey85") +
+  labs(
+    title = "USA — Albers Equal-Area Conic (EPSG:5070)",
+    subtitle = "Equal-area · correct relative sizes · standard for US thematic maps"
+  ) +
+  theme_minimal()
+
+# --- World: global thematic map (e.g. deforestation, land cover) ---
+# Equal Earth — equal-area pseudocylindrical, visually balanced
+ggplot(st_transform(world, "+proj=eqearth")) +
+  geom_sf(fill = "grey85", colour = "white", linewidth = 0.2) +
+  labs(
+    title = "World — Equal Earth projection",
+    subtitle = "Equal-area pseudocylindrical · preserves relative country sizes"
+  ) +
+  theme_minimal()

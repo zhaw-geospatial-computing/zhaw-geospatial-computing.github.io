@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
       - name: Build decks
         run: |
           mkdir -p dist
@@ -50,6 +53,8 @@ jobs:
             npx slidev build "$deck" \
               --base "$BASE/$name/" \
               --out "dist/$name"
+            echo "Exporting $deck -> dist/$name.pdf"
+            npx slidev export "$deck" --output "dist/$name.pdf"
           done
 
       - name: Create index page
@@ -59,31 +64,49 @@ jobs:
           <html lang="de">
           <head>
             <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>Geospatial Computing – Folien</title>
             <style>
-              body { font-family: sans-serif; max-width: 600px; margin: 4rem auto; padding: 0 1rem; }
-              h1 { font-size: 1.5rem; }
-              ul { line-height: 2; }
+              * { box-sizing: border-box; margin: 0; padding: 0; }
+              body { font-family: system-ui, sans-serif; background: #f5f7fa; color: #1a1a2e; min-height: 100vh; }
+              header { background: #1a1a2e; color: white; padding: 3rem 2rem; text-align: center; }
+              header h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
+              header p { margin-top: 0.5rem; opacity: 0.6; font-size: 0.95rem; }
+              main { max-width: 680px; margin: 3rem auto; padding: 0 1.5rem; }
+              h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 1rem; }
+              .deck-list { display: flex; flex-direction: column; gap: 0.75rem; }
+              .deck-card { background: white; border-radius: 10px; padding: 1.1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.08); transition: box-shadow 0.2s; }
+              .deck-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+              .deck-name { font-weight: 600; font-size: 1rem; color: #1a1a2e; text-decoration: none; }
+              .deck-name:hover { color: #5d8392; }
+              .deck-links { display: flex; gap: 0.5rem; flex-shrink: 0; }
+              .btn { display: inline-block; padding: 0.35rem 0.9rem; border-radius: 6px; font-size: 0.82rem; font-weight: 500; text-decoration: none; }
+              .btn-slides { background: #5d8392; color: white; }
+              .btn-slides:hover { background: #4a6f7d; }
+              .btn-pdf { background: #ebebeb; color: #444; }
+              .btn-pdf:hover { background: #ddd; }
             </style>
           </head>
           <body>
-            <h1>Geospatial Computing – Folien</h1>
-            <ul id="decks"></ul>
-            <script>
-              // list siblings of this index (directories = built decks)
-              // we inline the list at build time below
-            </script>
+            <header>
+              <h1>Geospatial Computing</h1>
+              <p>Vorlesungsfolien</p>
+            </header>
+            <main>
+              <h2>Foliendecks</h2>
+              <div id="decks"></div>
+            </main>
           </body>
           </html>
           EOF
 
-          # replace placeholder with actual links
+          # replace placeholder with actual deck cards
           links=""
           for dir in dist/*/; do
             name=$(basename "$dir")
-            links="$links<li><a href=\"$name/\">$name</a></li>\n"
+            links="$links<div class=\"deck-card\"><a class=\"deck-name\" href=\"$name/\">$name</a><div class=\"deck-links\"><a class=\"btn btn-slides\" href=\"$name/\">Slides</a><a class=\"btn btn-pdf\" href=\"$name.pdf\">PDF</a></div></div>\n"
           done
-          sed -i "s|<ul id=\"decks\"></ul>|<ul id=\"decks\">$links</ul>|" dist/index.html
+          sed -i "s|<div id=\"decks\"></div>|<div class=\"deck-list\" id=\"decks\">$links</div>|" dist/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:

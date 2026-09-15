@@ -35,7 +35,7 @@ BSc Environmental Engineering students in semester 4. Students bring the followi
 
 ---
 
-## Prerequisites (Slide Development)
+## Prerequisites for Slide Development
 
 See also: https://sli.dev/guide/
 
@@ -45,30 +45,55 @@ See also: https://sli.dev/guide/
 - An LLM with tool use and MCP support, e.g. [Claude Code](https://claude.ai/code) – can edit slides directly, adjust layouts, and interact with the running dev server via the Slidev MCP server; see also: https://sli.dev/guide/work-with-ai
 
 
-## Installation
+Installation slidev via
 
 ```bash
 pnpm install
 ```
 
-## Starting the Dev Server
+## Starting the Dev Server for local preview
+
 
 ```bash
-npx slidev Paths-and-Flows-1.md # for example
+# for example:
+npx slidev your-filename.md 
+
+# You can only render one deck at a time. 
 ```
 
 Then open the presentation in your browser at <http://localhost:3030>.
 
-Only one deck at a time — just change the filename.
-
-## Building All Decks
+You can build static versions of all decks using the following command:
 
 ```bash
 npx slidev build *.md
 ```
 
+## Presenter Mode & Speaker Notes
+
+Open the slide controls (bottom-right toolbar) and select **Presenter** to open the presenter view. This shows the current slide, a preview of the next slide, and any speaker notes.
+
+Both the presenter view and the viewer window stay in sync via the browser's [BroadcastChannel API](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel) — no server needed. Mouse cursor position is also broadcast. This works on the deployed GitHub Pages version as well as the local dev server, as long as both windows are on the same origin.
+
+### Adding Speaker Notes
+
+Write speaker notes as an HTML comment **at the end of the slide**, after all visible content:
+
+```markdown
+# My Slide
+
+Visible content here.
+
+<!-- Speaker note: only visible in presenter mode. -->
+
+---
+```
+
+Notes placed before visible content will not appear in the presenter view.
+
 ## Slide Decks
 
+- `Introduction.md` - Module introduction
 - `Paths-and-Flows-1.md` – Network analysis I: graph theory, centrality measures, QGIS
 - `_Paths-and-Flows-2.md` – Network analysis II *(draft, not published)*
 - `_Paths-and-Flows-3.md` – Network analysis III *(draft, not published)*
@@ -119,4 +144,4 @@ Source credit at the bottom of a slide, e.g. for image attributions.
 ## Assets
 
 - `public/zhaw-logo.jpeg` – ZHAW logo, used by `zhaw-cover` by default
-- `public/<deck>/` – images extracted from the original PowerPoint, one subfolder per deck
+- `public/<deck>/` – specific images for each slidedeck (one subfolder per deck)

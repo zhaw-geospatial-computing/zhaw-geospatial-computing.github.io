@@ -1,5 +1,7 @@
-/* The default theme dims any <p> directly after <h1> to 50% opacity.
-   Restore full opacity when that paragraph contains only an image. */
-.slidev-layout h1 + p:has(> img:only-child) {
+/* Remove the theme's implicit subtitle treatment (h1 + p → dimmed, negative margin).
+   Use subtitle: in slide frontmatter for explicit subtitles instead. */
+.slidev-layout h1 + p {
+  margin-top: 0;
+  margin-bottom: 0;
   opacity: 1;
 }
