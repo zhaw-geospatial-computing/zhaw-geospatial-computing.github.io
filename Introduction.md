@@ -18,6 +18,37 @@ sections:
 <!-- title slide: content is defined in frontmatter -->
 
 ---
+layout: three-cols-header
+---
+
+# Lecturers
+
+::left::
+
+<img src="/Introduction/murj.webp" style="border-radius:100%;width:160px;height:160px;object-fit:cover" />
+
+**Johann Junghardt**  
+murj@zhaw.ch  
+Terrain & Water  
+
+::center::
+
+<img src="/Introduction/rahn.webp" style="border-radius:100%;width:160px;height:160px;object-fit:cover" />
+
+**Hanno Rahn**  
+rahn@zhaw.ch  
+Spatial Ecology &  
+ Occurrence  
+
+::right::
+
+<img src="/Introduction/rata.jpg" style="border-radius:100%;width:160px;height:160px;object-fit:cover" />
+
+**Nils Ratnaweera**  
+rata@zhaw.ch  
+Paths & Flows  
+
+---
 layout: lernziele
 ---
 
@@ -48,6 +79,7 @@ Three topics, each led by one lecturer:
 | Terrain & Water              | Raster data      | murj     |
 | Spatial Ecology & Occurrence | Vector data      | rahn     |
 | Paths & Flows                | Network Analysis | rata     |
+| Semester Project             | one of the above | -        |
 
 ---
 
@@ -56,13 +88,23 @@ Three topics, each led by one lecturer:
 Three phases
 
 - **Phase 1: Foundations** (weeks 2–7): 2 input sessions per topic
-- **Phase 2: Semester project launch** (~week 8): individual project, your own research question, data, and methods
+- **Phase 2: Semester project launch** (week 8): individual project, your own research question, data, and methods
 - **Phase 3: Deepening & project work**:
-  - 1 further input per topic
   - 1× coaching session (**you** present your RQ, data & planned methods → feedback from lecturers / peers)
+  - 3 further inputs (1 per topic)
   - 2× guided self study (bring your data and questions, lecturers present)
 
 <!-- Detailed week-by-week plan: link to Moodle -->
+
+---
+layout: iframe
+url: /weekly-program-1.html
+---
+
+---
+layout: iframe
+url: /weekly-program-2.html
+---
 
 ---
 
@@ -98,7 +140,7 @@ Why are we teaching any of this?
 
 - Concepts only become real when you run the code yourself and look at the output: what came back, what's missing, what's wrong.
 - Once you have that mental model, AI becomes genuinely useful: you can read its output, catch its mistakes, and trust it where it's trustworthy.
-- Without it, you're copying text you can't evaluate.
+- Without the foundations, you're copying text you can't evaluate *and defend*.
 
 **Course policy:**
 
@@ -188,28 +230,36 @@ Switching to English makes it much easier to search for help online and to debug
 
 # CRS: A Revisit
 
-You covered coordinate reference systems in *Daten und Informationen II* last year. What you covered in *Daten und Informationen II*:
+You covered coordinate reference systems in *Daten und Informationen II* and *Geoinformatik und GIS*:
 
-- The Earth is not a irregular object which is mathematically not describable (*Geooid*). 
+<v-clicks>
+
+- The Earth is not a irregular object which is mathematically not describable (*Geooid*).
 - The Earth can be mathematically approximated as an **oblate spheroid** (a sphere slightly flatter at the poles)
-- *Oblate spheroid* is the name of the shape. It is sometimes also called it's purpose, a  *reference ellipsoid*. 
+- *Oblate spheroid* is the name of the shape. It is sometimes also called it's purpose, a  *reference ellipsoid*.
 - Some reference ellipsoids are Bessel 1841, GRS80, WGS84. These consist only of two numbers: semi-major axis a and b
 - A reference ellipsoid specifically positioned and oriented to the real earth is called a *datum*
 - The same ellipsoid can underlie multiple datums. GRS80 is used by both datums *WGS84* and *ETRS89*
+
+</v-clicks>
 
 ---
 
 # CRS: A Revisit (II)
 
-You covered coordinate reference systems in *Daten und Informationen II* last year. What you covered in *Daten und Informationen II*:
+You covered coordinate reference systems in *Daten und Informationen II* and *Geoinformatik und GIS*:
+
+<v-clicks>
 
 - Once we have a datum, we can work directly in angular coordinates (in a so called *Geographic Coordinate Reference System*, CRS)
 - However, for distance or area measurements, a flat plane is preferable: we apply a *projection* to get a *projected CRS*
-- There are three types of projections: cylindrical, azimuthal, conical.                          
-- Commonly used CRS are in a Database called EPSG and have a unique **EPSG code**: LV95 → 2056, WGS84 → 4326  
-- The same location is described by different numbers depending on the CRS. E.g. Bern: 
+- There are three types of projections: cylindrical, azimuthal, conical.
+- Commonly used CRS are in a Database called EPSG and have a unique **EPSG code**: LV95 → 2056, WGS84 → 4326
+- The same location is described by different numbers depending on the CRS. E.g. Bern:
   - projected CRS (LV95, EPSG:2056): **2'600'000 E / 1'200'000 N**
-  - geographic CRS (WGS84, EPSG:4326): **7.45° E / 46.95° N** 
+  - geographic CRS (WGS84, EPSG:4326): **7.45° E / 46.95° N**
+
+</v-clicks> 
 
 
 ---
@@ -340,8 +390,12 @@ A projected CRS flattens the curved surface by projecting it onto a **developabl
 Coordinates are in **metres** rather than degrees.
 
 ---
+hide: true
+---
 
 # Projected CRS: Distortion Properties
+
+
 
 Every projection distorts something — the question is **what you choose to preserve**:
 
@@ -401,8 +455,11 @@ $$\text{km per 1° lon} = \frac{40075 \cdot \cos(\varphi)}{360}$$
 
 <img src="/Introduction/lon-km-by-lat.png" style="max-height: 85%; object-fit: contain; display: block; margin: 0 auto" />
 
----
 
+
+---
+hide: true
+---
 
 > todo:
 > - Raster Resolution explanation
@@ -411,6 +468,8 @@ $$\text{km per 1° lon} = \frac{40075 \cdot \cos(\varphi)}{360}$$
 >   - when are they necessary?
 >   - how do you find a suitable projected CRS?
 
+---
+hide: true
 ---
 
 
@@ -444,6 +503,8 @@ The Jet d'eau in Geneva, in five coordinate systems:
 When you open a dataset, always check which CRS it is in before doing anything with it.
 
 ---
+hide: true
+---
 
 # The Axis Order Trap
 
@@ -459,7 +520,8 @@ Same numbers, swapped axes → your point ends up in the wrong hemisphere.
 `sf` in R follows the EPSG axis order. When reading external data (CSV, APIs, GeoJSON), always check which order the coordinates are in.
 
 ---
-
+hide: true
+---
 # On-the-Fly Reprojection in QGIS
 
 QGIS can display any layer in any CRS, regardless of what CRS the data is stored in.
@@ -472,6 +534,7 @@ The danger: layers look perfectly aligned on screen, but spatial operations (int
 
 ---
 layout: zusammenfassung
+hide: true
 ---
 
 # CRS: Key Takeaways
@@ -518,18 +581,17 @@ So this makes no sense, 20km is a different distance north - south than east wes
 -->
 
 ---
-layout: iframe
 
-# the web page source
-url: https://epsg.io
+# EPSG.io
+
+> see https://epsg.io
+
+
 ---
 
----
-layout: iframe
+# CRS Explorer
 
-# the web page source
-url: https://crs-explorer.proj.org
----
+> see https://crs-explorer.proj.org
 
 
 ---
@@ -618,10 +680,11 @@ Tipp: Use `tmap_save()` to export the plot. You need to save the map object firs
 
 
 ---
-layout: exercises
----
 
-- You now are assigned with the same task for a different country. Repeat the steps 1 - 4 for Germany.
+
+# Your turn:
+
+- You now are assigned with the same task for a different country: Repeat the steps 1 - 4 for **Germany**.
 - Export your data to a geopackage (`st_write()`) and visualize it similarly using QGIS.
 
 ---
@@ -639,6 +702,4 @@ layout: zusammenfassung
 - On-the-fly reprojection in QGIS is visual only — always reproject before analysis
 - Hands-on: building a monitoring grid in R with `sf` and visualising it in different projections with `tmap`
 
-**Next session**
 
-<!-- TODO: fill in once next session content is confirmed -->
