@@ -22,17 +22,18 @@ const props = defineProps({
 
 <style>
 .slidev-layout.two-cols-header .cols {
-  overflow: hidden;
+  overflow-y: hidden;
 }
 
 .slidev-layout.two-cols-header .col {
   flex: 1;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
 }
 
