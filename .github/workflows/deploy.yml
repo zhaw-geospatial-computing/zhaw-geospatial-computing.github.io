@@ -40,7 +40,7 @@ jobs:
       - name: Build decks
         run: |
           mkdir -p dist
-          EXCLUDE="README.md LLM.md"
+          EXCLUDE="README.md LLM.md KNOWLEDGE.md layouts-demo.md slides.md"
           # strip trailing slash from base_path (*.github.io repos return "/" or "")
           BASE="${{ steps.pages.outputs.base_path }}"
           BASE="${BASE%/}"
