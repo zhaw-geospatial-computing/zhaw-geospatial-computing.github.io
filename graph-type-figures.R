@@ -4,6 +4,8 @@
 #   Rscript graph-type-figures.R
 
 library(igraph)
+library(ggraph)
+library(ggplot2)
 
 out <- "public/graph-types"
 dir.create(out, showWarnings = FALSE, recursive = TRUE)
@@ -150,120 +152,272 @@ plot(
 )
 dev.off()
 
-# ── Knotengrade ───────────────────────────────────────────────────────────────
-# Helper: build layout matrix keyed by vertex name so vertex order doesn't matter
-named_layout <- function(g, pos_list) {
-  matrix(unlist(pos_list[V(g)$name]), ncol = 2, byrow = TRUE)
-}
-# Desired corner positions (name → coords)
-pos <- list(A = c(-1, 1), B = c(-1, -1), C = c(1, -1), D = c(1, 1))
+# ── Knotengrade (ggraph) ──────────────────────────────────────────────────────
+pos <- data.frame(
+  name = c("A", "B", "C", "D"),
+  x = c(-1, -1, 1, 1),
+  y = c(1, -1, -1, 1)
+)
+get_lay <- function(g) pos[match(V(g)$name, pos$name), c("x", "y")]
 
 # ── 6a. Ungerichteter Graph ───────────────────────────────────────────────────
-# Multigraph: A-B (×2), A-D, B-C, B-D, B-B (loop), C-D → degrees A=3,B=6,C=2,D=3
-g_u <- graph_from_edgelist(
-  matrix(
-    c("A", "B", "A", "B", "A", "D", "B", "C", "B", "D", "B", "B", "C", "D"),
-    ncol = 2,
-    byrow = TRUE
-  ),
-  directed = FALSE
-)
-lay_u <- named_layout(g_u, pos)
+# Multigraph: A-B(×2), A-D, B-C, B-D, B-B(loop), C-D → degrees A=3, B=6, C=2, D=3
+g_u <- graph_from_edgelist(rbind(
+  c("A", "B"),
+  c("A", "B"),
+  c("A", "D"),
+  c("B", "C"),
+  c("B", "D"),
+  c("B", "B"),
+  c("C", "D")
+), directed = FALSE)
+l_u <- get_lay(g_u)
 
-open_png("knotengrad-ungerichtet.png", w = 300, h = 300)
-plot(
-  g_u,
-  layout = lay_u,
-  xlim = c(-1.5, 1.5),
-  ylim = c(-1.5, 1.5),
-  vertex.color = "white",
-  vertex.frame.color = "black",
-  vertex.frame.width = 2,
-  vertex.size = 22,
-  vertex.label = V(g_u)$name,
-  vertex.label.cex = 1.0,
-  vertex.label.color = "black",
-  edge.color = "black",
-  edge.width = 2,
-  edge.curved = 0.3
-)
-# Degree labels: placed diagonally outside each corner
-deg <- c(A = 3, B = 6, C = 2, D = 3)
-corner <- list(A = c(-1, 1), B = c(-1, -1), C = c(1, -1), D = c(1, 1))
-for (v in names(deg)) {
-  text(
-    corner[[v]][1] * 1.3,
-    corner[[v]][2] * 1.3,
-    labels = deg[v],
-    cex = 1.3,
-    font = 2
+p_u <- ggraph(g_u, layout = "manual", x = l_u$x, y = l_u$y) +
+  geom_edge_fan(color = "black", linewidth = 0.9) +
+  geom_edge_loop(
+    aes(strength = 1.5, span = 100, direction = 225),
+    color = "black",
+    linewidth = 0.9
+  ) +
+  geom_node_point(
+    shape = 21,
+    size = 12,
+    fill = "white",
+    color = "black",
+    stroke = 1.5
+  ) +
+  geom_node_text(aes(label = name), fontface = "italic", size = 4.2) +
+  annotate(
+    "text",
+    x = c(-1.55, -1.55, 1.55, 1.55),
+    y = c(1.55, -1.55, -1.55, 1.55),
+    label = c("3", "?", "2", "3"),
+    fontface = "bold",
+    size = 7
+  ) +
+  coord_fixed(xlim = c(-2.1, 2.1), ylim = c(-2.1, 2.1)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    plot.margin = margin(4, 4, 4, 4)
   )
-}
-dev.off()
+
+ggsave(
+  file.path(out, "knotengrad-ungerichtet.png"),
+  p_u,
+  width = 3,
+  height = 3,
+  dpi = 120,
+  bg = "transparent"
+)
 
 # ── 6b. Gerichteter Graph ─────────────────────────────────────────────────────
-# Edges: A→C, B→A, B→B (loop), B→C, B→D, D→A, D→B
-# indegree:  A=2, B=2 (incl. loop), C=2, D=1
-# outdegree: A=1, B=4 (incl. loop), C=0, D=2
-# B shown as "?" – students calculate from the visible arrows
-g_dir <- graph_from_edgelist(
-  matrix(
-    c("A", "C", "B", "A", "B", "B", "B", "C", "B", "D", "D", "A", "D", "B"),
-    ncol = 2,
-    byrow = TRUE
-  ),
-  directed = TRUE
-)
-lay_dir <- named_layout(g_dir, pos)
+# Edges: A→C, B→A, B→B(loop), B→C, B→D, D→A, D→B
+# indegree  A=2, B=2(incl.loop), C=2, D=1
+# outdegree A=1, B=4(incl.loop), C=0, D=2  – B shown as "?"
+g_dir <- graph_from_edgelist(rbind(
+  c("A", "C"),
+  c("B", "A"),
+  c("B", "B"),
+  c("B", "C"),
+  c("B", "D"),
+  c("D", "A"),
+  c("D", "B")
+), directed = TRUE)
+l_dir <- get_lay(g_dir)
 
-open_png("knotengrad-gerichtet.png", w = 300, h = 320)
-par(mar = c(3.0, 0.3, 0.3, 0.3)) # extra bottom margin for legend
+# Label anchor positions: outer side of each corner (A, B, C, D order)
+io_x <- c(-1.65, -1.65, 1.65, 1.65)
+io_y <- c(1.0, -1.0, -1.0, 1.0)
 
-plot(
-  g_dir,
-  layout = lay_dir,
-  xlim = c(-1.6, 1.6),
-  ylim = c(-1.4, 1.4),
-  vertex.color = "white",
-  vertex.frame.color = "black",
-  vertex.frame.width = 2,
-  vertex.size = 22,
-  vertex.label = V(g_dir)$name,
-  vertex.label.cex = 1.0,
-  vertex.label.color = "black",
-  edge.color = "black",
-  edge.width = 2,
-  edge.arrow.size = 0.6,
-  edge.curved = 0.3
+p_dir <- ggraph(g_dir, layout = "manual", x = l_dir$x, y = l_dir$y) +
+  geom_edge_fan(
+    arrow = arrow(length = unit(3, "mm"), type = "closed"),
+    end_cap = circle(4, "mm"),
+    start_cap = circle(4, "mm"),
+    color = "black",
+    linewidth = 0.7
+  ) +
+  geom_edge_loop(
+    aes(strength = 1.5, span = 100, direction = 225),
+    arrow = arrow(length = unit(3, "mm"), type = "closed"),
+    end_cap = circle(4, "mm"),
+    color = "black",
+    linewidth = 0.7
+  ) +
+  geom_node_point(
+    shape = 21,
+    size = 12,
+    fill = "white",
+    color = "black",
+    stroke = 1.5
+  ) +
+  geom_node_text(aes(label = name), fontface = "italic", size = 4.2) +
+  # indegree (green, above anchor)
+  annotate(
+    "text",
+    x = io_x,
+    y = io_y + 0.3,
+    label = c("2", "?", "2", "1"),
+    color = "#1a7a1a",
+    fontface = "bold",
+    size = 6
+  ) +
+  # outdegree (red, below anchor)
+  annotate(
+    "text",
+    x = io_x,
+    y = io_y - 0.3,
+    label = c("1", "?", "0", "2"),
+    color = "#cc2222",
+    fontface = "bold",
+    size = 6
+  ) +
+  # legend below graph (stacked vertically)
+  annotate(
+    "text",
+    x = 0,
+    y = -1.82,
+    label = "indegree",
+    color = "#1a7a1a",
+    fontface = "bold",
+    size = 4.5
+  ) +
+  annotate(
+    "text",
+    x = 0,
+    y = -2.05,
+    label = "outdegree",
+    color = "#cc2222",
+    fontface = "bold",
+    size = 4.5
+  ) +
+  coord_fixed(xlim = c(-2.3, 2.3), ylim = c(-2.3, 1.8)) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "transparent", color = NA),
+    plot.margin = margin(4, 4, 4, 4)
+  )
+
+ggsave(
+  file.path(out, "knotengrad-gerichtet.png"),
+  p_dir,
+  width = 3,
+  height = 3.3,
+  dpi = 120,
+  bg = "transparent"
 )
-# indegree (green) and outdegree (red) labels per corner; B = "?" (student exercise)
-ind_lab <- c(A = "2", B = "?", C = "2", D = "1")
-outd_lab <- c(A = "1", B = "?", C = "0", D = "2")
-for (v in names(ind_lab)) {
-  lx <- corner[[v]][1] * 1.45
-  ly <- corner[[v]][2] * 1.25
-  text(lx, ly + 0.18, ind_lab[v], col = "#1a7a1a", cex = 1.1, font = 2)
-  text(lx, ly - 0.18, outd_lab[v], col = "#cc2222", cex = 1.1, font = 2)
+
+# ── 7. Adjazenzmatrix ─────────────────────────────────────────────────────────
+nodes_abcde <- c("a", "b", "c", "d", "e")
+
+# Graph: triangle a-b-c plus chain b-d-e
+g_adj <- graph_from_edgelist(rbind(
+  c("a", "b"),
+  c("a", "c"),
+  c("b", "c"),
+  c("b", "d"),
+  c("d", "e")
+), directed = FALSE)
+
+# Layout matching reference image
+lay_adj <- data.frame(
+  name = c("a", "b", "c", "d", "e"),
+  x    = c(-0.9,  0.4, -0.9,  0.5, -0.1),
+  y    = c( 1.0,  0.7,  0.0,  0.2, -0.8)
+)
+l_adj <- lay_adj[match(V(g_adj)$name, lay_adj$name), c("x", "y")]
+
+# Helper: build adjacency matrix ggplot
+# expand.grid(nach, von): nach cycles fastest (rows), von slowest (cols)
+# as.vector(mat) is column-major → perfectly aligns with expand.grid order
+make_adj_plot <- function(mat, nodes) {
+  df <- expand.grid(nach = nodes, von = nodes)
+  df$value    <- as.vector(mat)
+  df$diagonal <- df$nach == df$von
+  df$von  <- factor(df$von,  levels = nodes)
+  df$nach <- factor(df$nach, levels = rev(nodes))
+
+  ggplot(df, aes(x = von, y = nach)) +
+    geom_tile(fill = "#dce8f0", color = "white", linewidth = 1.3) +
+    geom_text(aes(label = value, color = diagonal), size = 5.2, fontface = "bold") +
+    scale_color_manual(values = c("FALSE" = "black", "TRUE" = "#2a8a2a"), guide = "none") +
+    scale_x_discrete(position = "top") +
+    labs(x = "von", y = "nach") +
+    theme_minimal(base_size = 13) +
+    theme(
+      axis.title.x.top  = element_text(color = "orange", face = "bold", size = 14, vjust = -0.5),
+      axis.title.y.left = element_text(color = "orange", face = "bold", size = 14, angle = 90),
+      axis.text.x       = element_text(face = "bold", size = 12),
+      axis.text.y       = element_text(face = "bold", size = 12),
+      panel.grid        = element_blank(),
+      panel.background  = element_rect(fill = "#dce8f0", color = NA),
+      plot.background   = element_rect(fill = "transparent", color = NA),
+      plot.margin       = margin(5, 10, 5, 5)
+    )
 }
-# Bottom legend (in the extra bottom margin)
-mtext(
-  "indegree",
-  side = 1,
-  line = 0.5,
-  col = "#1a7a1a",
-  font = 2,
-  cex = 0.85,
-  adj = 0.3
-)
-mtext(
-  "outdegree",
-  side = 1,
-  line = 0.5,
-  col = "#cc2222",
-  font = 2,
-  cex = 0.85,
-  adj = 0.7
-)
-dev.off()
+
+# ── 7a. Graph (ungewichtet) ───────────────────────────────────────────────────
+p_adj_g <- ggraph(g_adj, layout = "manual", x = l_adj$x, y = l_adj$y) +
+  geom_edge_link(color = "black", linewidth = 1.2) +
+  geom_node_point(shape = 21, size = 9, fill = "white", color = "black", stroke = 1.3) +
+  geom_node_text(aes(label = name), fontface = "italic", size = 3.8) +
+  coord_fixed(xlim = c(-1.5, 1.2), ylim = c(-1.3, 1.4)) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "transparent", color = NA))
+
+ggsave(file.path(out, "adjazenz-graph.png"), p_adj_g,
+       width = 2.5, height = 2.8, dpi = 120, bg = "transparent")
+
+# ── 7b. Adjacency matrix (ungewichtet) ────────────────────────────────────────
+# Symmetric; diagonal = 1 (self-loops) to match reference image
+adj_mat <- matrix(c(
+  1, 1, 1, 0, 0,
+  1, 1, 1, 1, 0,
+  1, 1, 1, 0, 0,
+  0, 1, 0, 1, 1,
+  0, 0, 0, 1, 1
+), nrow = 5, byrow = TRUE, dimnames = list(nodes_abcde, nodes_abcde))
+
+ggsave(file.path(out, "adjazenz-matrix.png"), make_adj_plot(adj_mat, nodes_abcde),
+       width = 3.2, height = 3.0, dpi = 120, bg = "transparent")
+
+# ── 7c. Graph (gewichtet) ─────────────────────────────────────────────────────
+# Same topology; edge width ∝ weight, labels show values
+g_adj_w <- g_adj
+E(g_adj_w)$weight <- c(3, 2, 5, 4, 1)  # a-b, a-c, b-c, b-d, d-e
+
+p_adj_gw <- ggraph(g_adj_w, layout = "manual", x = l_adj$x, y = l_adj$y) +
+  geom_edge_link(
+    aes(width = weight, label = weight),
+    color        = "black",
+    label_colour = "black",
+    label_size   = 3.5,
+    angle_calc   = "along",
+    label_dodge  = unit(3.5, "mm")
+  ) +
+  scale_edge_width(range = c(0.5, 3.5), guide = "none") +
+  geom_node_point(shape = 21, size = 9, fill = "white", color = "black", stroke = 1.3) +
+  geom_node_text(aes(label = name), fontface = "italic", size = 3.8) +
+  coord_fixed(xlim = c(-1.5, 1.2), ylim = c(-1.3, 1.4)) +
+  theme_void() +
+  theme(plot.background = element_rect(fill = "transparent", color = NA))
+
+ggsave(file.path(out, "adjazenz-graph-gewichtet.png"), p_adj_gw,
+       width = 2.5, height = 2.8, dpi = 120, bg = "transparent")
+
+# ── 7d. Adjacency matrix (gewichtet) ─────────────────────────────────────────
+# Diagonal = 0 (no self-loops); off-diagonal = edge weights
+adj_mat_w <- matrix(c(
+  0, 3, 2, 0, 0,
+  3, 0, 5, 4, 0,
+  2, 5, 0, 0, 0,
+  0, 4, 0, 0, 1,
+  0, 0, 0, 1, 0
+), nrow = 5, byrow = TRUE, dimnames = list(nodes_abcde, nodes_abcde))
+
+ggsave(file.path(out, "adjazenz-matrix-gewichtet.png"), make_adj_plot(adj_mat_w, nodes_abcde),
+       width = 3.2, height = 3.0, dpi = 120, bg = "transparent")
 
 message("Done. Images written to: ", out)

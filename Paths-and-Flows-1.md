@@ -304,48 +304,67 @@ Wichtige Regel: ∑ indegree = ∑ outdegree. Probe: 2+2+2+1 = 7, 1+4+0+2 = 7 �
 
 
 ---
+{}
+---
 
+# Adjazenzmatrix
 
-# Nachbarschaft
+Die Adjazenzmatrix zeigt, welche Knoten in einem Graphen benachbart sind.
 
-- Die Nachbarschafts-Matrix zeigt, welche Knoten in einem Graphen benachbart sind.
-  - 1 heisst, es gibt eine Kante zwischen zwei Knoten (z.B. von *a* nach *b*)
-  - 0 heisst, es gibt keine Kante (z.B. zwischen a und d)
+- **1** = Kante vorhanden (z.B. von *a* nach *b*)
+- **0** = keine Kante (z.B. *a* nach *d*)
+- Diagonale (grün): Knoten mit sich selbst
 
-
-<img src="/graph-types/zyklisch.png" class="h-14 object-contain" />
-
-
-- Zusätzlich können die Kanten auch gewichtet werden (Durchquerungs-Kosten oder –Zeiten)
-  - Im Beispiel sind die Gewichte symmetrisch (von *a* nach *b* kostet 80, von *b* nach *a* kostet auch 80)
-  - Gewichte könnten auch asymmetrisch sein (von *d* nach *e* kostet 200, von *e* nach *d* kostet 225)
-
-
-<!-- <img src="/AGI_HS25_Netzwerk1/_page_16_Figure_8.jpeg" class="h-36 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_16_Figure_12.jpeg" class="h-36 object-contain" /> -->
+<div class="flex gap-2 items-center justify-center mt-4">
+  <img src="/graph-types/adjazenz-graph.png" class="h-48 object-contain" />
+  <img src="/graph-types/adjazenz-matrix.png" class="h-48 object-contain" />
+</div>
 
 <!--
-Die **Nachbarschaftsmatrix** (Adjazenzmatrix) gibt an, welche Knoten verbunden sind:
+Die **Adjazenzmatrix** gibt an, welche Knoten verbunden sind:
 - 1 = Kante vorhanden, 0 = keine Kante
-- Beispiel: A→B: 1, A→C: 1, A→D: 0, A→E: 0
-
-Die Matrix kann auch **gewichtet** sein – statt 0/1 stehen Kosten oder Zeiten drin (z.B. Reisezeiten in Minuten).
-
-**Symmetrie**: Im ungerichteten Graph ist die Matrix symmetrisch (A→B = B→A). Bei Einbahnstrassen oder unterschiedlichen Reisezeiten je Richtung kann die Matrix asymmetrisch sein (z.B. von D nach E: 200, von E nach D: 225).
+- Beispiel: a→b: 1, a→c: 1, a→d: 0, a→e: 0
+- Die Matrix ist symmetrisch (ungerichteter Graph): M[i,j] = M[j,i]
 -->
 
 ---
-layout: two-cols
+
+
+# Adjazenzmatrix (gewichtet)
+
+Kanten können auch **Gewichte** tragen (Kosten, Zeiten, Kapazitäten).
+
+- Statt 0/1 stehen die Gewichte in der Matrix.
+- **Symmetrisch**: von *a* nach *b* = von *b* nach *a*
+- **Asymmetrisch**: z.B. Einbahnstrassen oder unterschiedliche Reisezeiten je Richtung
+
+
+<div class="flex gap-2 items-center justify-center h-full">
+  <img src="/graph-types/adjazenz-graph-gewichtet.png" class="h-64 object-contain" />
+  <img src="/graph-types/adjazenz-matrix-gewichtet.png" class="h-64 object-contain" />
+</div>
+
+<!--
+**Gewichtete Adjazenzmatrix**: Statt 0/1 stehen die Kantengewichte in der Matrix.
+- Diagonale = 0 (keine Selbst-Verbindungen im gewichteten Graph)
+- Symmetrisch bei ungerichtetem Graph: M[i,j] = M[j,i]
+- Asymmetrisch bei gerichtetem Graph: Hin- und Rückweg können unterschiedliche Kosten haben
+-->
+
+---
+{}
 ---
 
 # Pfade durch Graphen
 
 - Reisezeiten können auch über die direkte Nachbarschaft hinaus in einer Matrix angegeben werden.
-  - Picton → Dunedin: 5.00 + 2.10 + 2.50 = **10.0**
+- Picton → Dunedin: 5.00 + 2.10 + 2.50 = **10.0**
 
-::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_17_Figure_8.jpeg" class="h-96 object-contain" />
+<div class="flex gap-2 items-start justify-center h-full">
+  <img src="/nztraveltimes-map.jpg" class="h-80 object-contain" />
+  <img src="/nztraveltimes.jpg" class="h-80 object-contain" />
+</div>
 
 <SlideFooter>Quelle: kiwiway.com</SlideFooter>
 
@@ -376,7 +395,7 @@ Zeichne einen Pfad durch das Netzwerk rechts, sodass alle Kanten genau einmal du
 <img src="/AGI_HS25_Netzwerk1/_page_18_Picture_7.jpeg" class="h-80 object-contain" />
 
 <!--
-**Königsberger Brücken** (1736): Euler hat sich gefragt, ob man einen Pfad durch die Stadt Königsberg zeichnen kann, bei dem alle sieben Brücken genau einmal überquert werden.
+**Königsberger Brücken** (1736): Euler hat sich gefragt, ob man einen Pfad durch die Stadt Königsberg zeichnen kann, bei dem alle sieben Brücken GENAU EINMAL überquert werden. Denkt: Das-ist-das-haus-vom-Nikolaus
 
 Landregionen = Knoten, Brücken = Kanten. Studierende haben ~3 Minuten Zeit, es selber auszuprobieren.
 
@@ -686,4 +705,3 @@ Die Studierenden sollten es in der vorherigen Aufgabe nicht geschafft haben – 
   *combined density = employment density + population density × LPR*
 
 ::right::
-
