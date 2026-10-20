@@ -1,0 +1,271 @@
+---
+title: "Paths and Flows 1: R Exercises"
+subtitle: "Network Analysis with sfnetworks | Module Geospatial Computing"
+execute:
+  echo: false
+  output: false
+code-fold: true
+code-summary: "Sample solution"
+knitr:
+  opts_chunk:
+    collapse: true
+---
+
+For these exercises we use street network and centrality data from the GeoPackage `netzwerkanalyse.gpkg`. Load the following packages:
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+library(sf)
+library(sfnetworks)
+library(tidygraph)
+library(ggplot2)
+library(dplyr)
+```
+
+---
+
+## Task 1: Load and explore data
+
+Load the layer `osm_highway_prepared` and the municipality boundary (`Gemeinde_Waedenswil`) from the GeoPackage. Then answer:
+
+- How many edges (street segments) does the network contain?
+- What coordinate reference system are the data in?
+
+:::{.callout-note}
+Use `sf_layers("netzwerkanalyse.gpkg")` to see all available layers in the GeoPackage.
+:::
+
+```{r}
+streets <- read_sf("netzwerkanalyse.gpkg", layer = "osm_highway_prepared")
+municipality <- read_sf("netzwerkanalyse.gpkg", layer = "Gemeinde_Waedenswil")
+
+# Number of edges (street segments)
+nrow(streets)
+
+# Coordinate reference system
+st_crs(streets)
+```
+
+---
+
+## Task 2: Visualise the street network
+
+Create a map of the Wädenswil street network using `ggplot2`. Add the municipality boundary as an outline.
+
+```{r}
+#| output: true
+
+ggplot() +
+  geom_sf(data = municipality, fill = NA, color = "black", linewidth = 0.8) +
+  geom_sf(data = streets, color = "steelblue", linewidth = 0.2) +
+  theme_void() +
+  labs(title = "Street network of Wädenswil")
+```
+
+---
+
+## Task 3: Create a network object
+
+A street dataset is just a collection of line segments — not yet a graph. `as_sfnetwork()` converts it into a proper network object with **nodes** (intersections) and **edges** (street segments).
+
+Create an `sfnetwork` object from the street data. Then answer:
+
+- How many nodes does the network have?
+- How many edges?
+- What do nodes and edges represent in a street network context?
+
+:::{.callout-note}
+Use `activate("nodes")` or `activate("edges")` to switch between perspectives in `sfnetworks`.
+`st_as_sf(net, "nodes")` extracts the nodes as a regular `sf` object.
+:::
+
+```{r}
+#| output: true
+
+net <- as_sfnetwork(streets, directed = FALSE)
+
+# Overview
+net
+
+# Number of nodes
+net |> activate("nodes") |> as_tibble() |> nrow()
+
+# Number of edges
+net |> activate("edges") |> as_tibble() |> nrow()
+```
+
+---
+
+## Task 4: Compute edge weights
+
+Centrality measures like closeness and betweenness are based on shortest paths. To find the shortest path between two nodes, we need to know the **cost** of traversing each edge — this is the edge weight.
+
+Before adding weights to the network: think about what different weighting schemes are possible for a street network. What does each one prioritise, and in which application would you use it?
+
+:::{.callout-note}
+Think beyond geometry. The `osm_highway` layer contains attributes such as `highway`, `maxspeed`, `oneway`, and `surface`. Which of these could serve as — or help derive — an edge weight?
+:::
+
+For now, use **physical length** as the weight: add a column `length` to the network edges containing the length of each segment in metres.
+
+:::{.callout-note}
+`edge_length()` is a helper function from `sfnetworks` that computes edge lengths inside `mutate()` when edges are activated.
+:::
+
+```{r}
+net <- net |>
+  activate("edges") |>
+  mutate(length = edge_length())
+```
+
+---
+
+## Task 5: Degree Centrality
+
+**Degree Centrality** is the number of edges connected to a node — i.e. the number of directly adjacent neighbours.
+
+Calculate the degree for each node and store it in a new column `degree`. Visualise the distribution as a histogram: which degrees are most common? What does a node with degree 1 represent?
+
+```{r}
+#| output: true
+
+net <- net |>
+  activate("nodes") |>
+  mutate(degree = centrality_degree())
+
+nodes <- st_as_sf(net, "nodes")
+
+ggplot(nodes, aes(x = degree)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribution of node degrees",
+    x = "Degree",
+    y = "Number of nodes"
+  ) +
+  theme_minimal()
+```
+
+Now visualise degree centrality spatially on a map.
+
+```{r}
+#| output: true
+
+edges <- st_as_sf(net, "edges")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85", linewidth = 0.2) +
+  geom_sf(data = nodes, aes(color = degree), size = 0.4) +
+  scale_color_viridis_c(option = "plasma", name = "Degree") +
+  theme_void() +
+  labs(title = "Degree Centrality – Wädenswil street network")
+```
+
+---
+
+## Task 6: Closeness Centrality
+
+**Closeness Centrality** measures how close a node is to all other nodes — measured along shortest paths through the network. Nodes with high closeness can reach all other points in the network most efficiently.
+
+$$C_{i}^{C} = \frac{N-1}{\sum_{j \neq i} d_{ij}}$$
+
+Calculate closeness centrality for each node using edge lengths as weights. Visualise the result.
+
+:::{.callout-note}
+Use `centrality_closeness(weights = length)`. The `weights` argument refers to edge lengths as distances: longer edges mean greater separation.
+:::
+
+```{r}
+#| output: true
+
+net <- net |>
+  activate("nodes") |>
+  mutate(closeness = centrality_closeness(weights = length))
+
+nodes <- st_as_sf(net, "nodes")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85", linewidth = 0.2) +
+  geom_sf(data = nodes, aes(color = closeness), size = 0.4) +
+  scale_color_viridis_c(option = "magma", name = "Closeness") +
+  theme_void() +
+  labs(title = "Closeness Centrality – Wädenswil street network")
+```
+
+---
+
+## Task 7: Betweenness Centrality
+
+**Betweenness Centrality** counts how often a node lies on the shortest path between every pair of other nodes. Nodes with high betweenness are important "bridges" in the network.
+
+$$C_i^B = \frac{1}{(N-1)(N-2)} \sum_{j \neq k \neq i} \frac{n_{jk}(i)}{n_{jk}}$$
+
+Calculate betweenness centrality and visualise it.
+
+:::{.callout-caution}
+Betweenness centrality is computationally expensive — all shortest paths between all pairs of nodes must be calculated. For ~2600 nodes this may take several minutes.
+:::
+
+```{r}
+#| output: true
+
+net <- net |>
+  activate("nodes") |>
+  mutate(betweenness = centrality_betweenness(weights = length))
+
+nodes <- st_as_sf(net, "nodes")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85", linewidth = 0.2) +
+  geom_sf(data = nodes, aes(color = betweenness), size = 0.4) +
+  scale_color_viridis_c(option = "inferno", name = "Betweenness",
+                        trans = "sqrt") +
+  theme_void() +
+  labs(title = "Betweenness Centrality – Wädenswil street network")
+```
+
+---
+
+## Task 8: Compare centrality measures
+
+The layer `waedenswil_centrality` in the GeoPackage contains pre-calculated centrality values for the same network.
+
+a) Load the layer and inspect its columns.
+b) Create a map for each of the three measures (degree, closeness, betweenness) and compare them side by side.
+c) Which parts of the street network are most central according to each measure? How do you explain the differences?
+
+```{r}
+#| output: true
+#| column: page
+#| layout-ncol: 3
+#| fig-subcap:
+#|   - "Degree Centrality"
+#|   - "Closeness Centrality"
+#|   - "Betweenness Centrality"
+
+centrality <- read_sf("netzwerkanalyse.gpkg", layer = "waedenswil_centrality")
+
+p_degree <- ggplot() +
+  geom_sf(data = edges, color = "gray90", linewidth = 0.15) +
+  geom_sf(data = centrality, aes(color = degree), size = 0.3) +
+  scale_color_viridis_c(option = "plasma", name = "Degree") +
+  theme_void()
+
+p_closeness <- ggplot() +
+  geom_sf(data = edges, color = "gray90", linewidth = 0.15) +
+  geom_sf(data = centrality, aes(color = closeness), size = 0.3) +
+  scale_color_viridis_c(option = "magma", name = "Closeness") +
+  theme_void()
+
+p_betweenness <- ggplot() +
+  geom_sf(data = edges, color = "gray90", linewidth = 0.15) +
+  geom_sf(data = centrality, aes(color = betw), size = 0.3) +
+  scale_color_viridis_c(option = "inferno", name = "Betweenness",
+                        trans = "sqrt") +
+  theme_void()
+
+p_degree
+p_closeness
+p_betweenness
+```
