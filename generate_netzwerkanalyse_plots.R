@@ -12,7 +12,6 @@ dir.create(out_dir, showWarnings = FALSE)
 
 streets      <- read_sf("netzwerkanalyse.gpkg", layer = "osm_highway_prepared")
 municipality <- read_sf("netzwerkanalyse.gpkg", layer = "Gemeinde_Waedenswil")
-centrality   <- read_sf("netzwerkanalyse.gpkg", layer = "waedenswil_centrality")
 
 # --- Build network ------------------------------------------------------------
 
@@ -87,25 +86,25 @@ p_betweenness_map <- ggplot() +
 ggsave(file.path(out_dir, "betweenness_map.png"),
        p_betweenness_map, width = 5, height = 5, dpi = 150, bg = "white")
 
-# --- Task 8: Comparison (pre-calculated values) ------------------------------
+# --- Task 8: Comparison ------------------------------------------------------
 
 p_comp_degree <- ggplot() +
   geom_sf(data = edges, color = "gray90", linewidth = 0.15) +
-  geom_sf(data = centrality, aes(color = degree), size = 0.3) +
+  geom_sf(data = nodes, aes(color = degree), size = 0.3) +
   scale_color_viridis_c(option = "plasma", name = "Degree") +
   labs(title = "Degree") +
   theme_map
 
 p_comp_closeness <- ggplot() +
   geom_sf(data = edges, color = "gray90", linewidth = 0.15) +
-  geom_sf(data = centrality, aes(color = closeness), size = 0.3) +
+  geom_sf(data = nodes, aes(color = closeness), size = 0.3) +
   scale_color_viridis_c(option = "magma", name = "Closeness") +
   labs(title = "Closeness") +
   theme_map
 
 p_comp_betweenness <- ggplot() +
   geom_sf(data = edges, color = "gray90", linewidth = 0.15) +
-  geom_sf(data = centrality, aes(color = betw), size = 0.3) +
+  geom_sf(data = nodes, aes(color = betweenness), size = 0.3) +
   scale_color_viridis_c(option = "inferno", name = "Betweenness",
                         transform = "sqrt") +
   labs(title = "Betweenness") +

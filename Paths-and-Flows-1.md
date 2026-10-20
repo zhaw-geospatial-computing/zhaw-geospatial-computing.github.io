@@ -381,18 +381,17 @@ Diese Art von Reisezeitmatrix kennen die Studierenden vielleicht von Strassenkar
 -->
 
 ---
-layout: two-cols
----
 
 # Königsberger Brücken 1736
 
 **Aufgabe (3:00)**
 
-Zeichne einen Pfad durch das Netzwerk rechts, sodass alle Kanten genau einmal durchquert werden.
+*Gibt es einen Runweg, bei dem man alle Sieben Brücken der Stadt genau einmal überquert und man wieder zum Ausgangspunkt gelangt?*
 
-::right::
-
-<img src="/AGI_HS25_Netzwerk1/_page_18_Picture_7.jpeg" class="h-80 object-contain" />
+<div class="flex gap-2 items-start justify-center h-full">
+  <img src="/Bridges_of_Konigsberg.png" class="h-80 object-contain" />
+  <CountdownTimer :minutes="3" />
+</div>
 
 <!--
 **Königsberger Brücken** (1736): Euler hat sich gefragt, ob man einen Pfad durch die Stadt Königsberg zeichnen kann, bei dem alle sieben Brücken GENAU EINMAL überquert werden. Denkt: Das-ist-das-haus-vom-Nikolaus
@@ -401,6 +400,24 @@ Landregionen = Knoten, Brücken = Kanten. Studierende haben ~3 Minuten Zeit, es 
 
 **Spoiler (erst auf der nächsten Folie zeigen)**: Es ist unmöglich – weil alle Knotengrade ungerade sind.
 -->
+
+
+---
+
+# Königsberger Brücken 1736
+
+1. Knoten stehen für Landregionen, Kanton für Brücken
+2. Ausser am Start und am Ende muss ein solcher Pfad auf einer Kante in einen Knoten und auf einer Kante wieder hinausführen
+3. Sprich: Die Knotengrade der Knoten müsste überall  *gerade* sein
+4. Sie sind aber ungerade, es kann also kein derartigen Pfad geben
+
+
+<img src="/koenigsberg.jpg" class="h-80 object-contain" />
+
+
+
+
+
 
 ---
 layout: zusammenfassung
@@ -426,6 +443,9 @@ layout: image
 image: /AGI_HS25_Netzwerk1/_page_21_Picture_0.jpeg
 ---
 
+<!-- Einstieg mit einem Alltagsbeispiel: Der Platz «Das Zentral» in Zürich heisst nicht zufällig so – er ist tatsächlich sehr zentral. Aber kann man das mathematisch berechnen? Ja – genau das machen Zentralitätsmasse. -->
+
+
 ---
 layout: two-cols-header
 ---
@@ -438,7 +458,8 @@ Masse zur Beschreibung der relativen Wichtigkeit («Zentralität») eines Knoten
 
 - **Anwendungen**
   - Verkehrsknoten
-  - Soziale Netzwerke (influencer...)
+  - Soziale Netzwerke ([influencer](https://likeometer.co/weltweit/alle/)...)
+
 - **Wir betrachten vier Zentralitätsmasse**
   - Degree Centrality
   - Closeness Centrality
@@ -450,7 +471,6 @@ Masse zur Beschreibung der relativen Wichtigkeit («Zentralität») eines Knoten
 ![](/AGI_HS25_Netzwerk1/_page_22_Picture_15.jpeg)
 
 <!--
-Einstieg mit einem Alltagsbeispiel: Der Platz «Das Zentral» in Zürich heisst nicht zufällig so – er ist tatsächlich sehr zentral. Aber kann man das mathematisch berechnen? Ja – genau das machen Zentralitätsmasse.
 
 Zweites Motivationsbeispiel: **Influencer in sozialen Netzwerken** – Influencer sind Personen, die mit sehr vielen anderen verbunden sind. In der Schweiz gibt es den «Leikometer» als Ranking. Je nach verwendetem Zentralitätsmass kommt man zu unterschiedlichen Ergebnissen.
 
@@ -467,7 +487,7 @@ Entspricht dem Knotengrad im ungerichteten Graphen, d.h. der Anzahl Kanten, die 
 
 ::left::
 
-![](/AGI_HS25_Netzwerk1/_page_23_Picture_6.jpeg)
+![](/graph-types/knotengrad-ungerichtet.png)
 
 ::right::
 
@@ -482,24 +502,32 @@ Im Netzwerk-Visualisierungsbeispiel: Das dichte Netzwerk unten hat viele Knoten 
 -->
 
 ---
+layout: two-cols-header
+---
 
 # Zentralitätsmasse: Closeness centrality
 
 Misst wie nahe ein Knoten an allen anderen Knoten im Netzwerk liegt, entlang der kürzesten Pfade durch das Netzwerk.
+$N$ Anzahl Knoten im Netzwerk,  $d_{ij}$ Distanz des kürzesten Pfads zwischen Knoten $i$ und $j$
 
 $$C_{i}^{C} = \frac{N-1}{\sum_{j=1: j \neq i}^{N} d_{ij}}$$
 
-- *N* Anzahl Knoten im Netzwerk
-- *dij* Distanz des kürzesten Pfads zwischen Knoten *i* und *j*
 
 
+::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_24_Figure_9.jpeg" class="h-80 object-contain" />
+![](/AGI_HS25_Netzwerk1/closeness-a.jpeg)
+
+::left::
+
+![](/AGI_HS25_Netzwerk1/closeness-b.jpeg)
+
+
 
 <!--
 **Closeness Centrality** schaut nicht nur auf direkte Nachbarn, sondern berechnet für jeden Knoten die Summe aller kürzesten Pfade zu allen anderen Knoten im Netzwerk. Je kleiner die Summe, desto zentraler.
 
-Das Beispiel zeigt eine amerikanische Stadt: Der CBD (Central Business District) hat die höchste Closeness Centrality, weil von dort die Wege zu allen anderen Punkten im Schnitt am kürzesten sind. Im selben Graphen wie bei Degree Centrality liegen die höchsten Werte nun im Zentrum des Netzwerks – ein anderes Bild als bei Degree.
+Das Beispiel zeigt eine amerikanische Stadt (LA?): Der CBD (Central Business District) hat die höchste Closeness Centrality, weil von dort die Wege zu allen anderen Punkten im Schnitt am kürzesten sind. Im selben Graphen wie bei Degree Centrality liegen die höchsten Werte nun im Zentrum des Netzwerks – ein anderes Bild als bei Degree.
 -->
 
 ---
@@ -508,18 +536,42 @@ layout: two-cols-header
 
 # Zentralitätsmasse: Betweenness centrality
 
-::left::
-
 - Misst wie oft ein Knoten von allen kürzesten Pfaden zwischen allen Knotenpaaren im Netzwerk durchquert wird.
 - Zeigt welche Knoten im Netzwerk die wichtigen Brücken- resp. Verbindungsknoten sind.
+- $N$ Anzahl Knoten, $n_{jk}$ Anzahl kürzeste Pfade zwischen $j$ und $k$, $n_{jk}(i)$ davon durch $i$
 
-$$C_i^B = \frac{1}{(N-1)(N-2)} \sum_{j=1; k=1; j \neq k \neq i}^{N} \frac{n_{jk}(i)}{n_{jk}}$$
+<span class="block text-center text-xl mt-2">$C_i^B =$ <span v-mark.circle.orange="1" class="px-3 py-4">$\dfrac{1}{(N-1)(N-2)}$</span> $\displaystyle\sum_{j=1;\, k=1;\, j \neq k \neq i}^{N} \dfrac{n_{jk}(i)}{n_{jk}}$</span>
 
-- *N* Anzahl Knoten, *njk* Anzahl kürzeste Pfade zwischen *j* und *k*, *njk(i)* davon durch *i*
+::left::
+
+![](/AGI_HS25_Netzwerk1/betweenness-a.jpeg)
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_25_Figure_11.jpeg" class="h-80 object-contain" />
+![](/AGI_HS25_Netzwerk1/betweenness-b.jpeg)
+
+<!--
+**Zur Normierung $\frac{1}{(N-1)(N-2)}$:**
+
+$(N-1)(N-2)$ ist die maximale Anzahl geordneter Knotenpaare $(j, k)$, die den Knoten $i$ nicht enthalten: $j$ kann einer der $N-1$ anderen Knoten sein, $k$ einer der verbleibenden $N-2$ Knoten (ohne $i$ und $j$).
+
+Die rohe Summe $\sum \frac{n_{jk}(i)}{n_{jk}}$ erreicht ihr Maximum $(N-1)(N-2)$ nur dann, wenn Knoten $i$ auf *jedem* kürzesten Pfad zwischen *jedem* anderen Knotenpaar liegt. Die Division durch diesen Maximalwert ergibt einen Wert zwischen 0 und 1.
+
+Ohne Normierung würde ein Knoten in einem grossen Netzwerk allein durch die grössere Anzahl von Paaren immer höher abschneiden als ein gleich zentraler Knoten in einem kleineren Netzwerk. Der Faktor macht die Betweenness Centrality netzwerkübergreifend vergleichbar.
+-->
+
+---
+layout: two-cols
+---
+
+::left::
+
+![](/AGI_HS25_Netzwerk1/betweenness-a.jpeg)
+
+::right::
+
+![](/AGI_HS25_Netzwerk1/betweenness-b.jpeg)
+
 
 <!--
 **Betweenness Centrality**: Zuerst werden ALLE kürzesten Pfade zwischen ALLEN Knotenpaaren berechnet. Dann wird für jeden Knoten gezählt, wie viele dieser kürzesten Pfade ihn durchqueren.
@@ -539,11 +591,10 @@ layout: two-cols-header
 
 - Misst wie stark alle kürzesten Pfade von einem Knoten zu allen anderen Knoten von der Luftlinienverbindung (Euklidische Distanz) abweicht.
 - «Wie direkt (sprich geradeaus) kann ein Knoten erreicht werden?»
-
+- $d_{ij}^{Eucl}$ Euklidische Distanz zwischen Knoten $i$ und $j$, $d_{ij}$ kürzester Pfad zwischen Knoten $i$ und $j$
 $$C_i^S = \frac{1}{N-1} \sum_{j=1, j \neq i}^{N} \frac{d_{ij}^{Eucl}}{d_{ij}}$$
 
-- $d_{ij}^{Eucl}$ Euklidische Distanz zwischen Knoten *i* und *j*
-- $d_{ij}$ kürzester Pfad zwischen Knoten *i* und *j*
+
 
 ::right::
 
@@ -576,77 +627,73 @@ layout: zusammenfassung
 
 # Zusammenfassung
 
-- Zentralitätsmasse beschreiben die relative Wichtigkeit («Zentralität») eines Knotens in einem Graphen resp. Netzwerk.
-- Merken Sie sich v.a. die closeness centrality und die betweenness centrality.
-- QGIS ist *die* open source Alternative zu kommerziellen GIS-Softwaren wie ArcGIS oder ArcGIS Pro. Wer sich bereits mit ArcGIS auskennt, kommt schnell rein in die Verwendung von QGIS.
-
----
-layout: two-cols
----
-
-# Praktischer Teil
-
-- **Gruppenarbeit** Zentralitätsmasse für einen einfachen Graphen selber berechnen.
-- **Übungen mit QGIS** Zentralitätsmasse für OSM-Strassendaten von Wädenswil mit QGIS berechnen.
-
-::right::
-
-<img src="/AGI_HS25_Netzwerk1/_page_36_Picture_8.jpeg" class="h-48 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_36_Figure_9.jpeg" class="h-48 object-contain" />
+- Zentralitätsmasse beschreiben die relative Wichtigkeit ("Zentralität") eines Knotens in einem Graphen resp. Netzwerk.
+- Wichtig sind vor allem die *closeness* und die *betweenness* centrality
 
 ---
 layout: two-cols-header
 ---
 
-# Gruppenarbeit: Zentralitätsmasse berechnen
+# Gruppenarbeit: Degree Centrality berechnen
 
-Berechnet Degree, Closeness und Betweenness Centrality für den Graphen rechts.
+- Bildet Gruppen zu 3–4 Personen mit Euren Nachbarn. 
+- Berechnet *Degree Centrality* für den nachstehnden Graphen. 
+- Zähle dazu für jeden Knoten die Anzahl Kanten, die in diesem Knoten zusammenlaufen. 
 
 ::left::
 
-1. Bildet Gruppen zu 3–4 Personen mit Euren Nachbarn
-2. Tragt Eure Namen in die Liste ein
-3. Öffnet das Google Spreadsheet für Eure Gruppe (Link auf Moodle)
-
-**Ca. 50 Minuten**
+![](/AGI_HS25_Netzwerk1/mygraph.png)
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_37_Figure_10.jpeg" class="h-80 object-contain" />
-
-<!--
-Studierende berechnen Degree, Closeness und Betweenness Centrality von Hand für den Graphen mit Knoten A–H. Die Google-Sheets-Vorlage führt sie durch die Berechnung.
-
-Hilfe zur Selbsthilfe: «Big Data Analytics» by Anuradha Bhatia, https://www.youtube.com/watch?v=ptqt2zr9ZRE (hilfreich für Betweenness)
--->
+<CountdownTimer :minutes="5" />
 
 ---
-layout: exercises
+layout: two-cols-header
 ---
 
-# Berechnungsregeln
+# Gruppenarbeit: Closeness Centrality berechnen
 
-## Degree Centrality
+- Berechnet in den gleichen Gruppen die *Closeness Centrality* für den gleichen Graphen. 
+- Ihr braucht dazu Excel o.ä. Darin müsst ihr folgende Schritte ausführen
+  1. Erstellt eine Kreuzmatrix mit den Zeilen A bis H und Spalten A bis H
+  2. Berechnet die Länge der kürzesten Pfade von jedem Knoten zu jedem anderen Knoten (alle Kanten L = 1)
+  3. Berechnet die Summe dieser Längen pro Knoten
+  4. Invertiert diesen Wert ($\frac{1}{x}$)
 
-Zählt für jeden Knoten die Anzahl Kanten, die zusammenlaufen. Rangiert die Knoten nach ihrer Zentralität.
 
-## Closeness Centrality
+::left::
 
-Bestimmt die kürzesten Pfade von jedem Knoten zu allen anderen (= Anzahl Kanten). Tragt die Werte in die Distanzmatrix ein — die Tabelle berechnet den Kehrwert der Summe automatisch.
+![](/AGI_HS25_Netzwerk1/mygraph.png)
 
-## Betweenness Centrality (nur für Knoten B, C und F)
+::right::
 
-Für jedes Knotenpaar:
-- Wie viele kürzeste Pfade gibt es?
-- Wie viele davon verlaufen durch den untersuchten Knoten?
+<CountdownTimer :minutes="15" />
 
-Summiert die Verhältnisse dieser Werte auf.
 
-<!--
-Betweenness Centrality ist die aufwändigste Berechnung — deshalb nur für B, C, F. Die Formel aus der Vorlesung gilt; das Video von Bhatia zeigt die Methode anschaulich.
 
-Nach ca. 50 Minuten: Gruppen vergleichen ihre Resultate. Diskussion: Welche Knoten sind nach welcher Methode am zentralsten? Was bedeutet das für die Eignung verschiedener Masse in verschiedenen Anwendungen?
--->
+---
+layout: two-cols-header
+---
+
+# Gruppenarbeit: Betweenness Centrality berechnen
+
+- Berechnet jetzt die *Betweenness Centrality* für den gleichen Graphen <span v-mark.underline>nur für die Knoten B, C und F</span>
+- Ihr braucht dazu Excel o.ä. Darin müsst ihr folgende Schritte ausführen: Für jedes Knotenpaar:
+  1. Wie viele kürzeste Pfade gibt es? ($n_{jk}$)
+  2. Wie viele davon verlaufen durch den untersuchten Knoten? ($n_{jk}(i)$)
+  3. Berechne das Verhältnis ($\frac{n_{jk}(i)}{n_{jk}}$)
+  4. Summiert alle Verhältnisse auf (auf die Normalisierung verzichten wir)
+
+  
+
+::left::
+
+![](/AGI_HS25_Netzwerk1/mygraph.png)
+
+::right::
+
+<CountdownTimer :minutes="30" />
 
 ---
 
@@ -659,80 +706,18 @@ Nach ca. 50 Minuten: Gruppen vergleichen ihre Resultate. Diskussion: Welche Knot
 
 
 ---
-layout: two-cols-header
----
 
-# Königsberger Brücken 1736
+# R Exercises – Working Data
 
-«Gibt es einen Rundweg, bei dem man alle sieben Brücken der Stadt über den Pregel genau einmal überquert und wieder zum Ausgangspunkt gelangt?»
-
-::left::
-
-**Eulers Überlegungen:**
-1. Knoten stehen für Landregionen, Kanten für Brücken.
-2. Ausser am Start und am Ende muss ein solcher Pfad auf einer Kante in einen Knoten und auf einer Kante wieder hinausführen.
-3. Die Knotengrade der Knoten müssten alle gerade sein — sie sind aber alle ungerade.
-4. D.h. es kann keinen derartigen Pfad geben.
-
-
-::right::
-
-![](/AGI_HS25_Netzwerk1/_page_39_Picture_11.jpeg)
-
-![](/AGI_HS25_Netzwerk1/_page_39_Picture_12.jpeg)
-
-<!--
-**Eulers Lösung** (Leonhard Euler – auf der alten Schweizer 10-Franken-Note abgebildet):
-
-1. Knoten = Landregionen, Kanten = Brücken → Graph aufstellen.
-2. Ausser am Start- und Endknoten muss jeder besuchte Knoten auf einer Kante betreten und auf einer anderen verlassen werden.
-3. Daraus folgt: Alle Zwischenknoten müssen **geraden Knotengrad** haben.
-4. Im Königsberger Graphen haben aber **alle** Knoten ungeraden Grad → ein solcher Pfad ist mathematisch unmöglich.
-
-Die Studierenden sollten es in der vorherigen Aufgabe nicht geschafft haben – das ist die Pointe.
--->
-
----
-
-
-# Kurze Kontext-Aufgabe — Lösung
-
-**Welche GIS-Techniken haben die Autoren im Paper verwendet?**
-
-- Vektor zu Raster-Umwandlung (District Choroplethen-Karten zu Dichtenkarten)
-- Fokale Operation: KDE Kernel density estimation
-- Map algebra (Verrechnen von Layern):
-  *combined density = employment density + population density × LPR*
-
-::right::
----
-
-<Inhalt :active="5" />
-
----
-layout: exercises
----
-
-# R Exercises – Preparation
-
-```r
-library(sf)
-library(sfnetworks)
-library(tidygraph)
-library(ggplot2)
-library(dplyr)
-```
-
-Working data: `netzwerkanalyse.gpkg`
+`netzwerkanalyse.gpkg` contains the following layers:
 
 | Layer | Content |
 |-------|---------|
 | `osm_highway_prepared` | Street network, LV95 |
 | `Gemeinde_Waedenswil` | Municipality boundary |
-| `waedenswil_centrality` | Pre-calculated centrality values |
 
 <!--
-Kurze Einführung: Studierende haben das QMD-Dokument "Paths-and-Flows-1-Uebung.qmd" vor sich. Die Folien zeigen die Aufgaben und erwarteten Resultate; der Code ist im QMD.
+Kurze Einführung: Studierende haben das GeoPackage "netzwerkanalyse.gpkg" vor sich und arbeiten direkt in R/RStudio. Die Folien zeigen die Aufgaben, Codeausschnitte und erwarteten Resultate.
 -->
 
 ---
@@ -744,13 +729,15 @@ layout: two-cols
 Load `osm_highway_prepared` and `Gemeinde_Waedenswil`. Check the number of features and the CRS. Then map the network.
 
 ```r
-streets <- read_sf("netzwerkanalyse.gpkg",
-  layer = "osm_highway_prepared")
+library(sf)
+library(ggplot2)
+
+streets      <- read_sf("netzwerkanalyse.gpkg", layer = "osm_highway_prepared")
+municipality <- read_sf("netzwerkanalyse.gpkg", layer = "Gemeinde_Waedenswil")
 
 ggplot() +
   geom_sf(data = municipality, fill = NA) +
-  geom_sf(data = streets, color = "steelblue",
-          linewidth = 0.2) +
+  geom_sf(data = streets, color = "steelblue", linewidth = 0.2) +
   theme_void()
 ```
 
@@ -771,7 +758,12 @@ layout: exercises
 A street dataset is a collection of line segments — not yet a graph. `as_sfnetwork()` converts it:
 
 ```r
-net <- as_sfnetwork(streets, directed = FALSE)
+library(sfnetworks)
+library(tidygraph)
+
+net   <- as_sfnetwork(streets, directed = FALSE)
+nodes <- st_as_sf(net, "nodes")
+edges <- st_as_sf(net, "edges")
 net
 ```
 
@@ -821,6 +813,10 @@ Number of edges connected to a node — direct neighbours only.
 net <- net |>
   activate("nodes") |>
   mutate(degree = centrality_degree())
+nodes <- st_as_sf(net, "nodes")
+
+ggplot(nodes, aes(x = degree)) +
+  geom_histogram(binwidth = 1) + theme_minimal()
 ```
 
 Which degree is most common?
@@ -849,9 +845,13 @@ How efficiently can a node reach all others?
 ```r
 net <- net |>
   activate("nodes") |>
-  mutate(closeness = centrality_closeness(
-    weights = length
-  ))
+  mutate(closeness = centrality_closeness(weights = length))
+nodes <- st_as_sf(net, "nodes")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85") +
+  geom_sf(data = nodes, aes(color = closeness)) +
+  scale_color_viridis_c() + theme_void()
 ```
 
 ::right::
@@ -875,9 +875,13 @@ How often does a node lie on shortest paths between other nodes?
 ```r
 net <- net |>
   activate("nodes") |>
-  mutate(betweenness = centrality_betweenness(
-    weights = length
-  ))
+  mutate(betweenness = centrality_betweenness(weights = length))
+nodes <- st_as_sf(net, "nodes")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85") +
+  geom_sf(data = nodes, aes(color = betweenness)) +
+  scale_color_viridis_c() + theme_void()
 ```
 
 > ~2600 nodes — computation takes several minutes.
@@ -893,15 +897,32 @@ Typisch für Wädenswil: Hohe Betweenness entlang der Hauptstrassen und am Seeuf
 -->
 
 ---
+layout: two-cols
+---
 
 # Task 8: Compare all three measures
 
-Load `waedenswil_centrality` and map all three measures side by side.
+```r
+library(patchwork)
 
-- Which parts of the network are most central by each measure?
+p1 <- ggplot() +
+  geom_sf(data = nodes, aes(color = degree)) +
+  scale_color_viridis_c() + theme_void()
+p2 <- ggplot() +
+  geom_sf(data = nodes, aes(color = closeness)) +
+  scale_color_viridis_c() + theme_void()
+p3 <- ggplot() +
+  geom_sf(data = nodes, aes(color = betweenness)) +
+  scale_color_viridis_c() + theme_void()
+p1 + p2 + p3
+```
+
+- Which parts are most central by each measure?
 - How do the spatial patterns differ?
 
-<img src="/netzwerkanalyse-r/comparison.png" class="w-full object-contain" />
+::right::
+
+<img src="/netzwerkanalyse-r/comparison.png" class="h-full object-contain" />
 
 <!--
 Kernbotschaft: "Zentralität" ist keine eindeutige Grösse. Degree zeigt lokale Verbundenheit, Closeness globale Erreichbarkeit, Betweenness strukturelle Brückenfunktion. Je nach Anwendung (Notfallplanung, Geomarketing, Verkehrsplanung) ist ein anderes Mass relevant.

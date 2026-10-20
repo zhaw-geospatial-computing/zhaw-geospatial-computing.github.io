@@ -157,7 +157,6 @@ Source credit at the bottom of a slide, e.g. for image attributions.
 |-------|----------|---------|
 | `osm_highway` | LineString | Raw OSM street data for Wädenswil (WGS84) |
 | `osm_highway_prepared` | LineString | Cleaned/projected street network (LV95) |
-| `waedenswil_centrality` | Point | Pre-calculated centrality values: `degree`, `closeness`, `betw` |
 | `Haltestellen_waedenswil` | MultiPoint | Public transport stops |
 | `shops_waedenswil` | MultiPoint | Shops |
 | `abfallentsorgung_waedenswil` | MultiPoint | Waste disposal sites |

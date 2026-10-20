@@ -3,29 +3,18 @@
 <Inhalt :active="5" />
 
 ---
-layout: exercises
----
 
-# R Exercises – Preparation
+# R Exercises – Working Data
 
-```r
-library(sf)
-library(sfnetworks)
-library(tidygraph)
-library(ggplot2)
-library(dplyr)
-```
-
-Working data: `netzwerkanalyse.gpkg`
+`netzwerkanalyse.gpkg` contains the following layers:
 
 | Layer | Content |
 |-------|---------|
 | `osm_highway_prepared` | Street network, LV95 |
 | `Gemeinde_Waedenswil` | Municipality boundary |
-| `waedenswil_centrality` | Pre-calculated centrality values |
 
 <!--
-Kurze Einführung: Studierende haben das QMD-Dokument "Paths-and-Flows-1-Uebung.qmd" vor sich. Die Folien zeigen die Aufgaben und erwarteten Resultate; der Code ist im QMD.
+Kurze Einführung: Studierende haben das GeoPackage "netzwerkanalyse.gpkg" vor sich und arbeiten direkt in R/RStudio. Die Folien zeigen die Aufgaben, Codeausschnitte und erwarteten Resultate.
 -->
 
 ---
@@ -37,13 +26,15 @@ layout: two-cols
 Load `osm_highway_prepared` and `Gemeinde_Waedenswil`. Check the number of features and the CRS. Then map the network.
 
 ```r
-streets <- read_sf("netzwerkanalyse.gpkg",
-  layer = "osm_highway_prepared")
+library(sf)
+library(ggplot2)
+
+streets      <- read_sf("netzwerkanalyse.gpkg", layer = "osm_highway_prepared")
+municipality <- read_sf("netzwerkanalyse.gpkg", layer = "Gemeinde_Waedenswil")
 
 ggplot() +
   geom_sf(data = municipality, fill = NA) +
-  geom_sf(data = streets, color = "steelblue",
-          linewidth = 0.2) +
+  geom_sf(data = streets, color = "steelblue", linewidth = 0.2) +
   theme_void()
 ```
 
@@ -64,7 +55,12 @@ layout: exercises
 A street dataset is a collection of line segments — not yet a graph. `as_sfnetwork()` converts it:
 
 ```r
-net <- as_sfnetwork(streets, directed = FALSE)
+library(sfnetworks)
+library(tidygraph)
+
+net   <- as_sfnetwork(streets, directed = FALSE)
+nodes <- st_as_sf(net, "nodes")
+edges <- st_as_sf(net, "edges")
 net
 ```
 
@@ -114,6 +110,10 @@ Number of edges connected to a node — direct neighbours only.
 net <- net |>
   activate("nodes") |>
   mutate(degree = centrality_degree())
+nodes <- st_as_sf(net, "nodes")
+
+ggplot(nodes, aes(x = degree)) +
+  geom_histogram(binwidth = 1) + theme_minimal()
 ```
 
 Which degree is most common?
@@ -142,9 +142,13 @@ How efficiently can a node reach all others?
 ```r
 net <- net |>
   activate("nodes") |>
-  mutate(closeness = centrality_closeness(
-    weights = length
-  ))
+  mutate(closeness = centrality_closeness(weights = length))
+nodes <- st_as_sf(net, "nodes")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85") +
+  geom_sf(data = nodes, aes(color = closeness)) +
+  scale_color_viridis_c() + theme_void()
 ```
 
 ::right::
@@ -168,9 +172,13 @@ How often does a node lie on shortest paths between other nodes?
 ```r
 net <- net |>
   activate("nodes") |>
-  mutate(betweenness = centrality_betweenness(
-    weights = length
-  ))
+  mutate(betweenness = centrality_betweenness(weights = length))
+nodes <- st_as_sf(net, "nodes")
+
+ggplot() +
+  geom_sf(data = edges, color = "gray85") +
+  geom_sf(data = nodes, aes(color = betweenness)) +
+  scale_color_viridis_c() + theme_void()
 ```
 
 > ~2600 nodes — computation takes several minutes.
@@ -186,15 +194,32 @@ Typisch für Wädenswil: Hohe Betweenness entlang der Hauptstrassen und am Seeuf
 -->
 
 ---
+layout: two-cols
+---
 
 # Task 8: Compare all three measures
 
-Load `waedenswil_centrality` and map all three measures side by side.
+```r
+library(patchwork)
 
-- Which parts of the network are most central by each measure?
+p1 <- ggplot() +
+  geom_sf(data = nodes, aes(color = degree)) +
+  scale_color_viridis_c() + theme_void()
+p2 <- ggplot() +
+  geom_sf(data = nodes, aes(color = closeness)) +
+  scale_color_viridis_c() + theme_void()
+p3 <- ggplot() +
+  geom_sf(data = nodes, aes(color = betweenness)) +
+  scale_color_viridis_c() + theme_void()
+p1 + p2 + p3
+```
+
+- Which parts are most central by each measure?
 - How do the spatial patterns differ?
 
-<img src="/netzwerkanalyse-r/comparison.png" class="w-full object-contain" />
+::right::
+
+<img src="/netzwerkanalyse-r/comparison.png" class="h-full object-contain" />
 
 <!--
 Kernbotschaft: "Zentralität" ist keine eindeutige Grösse. Degree zeigt lokale Verbundenheit, Closeness globale Erreichbarkeit, Betweenness strukturelle Brückenfunktion. Je nach Anwendung (Notfallplanung, Geomarketing, Verkehrsplanung) ist ein anderes Mass relevant.
