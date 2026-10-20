@@ -4,56 +4,52 @@ title: Path and Flows 1
 favicon: /favicon.png
 transition: none
 layout: zhaw-cover
-subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik
+subtitle: BSc Environmental Engineering · Applied Geoinformatics
 authors: Nils Ratnaweera
 email: rata@zhaw.ch
 heading: Path and Flows 1
 sections:
-  - Einleitender Rundgang – Netzwerke in der Geoinformatik
-  - Graphentheorie 1.0 für die Netzwerkanalyse
-  - Zentralitätsmasse
-  - Gruppenübung
-  - R-Übungen
+  - Introductory Tour – Networks in Geoinformatics
+  - Graph Theory 1.0 for Network Analysis
+  - Centrality Measures
+  - Group Exercise
+  - R Exercises
 ---
 
 <!-- title slide: content is defined in frontmatter -->
 
 <!--
-Begrüssung. Dieser Block begleitet die Studierenden über drei Wochen in die Netzwerkanalyse als weiteren Anwendungsbereich der Geoinformatik.
-
-**Flipped Classroom**: Die Studierenden sollten die Leseaufgaben vorgängig erledigt haben – die Lehrveranstaltung funktioniert nur mit vorgängiger Lektüre. Darauf explizit hinweisen.
-
-**Struktur heute**: Theory Recap (Screencast), dann Frage-Antwort-Session, Gruppenarbeit (Zentralitätsmasse selber berechnen) und QGIS-Übungen.
+Welcome. This module accompanies students over three weeks into network analysis as a further application area of geoinformatics.\n\n**Flipped Classroom**: Students should have completed the reading assignments beforehand – the course only works with prior reading. Point this out explicitly.\n\n**Today's structure**: Theory recap (screencast), then Q&A session, group work (calculating centrality measures themselves) and QGIS exercises.
 -->
 
 ---
 layout: lernziele
 ---
 
-# Lernziele
+# Learning Objectives
 
-- Sie kennen 3-4 **Anwendungsbereiche** von Netzwerk-Geodaten und können dabei in eigenen Worten erklären, welchen Nutzen die Verwendung von Netzwerkdaten in besagten Anwendungen haben.
-- Sie sind in der Lage einfache **Graphen** mit gegebenen Eigenschaften selber zu skizzieren.
-- Sie sind in der Lage drei verschieden **Zentralitätsmasse** von Netzwerken/Graphen in eigenen Worten zu erklären und für einfache Graphen zu berechnen.
-- Sie können einfache Vektordaten in QGIS **laden** und **editieren**
-- Sie können einfache **Berechnungen** von Zentralitätsmassen in QGIS ausführen.
+- You can name 3–4 **application areas** of network geodata and explain in your own words what benefit the use of network data provides in those applications.
+- You are able to sketch simple **graphs** with given properties.
+- You are able to explain three different **centrality measures** of networks/graphs in your own words and calculate them for simple graphs.
+- You can **load** and **edit** simple vector data in R.
+- You can perform simple **calculations** of centrality measures in R.
 
 <!--
-Fünf Lernziele kurz durchgehen, nicht im Detail erklären – sie dienen als Orientierungsrahmen für die Studierenden.
+Five learning objectives — go through briefly, don't explain in detail – they serve as an orientation framework for students.
 -->
 
 ---
 
-# Zeitplan heute
+# Today's Schedule
 
-| Zeitplan | Was | Form |
-|----------|-----|------|
-| 13:00 – 13:45 | **Theorie** Graphentheorie und Zentralität | Theorie-Recap |
-| 14:00 – 15:00 | **Gruppenarbeit** Zentralitätsmasse selber berechnen | Gruppenarbeit in 3er/4er Gruppen |
-| 15:10 – 16:35 | **QGIS-Übung** Zentralitätsmasse mit QGIS berechnen für Wädenswil | Übungen, betreute Einzelarbeit |
+| Time | What | Format |
+|------|------|--------|
+| 08:00 – 08:45 | **Theory** Graph theory and centrality | Theory recap |
+| 09:00 – 10:00 | **Group work** Calculate centrality measures yourselves | Group work in groups of 3–4 |
+| 10:10 – 11:35 | **QGIS exercise** Calculate centrality measures with QGIS for Wädenswil | Exercises, supervised individual work |
 
 <!--
-**Ablauf**: Zuerst Theory Recap (Screencast oder hier präsentiert), dann kurze Frage-Antwort-Session und Einleitung in die Übungen. Anschliessend Gruppenarbeit in 3er-/4er-Gruppen, zum Schluss betreute Einzelarbeit an QGIS-Übungen.
+**Schedule**: First theory recap (screencast or presented here), then short Q&A and introduction to the exercises. Then group work in groups of 3–4, finally supervised individual work on QGIS exercises.
 -->
 
 ---
@@ -66,60 +62,57 @@ Fünf Lernziele kurz durchgehen, nicht im Detail erklären – sie dienen als Or
 layout: three-cols-header
 ---
 
-# Netzwerke
+# Networks
 
-Topologie im GIS basic Kurs
+Topology in the basic GIS course
 
 ::left::
 
-ÖV-Karten (GIS BSc)
+Public transport maps (GIS BSc)
 
 ![](/AGI_HS25_Netzwerk1/zvv.jpg)
 
 ::center::
 
-
-Pfadberechnungen (GIS BSc)
+Route calculations (GIS BSc)
 
 ![](/AGI_HS25_Netzwerk1/google-maps.png)
 
 ::right::
 
-Gewässernetze (GIS BSc)
+River networks (GIS BSc)
 
 ![](/AGI_HS25_Netzwerk1/river-network.png)
 
 <!--
-Netzwerken sind die Studierenden bereits begegnet – im GIS-Basiskurs (4./5. Semester) bei topologischen Räumen.
+Students have already encountered networks – in the basic GIS course (4th/5th semester) in the context of topological spaces.
 
-- **ÖV-Karten**: Liniennetzpläne = topologische Räume – Verbindungen zwischen Haltestellen zählen, nicht geografische Distanz.
-- **Pfadberechnungen**: Kürzester Weg von A nach B (z.B. Google Maps) – wird in der nächsten Woche vertieft.
-- **Gewässernetze**: Abflussmodellierung – wie fliesst Wasser durch ein Netzwerk aus Flüssen und Seen? Dazu braucht man ein Netz aus Knoten und Kanten.
+- **Public transport maps**: Route network diagrams = topological spaces – connections between stops matter, not geographic distance.
+- **Route calculations**: Shortest path from A to B (e.g. Google Maps) – covered in more depth next week.
+- **River networks**: Runoff modelling – how does water flow through a network of rivers and lakes? This requires a network of nodes and edges.
 -->
 
 ---
 
-# Routensuche: Fahrplanabfrage SBB
+# Route Search: SBB Timetable Query
 
 ![](/AGI_HS25_Netzwerk1/_page_6_Figure_5.jpeg)
 
 <!--
-Die SBB-Fahrplanabfrage ist ein klassisches Beispiel für Netzwerkanalyse im ÖV. Die Verbindungen werden als Graph modelliert, der kürzeste (schnellste) Pfad durch das Netz berechnet.
+The SBB timetable query is a classic example of network analysis in public transport. Connections are modelled as a graph, and the shortest (fastest) path through the network is calculated.
 -->
 
 ---
 layout: three-cols-header
 ---
 
-# Netzwerke
+# Networks
 
-Vehicle Routing, z.B Uber, notime delivery oder Dispatching Schutz & Rettung
+Vehicle Routing, e.g. Uber, notime delivery or dispatching emergency services
 
 ::left::
 
 ![](/AGI_HS25_Netzwerk1/_page_7_Picture_9.jpeg)
-
-
 
 ::center::
 
@@ -130,22 +123,22 @@ Vehicle Routing, z.B Uber, notime delivery oder Dispatching Schutz & Rettung
 ![](/AGI_HS25_Netzwerk1/_page_7_Picture_11.jpeg)
 
 
-<SlideFooter>Quellen: stadt-zuerich.ch, uber.com, notime.ch</SlideFooter>
+<SlideFooter>Sources: stadt-zuerich.ch, uber.com, notime.ch</SlideFooter>
 
 <!--
-Zwei weitere Anwendungsbereiche von Netzwerkanalyse im Alltag:
+Two further application areas of network analysis in everyday life:
 
-- **Uber/notime**: Wenn man ein Fahrzeug anfordert, berechnet die App, welches Fahrzeug am schnellsten vor Ort sein kann – unter Berücksichtigung von Einbahnstrassen, Höchstgeschwindigkeiten und aktueller Verkehrslage.
-- **Dispatching Schutz & Rettung**: In der Einsatzzentrale werden Ambulanzen und Notärzte möglichst schnell zu Unfallstellen geschickt. Auch das läuft über Netzwerkanalysen auf einem Strassengraphen.
+- **Uber/notime**: When requesting a vehicle, the app calculates which vehicle can arrive fastest – taking into account one-way streets, speed limits, and current traffic conditions.
+- **Emergency services dispatching**: Ambulances and emergency doctors are sent to accident sites as quickly as possible. This too runs on network analyses on a road graph.
 -->
 
 ---
 layout: three-cols-header
 ---
 
-# Netzwerke
+# Networks
 
-Einzugsgebiete und nächste Einrichtung
+Catchment areas and nearest facility
 
 ::left::
 
@@ -155,43 +148,43 @@ Walkalytics
 
 ::center::
 
-Reisezeiten (Netzwerkanalyse 3)
+Travel times (Network Analysis 3)
 
 ![](/AGI_HS25_Netzwerk1/_page_8_Picture_10.jpeg)
 
 ::right::
 
-Geomarketing und Immobilien-Bewertung
+Geomarketing and real estate valuation
 
 ![](/AGI_HS25_Netzwerk1/_page_8_Figure_11.jpeg)
 
 <!--
-Drei weitere Anwendungen von Einzugsgebiets-Analysen über Netzwerke:
+Three further applications of catchment area analyses using networks:
 
-- **Walkalytics** (live demo möglich): Tool berechnet, wie weit man in z.B. 15 Minuten zu Fuss von einem Startpunkt kommt. Wichtig: Die Zonen erstrecken sich entlang von Verkehrsachsen weiter aus, weil man dort schneller vorankommt.
-- **Reisezeiten per ÖV**: Einzugsgebiet einer Stadt in 20/40/60 Minuten – räumlich sehr heterogen je nach ÖV-Erschliessung.
-- **Geomarketing**: Wie viele Einwohner können eine neue Filiale innerhalb von 5–10 Minuten zu Fuss erreichen? Standortplanung für Grossverteiler und andere Firmen.
+- **Walkalytics** (live demo possible): Tool calculates how far you can walk in e.g. 15 minutes from a starting point. Key point: the zones extend further along transport axes because you can move faster there.
+- **Travel times by public transport**: Catchment area of a city in 20/40/60 minutes – spatially very heterogeneous depending on public transport coverage.
+- **Geomarketing**: How many residents can reach a new branch within 5–10 minutes on foot? Site planning for large retailers and other companies.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Netzwerk-Informations-Systeme (NIS)
+# Network Information Systems (NIS)
 
-- Versorgungsnetzwerke für Strom
-- Z.B. Firma NIS.ch
+- Utility networks for electricity
+- e.g. company NIS.ch
   - Smallworld GIS, GE Grid Solutions
-  - Applikationen für Netzinformationssysteme
+  - Applications for network information systems
 
 ::right::
 
 <img src="/AGI_HS25_Netzwerk1/_page_9_Figure_9.jpeg" class="w-full object-contain" />
 
-<SlideFooter>Quelle: nis.ch</SlideFooter>
+<SlideFooter>Source: nis.ch</SlideFooter>
 
 <!--
-NIS = Netzwerk-Informations-Systeme: Werden für Versorgungsinfrastrukturen eingesetzt, z.B. Stromnetze. Die Firma NIS.ch entwickelt auf Basis von Smallworld GIS (GE Grid Solutions) Applikationen zur Verwaltung und Analyse solcher Netze. Ein weiterer Bereich, wo Netzwerktopologie und GIS eng verknüpft sind.
+NIS = Network Information Systems: Used for utility infrastructure, e.g. electricity grids. The company NIS.ch develops applications for managing and analysing such networks based on Smallworld GIS (GE Grid Solutions). A further area where network topology and GIS are closely linked.
 -->
 
 ---
@@ -206,114 +199,111 @@ backgroundSize: contain
 
 ---
 
-# Graphen
+# Graphs
 
-- Graphentheorie: math. Grundlage von Netzwerken
-- Ein Graph wird gebildet aus einer Menge (*engl.* set) von **Kanten** (*engl.* edges) und einer Menge von **Knoten** (*engl.* nodes) → Rückblick auf BSc GIS Topologie
-- Grundlegende Probleme
-  - Grade von Knoten
-  - Nachbarschaft von Knoten und Kanten
-  - Pfade durch Graphen
-  - Zentralitätsmasse
-
-<!-- check with slide 13 -->
+- Graph theory: mathematical foundation of networks
+- A graph is formed from a set of **edges** and a set of **nodes** → recap of BSc GIS topology
+- Fundamental problems
+  - Node degrees
+  - Neighbourhood of nodes and edges
+  - Paths through graphs
+  - Centrality measures
 
 <!--
-Die Graphentheorie ist die mathematische Grundlage der Netzwerkanalyse. Die Begriffe Knoten (nodes) und Kanten (edges/arcs) haben die Studierenden schon im GIS-Basiskurs kennengelernt – «Arc» in ArcGIS bezieht sich genau auf diese Kante. Jetzt werden ein paar weitere Konzepte ergänzt: Grade von Knoten, Nachbarschaft, Pfade und Zentralitätsmasse.
+Graph theory is the mathematical foundation of network analysis. Students have already encountered the terms nodes and edges in the basic GIS course – "Arc" in ArcGIS refers precisely to this edge. A few further concepts are now added: node degrees, neighbourhood, paths and centrality measures.
 -->
 
 ---
 class: text-sm
 ---
 
-# Graphen-Typen
+# Graph Types
 
-| | Typ | Beschreibung | Anwendung |
-|:---:|-----|-------------|-----------|
-| <img src="/graph-types/zyklisch.png" class="h-14 object-contain" /> | zyklisch | Zyklus ist ein Pfad, bei dem erster und letzter Knoten identisch sind | Verkehrsnetze |
-| <img src="/graph-types/gerichtet.png" class="h-14 object-contain" /> | gerichtet | Kanten sind gerichtet, können nur in einer Richtung durchquert werden | Strassennetz mit Einbahnstrassen |
-| <img src="/graph-types/gewichtet.png" class="h-14 object-contain" /> | gewichtet | Kanten oder Knoten haben Gewichte resp. Durchquerungs-Kosten | Höchstgeschwindigkeiten pro Kante, Maut pro Kante, Höhenmeter |
-| <img src="/graph-types/planar.png" class="h-14 object-contain" /> | planar | Graphen, die auf einer Ebene abgebildet werden können, ohne dass ihre Kanten sich schneiden | Im planaren Strassennetz kreuzen alle Kanten in Knoten |
-| <img src="/graph-types/hierarchisch.png" class="h-14 object-contain" /> | hierarchisch | Ein Graph ohne Zyklen | Baumstrukturen zur Indizierung von Geodaten (quadtree, R-tree) |
+| | Type | Description | Application |
+|:---:|------|-------------|-------------|
+| <img src="/graph-types/zyklisch.png" class="h-14 object-contain" /> | cyclic | A cycle is a path where the first and last node are identical | Transport networks |
+| <img src="/graph-types/gerichtet.png" class="h-14 object-contain" /> | directed | Edges are directed, can only be traversed in one direction | Road network with one-way streets |
+| <img src="/graph-types/gewichtet.png" class="h-14 object-contain" /> | weighted | Edges or nodes have weights / traversal costs | Speed limits per edge, toll per edge, elevation |
+| <img src="/graph-types/planar.png" class="h-14 object-contain" /> | planar | Graphs that can be drawn on a plane without edges crossing | In a planar road network all edges meet at nodes |
+| <img src="/graph-types/hierarchisch.png" class="h-14 object-contain" /> | hierarchical | A graph without cycles | Tree structures for indexing geodata (quadtree, R-tree) |
 
-<SlideFooter>Quelle: gitta.info</SlideFooter>
+<SlideFooter>Source: gitta.info</SlideFooter>
 
 <!--
-Fünf Graphen-Typen kurz erklären:
+Five graph types briefly explained:
 
-- **Zyklisch**: Zyklus = Pfad, bei dem erster und letzter Knoten identisch sind (geschlossener Kreis). Typisch in Verkehrsnetzen.
-- **Gerichtet**: Kanten haben eine Richtung (Pfeil). Können nur in einer Richtung durchquert werden. Anwendung: Einbahnstrassen. Eine gerichtete Kante hat auch eine linke und rechte Seite.
-- **Gewichtet**: Kanten (oder Knoten) haben Gewichte (dargestellt z.B. durch Strichdicke). Können Personenflows, Geschwindigkeiten, Kosten oder Maut darstellen.
-- **Planar**: Kann auf einer Ebene abgebildet werden, ohne dass Kanten sich kreuzen. Im planaren Strassennetz kreuzen sich Kanten nur in Knoten. Nicht-planar: Brücke über eine Strasse (Kante kreuzt ohne Knoten). Denkaufgabe: Welcher der abgebildeten Graphen ist planar, welcher nicht?
-- **Hierarchisch** (Bäume): Graph ohne Zyklen. Baumstrukturen werden zur Indizierung von Geodaten verwendet (Quadtree, R-Tree – aus dem Datenbankmodul bekannt).
+- **Cyclic**: A cycle = path where first and last node are identical (closed loop). Typical in transport networks.
+- **Directed**: Edges have a direction (arrow). Can only be traversed in one direction. Application: one-way streets. A directed edge also has a left and right side.
+- **Weighted**: Edges (or nodes) have weights (represented e.g. by line thickness). Can represent person flows, speeds, costs or tolls.
+- **Planar**: Can be drawn on a plane without edges crossing. In a planar road network edges only cross at nodes. Non-planar: a bridge over a road (edge crosses without a node). Think question: which of the shown graphs is planar, which is not?
+- **Hierarchical** (trees): Graph without cycles. Tree structures are used for indexing geodata (Quadtree, R-Tree – familiar from the database module).
 -->
 
 ---
 layout: two-cols
 ---
 
-# Knotengrade
+# Node Degrees
 
-**im ungerichteten Graph**
+**in the undirected graph**
 
-- Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
-- Loops (wie in B) werden **2 mal** gezählt.
+- Node degree: number of edges meeting at a node
+- Loops (as in B) are counted **twice**.
 
 ::right::
 
 <img src="/graph-types/knotengrad-ungerichtet.png" class="h-80 object-contain" />
 
-<SlideFooter>Quelle: Lipschutz & Lipson (1997)</SlideFooter>
+<SlideFooter>Source: Lipschutz & Lipson (1997)</SlideFooter>
 
 <!--
-Knotengrad = Anzahl Kanten am Knoten. Loops zählen doppelt.
-Beispielwerte: A = 3, D = 3, C = 2, B = 6 (höchster Grad).
+Node degree = number of edges at a node. Loops count double.
+Example values: A = 3, D = 3, C = 2, B = 6 (highest degree).
 -->
 
 ---
 layout: two-cols
 ---
 
-# Knotengrade
+# Node Degrees
 
-**im gerichteten Graph**
+**in the directed graph**
 
-- **indegree**: Anzahl gerichteter Kanten, die im Knoten enden
-- **outdegree**: Anzahl gerichteter Kanten, die am Knoten starten
+- **indegree**: number of directed edges ending at the node
+- **outdegree**: number of directed edges starting at the node
 - $\sum$ indegree = $\sum$ outdegree = 7
-- Quellen und Senken
-  - **Quelle** (source): Knoten mit indegree = 0
-  - **Senke** (sink): Knoten mit outdegree = 0
-  - C ist eine Senke, Quellen hat es keine
+- Sources and sinks
+  - **Source**: node with indegree = 0
+  - **Sink**: node with outdegree = 0
+  - C is a sink, there are no sources
 
 ::right::
 
 <img src="/graph-types/knotengrad-gerichtet.png" class="h-80 object-contain" />
 
-<SlideFooter>Quelle: Lipschutz & Lipson (1997)</SlideFooter>
+<SlideFooter>Source: Lipschutz & Lipson (1997)</SlideFooter>
 
 <!--
-In-Degree: Kanten, die reinkommen. Out-Degree: Kanten, die rausgehen.
+In-degree: incoming edges. Out-degree: outgoing edges.
 - A: indegree = 2, outdegree = 1
 - D: indegree = 1, outdegree = 2
-- C: indegree = 2, outdegree = 0 → Senke (sink)
-- B: indegree = 2, outdegree = 4 ← Studierende sollen B selber berechnen
+- C: indegree = 2, outdegree = 0 → sink
+- B: indegree = 2, outdegree = 4 ← students should calculate B themselves
 
-Wichtige Regel: ∑ indegree = ∑ outdegree. Probe: 2+2+2+1 = 7, 1+4+0+2 = 7 ✓
+Important rule: ∑ indegree = ∑ outdegree. Check: 2+2+2+1 = 7, 1+4+0+2 = 7 ✓
 -->
-
 
 ---
 {}
 ---
 
-# Adjazenzmatrix
+# Adjacency Matrix
 
-Die Adjazenzmatrix zeigt, welche Knoten in einem Graphen benachbart sind.
+The adjacency matrix shows which nodes in a graph are adjacent.
 
-- **1** = Kante vorhanden (z.B. von *a* nach *b*)
-- **0** = keine Kante (z.B. *a* nach *d*)
-- Diagonale (grün): Knoten mit sich selbst
+- **1** = edge present (e.g. from *a* to *b*)
+- **0** = no edge (e.g. *a* to *d*)
+- Diagonal (green): node with itself
 
 <div class="flex gap-2 items-center justify-center mt-4">
   <img src="/graph-types/adjazenz-graph.png" class="h-48 object-contain" />
@@ -321,22 +311,21 @@ Die Adjazenzmatrix zeigt, welche Knoten in einem Graphen benachbart sind.
 </div>
 
 <!--
-Die **Adjazenzmatrix** gibt an, welche Knoten verbunden sind:
-- 1 = Kante vorhanden, 0 = keine Kante
-- Beispiel: a→b: 1, a→c: 1, a→d: 0, a→e: 0
-- Die Matrix ist symmetrisch (ungerichteter Graph): M[i,j] = M[j,i]
+The **adjacency matrix** indicates which nodes are connected:
+- 1 = edge present, 0 = no edge
+- Example: a→b: 1, a→c: 1, a→d: 0, a→e: 0
+- The matrix is symmetric (undirected graph): M[i,j] = M[j,i]
 -->
 
 ---
 
+# Adjacency Matrix (weighted)
 
-# Adjazenzmatrix (gewichtet)
+Edges can also carry **weights** (costs, times, capacities).
 
-Kanten können auch **Gewichte** tragen (Kosten, Zeiten, Kapazitäten).
-
-- Statt 0/1 stehen die Gewichte in der Matrix.
-- **Symmetrisch**: von *a* nach *b* = von *b* nach *a*
-- **Asymmetrisch**: z.B. Einbahnstrassen oder unterschiedliche Reisezeiten je Richtung
+- Instead of 0/1, the weights appear in the matrix.
+- **Symmetric**: from *a* to *b* = from *b* to *a*
+- **Asymmetric**: e.g. one-way streets or different travel times per direction
 
 
 <div class="flex gap-2 items-center justify-center h-full">
@@ -345,19 +334,19 @@ Kanten können auch **Gewichte** tragen (Kosten, Zeiten, Kapazitäten).
 </div>
 
 <!--
-**Gewichtete Adjazenzmatrix**: Statt 0/1 stehen die Kantengewichte in der Matrix.
-- Diagonale = 0 (keine Selbst-Verbindungen im gewichteten Graph)
-- Symmetrisch bei ungerichtetem Graph: M[i,j] = M[j,i]
-- Asymmetrisch bei gerichtetem Graph: Hin- und Rückweg können unterschiedliche Kosten haben
+**Weighted adjacency matrix**: Instead of 0/1, edge weights appear in the matrix.
+- Diagonal = 0 (no self-connections in the weighted graph)
+- Symmetric for undirected graph: M[i,j] = M[j,i]
+- Asymmetric for directed graph: outward and return journeys can have different costs
 -->
 
 ---
 {}
 ---
 
-# Pfade durch Graphen
+# Paths through Graphs
 
-- Reisezeiten können auch über die direkte Nachbarschaft hinaus in einer Matrix angegeben werden.
+- Travel times can also be given in a matrix beyond direct neighbours.
 - Picton → Dunedin: 5.00 + 2.10 + 2.50 = **10.0**
 
 
@@ -366,27 +355,27 @@ Kanten können auch **Gewichte** tragen (Kosten, Zeiten, Kapazitäten).
   <img src="/nztraveltimes.jpg" class="h-80 object-contain" />
 </div>
 
-<SlideFooter>Quelle: kiwiway.com</SlideFooter>
+<SlideFooter>Source: kiwiway.com</SlideFooter>
 
 <!--
-Neuseeland als anschauliches Beispiel: Das Strassennetz ist einfach aufgebaut, aber die Strassen sind sehr kurvig – die Reisezeiten sind daher viel länger als die Luftlinie vermuten lässt. Deshalb gibt es dort gedruckte Reisezeitmatrizen.
+New Zealand as an illustrative example: the road network is simple in structure, but the roads are very winding – travel times are therefore much longer than the straight-line distance suggests. That is why printed travel time matrices exist there.
 
-**Beispielrechnung**: Picton → Dunedin über drei Kanten:
+**Example calculation**: Picton → Dunedin via three edges:
 - Picton → Christchurch: 5:00 h
 - Christchurch → Timaru: 2:10 h
 - Timaru → Dunedin: 2:50 h
 - **Total: 10:00 h**
 
-Diese Art von Reisezeitmatrix kennen die Studierenden vielleicht von Strassenkarten – jetzt sehen sie, wie sie durch Aufsummieren von Kanten entsteht.
+Students may be familiar with this type of travel time matrix from road maps – now they see how it is built up by summing edges.
 -->
 
 ---
 
-# Königsberger Brücken 1736
+# Königsberg Bridges 1736
 
-**Aufgabe (3:00)**
+**Task (3:00)**
 
-*Gibt es einen Runweg, bei dem man alle Sieben Brücken der Stadt genau einmal überquert und man wieder zum Ausgangspunkt gelangt?*
+*Is there a route in which all seven bridges of the city are crossed exactly once and you return to the starting point?*
 
 <div class="flex gap-2 items-start justify-center h-full">
   <img src="/Bridges_of_Konigsberg.png" class="h-80 object-contain" />
@@ -394,44 +383,38 @@ Diese Art von Reisezeitmatrix kennen die Studierenden vielleicht von Strassenkar
 </div>
 
 <!--
-**Königsberger Brücken** (1736): Euler hat sich gefragt, ob man einen Pfad durch die Stadt Königsberg zeichnen kann, bei dem alle sieben Brücken GENAU EINMAL überquert werden. Denkt: Das-ist-das-haus-vom-Nikolaus
+**Königsberg Bridges** (1736): Euler asked whether one could draw a path through the city of Königsberg in which all seven bridges are crossed EXACTLY ONCE. Think: the-house-that-Jack-built.
 
-Landregionen = Knoten, Brücken = Kanten. Studierende haben ~3 Minuten Zeit, es selber auszuprobieren.
+Land regions = nodes, bridges = edges. Students have ~3 minutes to try it themselves.
 
-**Spoiler (erst auf der nächsten Folie zeigen)**: Es ist unmöglich – weil alle Knotengrade ungerade sind.
+**Spoiler (only show on the next slide)**: It is impossible – because all node degrees are odd.
 -->
-
 
 ---
 
-# Königsberger Brücken 1736
+# Königsberg Bridges 1736
 
-1. Knoten stehen für Landregionen, Kanton für Brücken
-2. Ausser am Start und am Ende muss ein solcher Pfad auf einer Kante in einen Knoten und auf einer Kante wieder hinausführen
-3. Sprich: Die Knotengrade der Knoten müsste überall  *gerade* sein
-4. Sie sind aber ungerade, es kann also kein derartigen Pfad geben
+1. Nodes represent land regions, edges represent bridges
+2. Except at the start and end, such a path must enter a node on one edge and leave it on another
+3. That means: the node degrees would need to be *even* everywhere
+4. They are odd, so no such path can exist
 
 
 <img src="/koenigsberg.jpg" class="h-80 object-contain" />
-
-
-
-
-
 
 ---
 layout: zusammenfassung
 ---
 
-# Zusammenfassung
+# Summary
 
-- Netzwerkdaten werden in GIS verwendet zur Modellierung von Nachbarschaft, Konnektivität und Zentralität.
-- Anwendungsbereiche reichen von der Analyse von Verkehrsnetzen, über die Gewässerkunde bis hin zum Geomarketing.
-- Die Grundlagen der Netzwerkanalyse beruhen auf der mathematischen Disziplin der Graphentheorie.
-- Graphen bestehen aus Knoten und den sie verbindenden Kanten.
+- Network data is used in GIS to model neighbourhood, connectivity and centrality.
+- Application areas range from the analysis of transport networks to hydrology and geomarketing.
+- The foundations of network analysis are based on the mathematical discipline of graph theory.
+- Graphs consist of nodes and the edges connecting them.
 
 <!--
-Ende des ersten Teils (Screencasts 1). Kurze Zusammenfassung der wichtigsten Punkte bevor Übergang zu Zentralitätsmassen.
+End of part one (Screencast 1). Brief summary of the key points before transitioning to centrality measures.
 -->
 
 ---
@@ -443,24 +426,25 @@ layout: image
 image: /AGI_HS25_Netzwerk1/_page_21_Picture_0.jpeg
 ---
 
-<!-- Einstieg mit einem Alltagsbeispiel: Der Platz «Das Zentral» in Zürich heisst nicht zufällig so – er ist tatsächlich sehr zentral. Aber kann man das mathematisch berechnen? Ja – genau das machen Zentralitätsmasse. -->
-
+<!--
+Opening with an everyday example: the square «Das Zentral» in Zurich is not named that by coincidence – it really is very central. But can that be calculated mathematically? Yes – that is exactly what centrality measures do.
+-->
 
 ---
 layout: two-cols-header
 ---
 
-# Zentralitätsmasse
+# Centrality Measures
 
-Masse zur Beschreibung der relativen Wichtigkeit («Zentralität») eines Knotens in einem Graphen resp. Netzwerk.
+Measures describing the relative importance ("centrality") of a node in a graph or network.
 
 ::left::
 
-- **Anwendungen**
-  - Verkehrsknoten
-  - Soziale Netzwerke ([influencer](https://likeometer.co/weltweit/alle/)...)
+- **Applications**
+  - Transport hubs
+  - Social networks ([influencer](https://likeometer.co/weltweit/alle/)...)
 
-- **Wir betrachten vier Zentralitätsmasse**
+- **We examine four centrality measures**
   - Degree Centrality
   - Closeness Centrality
   - Betweenness Centrality
@@ -471,19 +455,18 @@ Masse zur Beschreibung der relativen Wichtigkeit («Zentralität») eines Knoten
 ![](/AGI_HS25_Netzwerk1/_page_22_Picture_15.jpeg)
 
 <!--
+Second motivational example: **influencers in social networks** – influencers are people connected to very many others. In Switzerland there is the "Leikometer" as a ranking. Depending on the centrality measure used, you get different results.
 
-Zweites Motivationsbeispiel: **Influencer in sozialen Netzwerken** – Influencer sind Personen, die mit sehr vielen anderen verbunden sind. In der Schweiz gibt es den «Leikometer» als Ranking. Je nach verwendetem Zentralitätsmass kommt man zu unterschiedlichen Ergebnissen.
-
-**Vier Masse** werden besprochen: Degree, Closeness, Betweenness, Straightness Centrality. Alle vier werden auch im Paper von Wang et al. (2011) verwendet.
+**Four measures** are discussed: Degree, Closeness, Betweenness, Straightness Centrality. All four are also used in the paper by Wang et al. (2011).
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Zentralitätsmasse: Degree centrality
+# Centrality Measures: Degree Centrality
 
-Entspricht dem Knotengrad im ungerichteten Graphen, d.h. der Anzahl Kanten, die am Knoten zusammenlaufen.
+Corresponds to the node degree in the undirected graph, i.e. the number of edges meeting at a node.
 
 ::left::
 
@@ -494,21 +477,21 @@ Entspricht dem Knotengrad im ungerichteten Graphen, d.h. der Anzahl Kanten, die 
 ![](/AGI_HS25_Netzwerk1/_page_23_Picture_7.jpeg)
 
 <!--
-**Degree Centrality** ist das einfachste Mass – es entspricht direkt dem Knotengrad (Anzahl Kanten).
+**Degree Centrality** is the simplest measure – it corresponds directly to the node degree (number of edges).
 
-Beispielwerte aus dem vorherigen Graphen: B (Grad 6, höchste Zentralität) > A und D (je 3) > C (2, tiefste Zentralität).
+Example values from the previous graph: B (degree 6, highest centrality) > A and D (3 each) > C (2, lowest centrality).
 
-Im Netzwerk-Visualisierungsbeispiel: Das dichte Netzwerk unten hat viele Knoten mit hohem Grad – hohe Degree Centrality. An der Peripherie ist sie deutlich tiefer.
+In the network visualisation example: the dense network at the bottom has many nodes with high degree – high degree centrality. At the periphery it is significantly lower.
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Zentralitätsmasse: Closeness centrality
+# Centrality Measures: Closeness Centrality
 
-Misst wie nahe ein Knoten an allen anderen Knoten im Netzwerk liegt, entlang der kürzesten Pfade durch das Netzwerk.
-$N$ Anzahl Knoten im Netzwerk,  $d_{ij}$ Distanz des kürzesten Pfads zwischen Knoten $i$ und $j$
+Measures how close a node is to all other nodes in the network, along the shortest paths through the network.
+$N$ number of nodes in the network, $d_{ij}$ distance of the shortest path between nodes $i$ and $j$
 
 $$C_{i}^{C} = \frac{N-1}{\sum_{j=1: j \neq i}^{N} d_{ij}}$$
 
@@ -522,23 +505,21 @@ $$C_{i}^{C} = \frac{N-1}{\sum_{j=1: j \neq i}^{N} d_{ij}}$$
 
 ![](/AGI_HS25_Netzwerk1/closeness-b.jpeg)
 
-
-
 <!--
-**Closeness Centrality** schaut nicht nur auf direkte Nachbarn, sondern berechnet für jeden Knoten die Summe aller kürzesten Pfade zu allen anderen Knoten im Netzwerk. Je kleiner die Summe, desto zentraler.
+**Closeness Centrality** looks not only at direct neighbours, but calculates for each node the sum of all shortest paths to all other nodes in the network. The smaller the sum, the more central.
 
-Das Beispiel zeigt eine amerikanische Stadt (LA?): Der CBD (Central Business District) hat die höchste Closeness Centrality, weil von dort die Wege zu allen anderen Punkten im Schnitt am kürzesten sind. Im selben Graphen wie bei Degree Centrality liegen die höchsten Werte nun im Zentrum des Netzwerks – ein anderes Bild als bei Degree.
+The example shows an American city (LA?): the CBD (Central Business District) has the highest closeness centrality because the paths from there to all other points are on average shortest. In the same graph as for degree centrality, the highest values are now in the centre of the network – a different picture than with degree.
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Zentralitätsmasse: Betweenness centrality
+# Centrality Measures: Betweenness Centrality
 
-- Misst wie oft ein Knoten von allen kürzesten Pfaden zwischen allen Knotenpaaren im Netzwerk durchquert wird.
-- Zeigt welche Knoten im Netzwerk die wichtigen Brücken- resp. Verbindungsknoten sind.
-- $N$ Anzahl Knoten, $n_{jk}$ Anzahl kürzeste Pfade zwischen $j$ und $k$, $n_{jk}(i)$ davon durch $i$
+- Measures how often a node is traversed by all shortest paths between all node pairs in the network.
+- Shows which nodes are the important bridge or connector nodes in the network.
+- $N$ number of nodes, $n_{jk}$ number of shortest paths between $j$ and $k$, $n_{jk}(i)$ of those passing through $i$
 
 <span class="block text-center text-xl mt-2">$C_i^B =$ <span v-mark.circle.orange="1" class="px-3 py-4">$\dfrac{1}{(N-1)(N-2)}$</span> $\displaystyle\sum_{j=1;\, k=1;\, j \neq k \neq i}^{N} \dfrac{n_{jk}(i)}{n_{jk}}$</span>
 
@@ -551,13 +532,13 @@ layout: two-cols-header
 ![](/AGI_HS25_Netzwerk1/betweenness-b.jpeg)
 
 <!--
-**Zur Normierung $\frac{1}{(N-1)(N-2)}$:**
+**On the normalisation $\frac{1}{(N-1)(N-2)}$:**
 
-$(N-1)(N-2)$ ist die maximale Anzahl geordneter Knotenpaare $(j, k)$, die den Knoten $i$ nicht enthalten: $j$ kann einer der $N-1$ anderen Knoten sein, $k$ einer der verbleibenden $N-2$ Knoten (ohne $i$ und $j$).
+$(N-1)(N-2)$ is the maximum number of ordered node pairs $(j, k)$ not containing node $i$: $j$ can be one of the $N-1$ other nodes, $k$ one of the remaining $N-2$ nodes (excluding $i$ and $j$).
 
-Die rohe Summe $\sum \frac{n_{jk}(i)}{n_{jk}}$ erreicht ihr Maximum $(N-1)(N-2)$ nur dann, wenn Knoten $i$ auf *jedem* kürzesten Pfad zwischen *jedem* anderen Knotenpaar liegt. Die Division durch diesen Maximalwert ergibt einen Wert zwischen 0 und 1.
+The raw sum $\sum \frac{n_{jk}(i)}{n_{jk}}$ reaches its maximum $(N-1)(N-2)$ only when node $i$ lies on *every* shortest path between *every* other node pair. Dividing by this maximum yields a value between 0 and 1.
 
-Ohne Normierung würde ein Knoten in einem grossen Netzwerk allein durch die grössere Anzahl von Paaren immer höher abschneiden als ein gleich zentraler Knoten in einem kleineren Netzwerk. Der Faktor macht die Betweenness Centrality netzwerkübergreifend vergleichbar.
+Without normalisation, a node in a large network would always score higher than an equally central node in a smaller network, simply due to the larger number of pairs. The factor makes betweenness centrality comparable across networks.
 -->
 
 ---
@@ -572,26 +553,25 @@ layout: two-cols
 
 ![](/AGI_HS25_Netzwerk1/betweenness-b.jpeg)
 
-
 <!--
-**Betweenness Centrality**: Zuerst werden ALLE kürzesten Pfade zwischen ALLEN Knotenpaaren berechnet. Dann wird für jeden Knoten gezählt, wie viele dieser kürzesten Pfade ihn durchqueren.
+**Betweenness Centrality**: First ALL shortest paths between ALL node pairs are calculated. Then for each node, the number of those shortest paths passing through it is counted.
 
-Ergebnis: Nur wenige Knoten haben sehr hohe Werte – das sind die eigentlichen «Brücken-» oder «Schlüsselknoten» im Netzwerk. Im Strassennetzbeispiel zeigen sich 1–2 Verbindungsachsen, die von sehr vielen kürzesten Pfaden genutzt werden. Fällt diese Verbindung aus, bricht das Netz zusammen.
+Result: Only a few nodes have very high values – these are the true "bridge" or "key nodes" in the network. In the road network example, 1–2 connecting axes appear that are used by very many shortest paths. If this connection fails, the network collapses.
 
-Das Bild ist nochmals ganz anders als bei Degree oder Closeness Centrality.
+The picture is once again completely different from degree or closeness centrality.
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Zentralitätsmasse: Straightness centrality
+# Centrality Measures: Straightness Centrality
 
 ::left::
 
-- Misst wie stark alle kürzesten Pfade von einem Knoten zu allen anderen Knoten von der Luftlinienverbindung (Euklidische Distanz) abweicht.
-- «Wie direkt (sprich geradeaus) kann ein Knoten erreicht werden?»
-- $d_{ij}^{Eucl}$ Euklidische Distanz zwischen Knoten $i$ und $j$, $d_{ij}$ kürzester Pfad zwischen Knoten $i$ und $j$
+- Measures how much all shortest paths from a node to all other nodes deviate from the straight-line connection (Euclidean distance).
+- "How directly (i.e. straight) can a node be reached?"
+- $d_{ij}^{Eucl}$ Euclidean distance between nodes $i$ and $j$, $d_{ij}$ shortest path between nodes $i$ and $j$
 $$C_i^S = \frac{1}{N-1} \sum_{j=1, j \neq i}^{N} \frac{d_{ij}^{Eucl}}{d_{ij}}$$
 
 
@@ -601,44 +581,41 @@ $$C_i^S = \frac{1}{N-1} \sum_{j=1, j \neq i}^{N} \frac{d_{ij}^{Eucl}}{d_{ij}}$$
 <img src="/AGI_HS25_Netzwerk1/_page_26_Figure_10.jpeg" class="h-80 object-contain" />
 
 <!--
-**Straightness Centrality** misst, wie stark der kürzeste Netzwerkpfad von der direkten Luftlinie (euklidischen Distanz) abweicht. Ein Knoten hat eine hohe Straightness Centrality, wenn man ihn «geradeaus» erreichen kann.
+**Straightness Centrality** measures how much the shortest network path deviates from the direct straight line (Euclidean distance). A node has high straightness centrality if it can be reached "straight ahead".
 
-Dieses Mass ist vor allem relevant bei schachbrettartigen Strassennetzen (USA) – in der Schweiz mit gewundenen Alpentälern und historisch gewachsenen Ortskernen ist es weniger aussagekräftig.
+This measure is particularly relevant for grid-like road networks (USA) – in Switzerland with winding Alpine valleys and historically grown town centres it is less informative.
 -->
 
 ---
 
-# Vergleich der Zentralitätsmasse
+# Comparison of Centrality Measures
 
 <img src="/AGI_HS25_Netzwerk1/_page_27_Figure_5.jpeg" class="h-80 object-contain mx-auto" />
 
 <!--
-Alle vier Masse auf demselben Netzwerk – die Resultate sind ganz unterschiedlich. Das zeigt, dass «Zentralität» keine eindeutige Grösse ist, sondern davon abhängt, was man messen will.
+All four measures on the same network – the results are completely different. This shows that "centrality" is not a single unambiguous quantity, but depends on what you want to measure.
 
-Für uns besonders wichtig: **Closeness** und **Betweenness** Centrality – diese unbedingt merken (auch im Paper von Wang et al. verwendet).
+Particularly important for us: **Closeness** and **Betweenness** Centrality – make sure to remember these (also used in the Wang et al. (2011) paper).
 -->
-
-
-
 
 ---
 layout: zusammenfassung
 ---
 
-# Zusammenfassung
+# Summary
 
-- Zentralitätsmasse beschreiben die relative Wichtigkeit ("Zentralität") eines Knotens in einem Graphen resp. Netzwerk.
-- Wichtig sind vor allem die *closeness* und die *betweenness* centrality
+- Centrality measures describe the relative importance ("centrality") of a node in a graph or network.
+- Particularly important are *closeness* and *betweenness* centrality.
 
 ---
 layout: two-cols-header
 ---
 
-# Gruppenarbeit: Degree Centrality berechnen
+# Group Exercise: Calculate Degree Centrality
 
-- Bildet Gruppen zu 3–4 Personen mit Euren Nachbarn. 
-- Berechnet *Degree Centrality* für den nachstehnden Graphen. 
-- Zähle dazu für jeden Knoten die Anzahl Kanten, die in diesem Knoten zusammenlaufen. 
+- Form groups of 3–4 with your neighbours.
+- Calculate *Degree Centrality* for the graph below.
+- For each node, count the number of edges meeting at that node.
 
 ::left::
 
@@ -652,14 +629,14 @@ layout: two-cols-header
 layout: two-cols-header
 ---
 
-# Gruppenarbeit: Closeness Centrality berechnen
+# Group Exercise: Calculate Closeness Centrality
 
-- Berechnet in den gleichen Gruppen die *Closeness Centrality* für den gleichen Graphen. 
-- Ihr braucht dazu Excel o.ä. Darin müsst ihr folgende Schritte ausführen
-  1. Erstellt eine Kreuzmatrix mit den Zeilen A bis H und Spalten A bis H
-  2. Berechnet die Länge der kürzesten Pfade von jedem Knoten zu jedem anderen Knoten (alle Kanten L = 1)
-  3. Berechnet die Summe dieser Längen pro Knoten
-  4. Invertiert diesen Wert ($\frac{1}{x}$)
+- In the same groups, calculate *Closeness Centrality* for the same graph.
+- You will need Excel or similar. Follow these steps:
+  1. Create a cross matrix with rows A to H and columns A to H
+  2. Calculate the length of the shortest path from each node to every other node (all edges L = 1)
+  3. Calculate the sum of these lengths per node
+  4. Invert this value ($\frac{1}{x}$)
 
 
 ::left::
@@ -670,20 +647,18 @@ layout: two-cols-header
 
 <CountdownTimer :minutes="15" />
 
-
-
 ---
 layout: two-cols-header
 ---
 
-# Gruppenarbeit: Betweenness Centrality berechnen
+# Group Exercise: Calculate Betweenness Centrality
 
-- Berechnet jetzt die *Betweenness Centrality* für den gleichen Graphen <span v-mark.underline>nur für die Knoten B, C und F</span>
-- Ihr braucht dazu Excel o.ä. Darin müsst ihr folgende Schritte ausführen: Für jedes Knotenpaar:
-  1. Wie viele kürzeste Pfade gibt es? ($n_{jk}$)
-  2. Wie viele davon verlaufen durch den untersuchten Knoten? ($n_{jk}(i)$)
-  3. Berechne das Verhältnis ($\frac{n_{jk}(i)}{n_{jk}}$)
-  4. Summiert alle Verhältnisse auf (auf die Normalisierung verzichten wir)
+- Now calculate *Betweenness Centrality* for the same graph <span v-mark.underline>only for nodes B, C and F</span>
+- You will need Excel or similar. For each node pair:
+  1. How many shortest paths are there? ($n_{jk}$)
+  2. How many of them pass through the node under investigation? ($n_{jk}(i)$)
+  3. Calculate the ratio ($\frac{n_{jk}(i)}{n_{jk}}$)
+  4. Sum up all ratios (we skip the normalisation)
 
   
 
@@ -697,13 +672,11 @@ layout: two-cols-header
 
 ---
 
-
-# Lesematerial & Literatur
+# Reading Material & Literature
 
 - Wang, F., Antipova, A., & Porta, S. (2011). Street centrality and land use intensity in Baton Rouge, Louisiana. *Journal of Transport Geography*, **19**(2), 285-293.
-- Heywood, I., Cornelius, S., & Carver, S. (2011). An introduction to GIS. Pearson Education, Kapitel zu Network Analysis, Seiten 218-219.
+- Heywood, I., Cornelius, S., & Carver, S. (2011). An introduction to GIS. Pearson Education, Chapter on Network Analysis, pages 218-219.
 - Big Data Analytics by Anuradha Bhatia: https://www.youtube.com/watch?v=ptqt2zr9ZRE
-
 
 ---
 
@@ -717,28 +690,34 @@ layout: two-cols-header
 | `Gemeinde_Waedenswil` | Municipality boundary |
 
 <!--
-Kurze Einführung: Studierende haben das GeoPackage "netzwerkanalyse.gpkg" vor sich und arbeiten direkt in R/RStudio. Die Folien zeigen die Aufgaben, Codeausschnitte und erwarteten Resultate.
+Brief introduction: students have the GeoPackage "netzwerkanalyse.gpkg" in front of them and work directly in R/RStudio. The slides show the tasks, code snippets and expected results.
 -->
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
-# Tasks 1 & 2: Load data and visualise
+# Tasks 1: Load data and visualise
 
 Load `osm_highway_prepared` and `Gemeinde_Waedenswil`. Check the number of features and the CRS. Then map the network.
+
+
+::left::
 
 ```r
 library(sf)
 library(ggplot2)
 
-streets      <- read_sf("netzwerkanalyse.gpkg", layer = "osm_highway_prepared")
-municipality <- read_sf("netzwerkanalyse.gpkg", layer = "Gemeinde_Waedenswil")
+gpkg <- "netzwerkanalyse.gpkg"
+st_layers(gpkg) # what layers are available?
+
+municipality <- read_sf(gpkg, layer = "Gemeinde_Waedenswil")
+
+# read in the "osm" dataset as "streets"
 
 ggplot() +
   geom_sf(data = municipality, fill = NA) +
-  geom_sf(data = streets, color = "steelblue", linewidth = 0.2) +
-  theme_void()
+  ...   # ← add the other layers
 ```
 
 ::right::
@@ -746,14 +725,12 @@ ggplot() +
 <img src="/netzwerkanalyse-r/strassennetz.png" class="h-full object-contain" />
 
 <!--
-Studierende sollen selber den Layer laden und den Plot reproduzieren. Dabei sehen sie, dass es sich um eine einfache Ansammlung von Linien handelt – noch kein Graph.
+Students should load the layer themselves and reproduce the plot. In doing so they see that it is a simple collection of lines – not yet a graph.
 -->
 
 ---
-layout: exercises
----
 
-# Task 3: Create a network object
+# Task 2: Create a network object
 
 A street dataset is a collection of line segments — not yet a graph. `as_sfnetwork()` converts it:
 
@@ -762,8 +739,7 @@ library(sfnetworks)
 library(tidygraph)
 
 net   <- as_sfnetwork(streets, directed = FALSE)
-nodes <- st_as_sf(net, "nodes")
-edges <- st_as_sf(net, "edges")
+
 net
 ```
 
@@ -772,40 +748,68 @@ net
 - What do nodes and edges represent in a street network context?
 
 <!--
-Knoten = Kreuzungen/Endpunkte, Kanten = Strassensegmente. Das sfnetwork-Objekt ist gleichzeitig ein sf-Objekt und ein tidygraph-Objekt.
+Nodes = intersections/endpoints, edges = road segments. The sfnetwork object is simultaneously an sf object and a tidygraph object.
 -->
 
 ---
-layout: exercises
+{}
 ---
 
-# Task 4: Edge weights
+# The pipe `|>`
 
-Centrality measures are based on **shortest paths** — but shortest by what measure?
-
-**Discuss:** What different weighting schemes are possible for a street network? What does each one optimise, and for which application would you use it?
-
-Then add physical length as a weight:
+The pipe passes the result on the left as the **first argument** to the function on the right:
 
 ```r
-net <- net |>
-  activate("edges") |>
-  mutate(length = edge_length())
+streets |> nrow()             # same as nrow(streets)
+streets |> st_crs()           # same as st_crs(streets)
+streets |> st_transform(2056) # same as st_transform(streets, 2056)
 ```
 
-<!--
-Erwartete Antworten: physische Länge (kürzester Weg), Reisezeit (schnellster Weg, braucht Geschwindigkeitslimit), Strassentyp (z.B. Fussgänger vs. Auto), Steigung (Höhenmeter für Radfahrer), Anzahl Abbiegevorgänge...
+- This lets you chain steps without storing intermediate results.
+- `|>` is the base R pipe (R ≥ 4.1). You may also see `%>%` from the `magrittr` package — it works the same way in most cases.
+- Keyboard shortcut:
+  - windows / linux <kbd>ctrl</kbd> + <kbd>shift</kbd> + <kbd>m</kbd>
+  - mac: <kbd>command</kbd> + <kbd>shift</kbd> + <kbd>m</kbd>
 
-Wichtig: Die Wahl des Gewichts bestimmt, was "kürzester Pfad" bedeutet – und damit auch, was die Zentralitätsmasse messen.
+<!--
+Students may already know pipes from tidyverse (%>%). The native pipe operator |> has been available since R 4.1 and has no external dependencies. The difference is minimal in practice.
+-->
+
+---
+{}
+---
+
+# Nodes & Edges in `sfnetworks`
+
+- An `sfnetwork` holds **two tables** — one for nodes, one for edges.
+- Use `activate()` to choose which table dplyr operations (like `mutate()`) apply to:
+
+```r
+net |> activate("nodes")   # subsequent operations affect nodes
+net |> activate("edges")   # subsequent operations affect edges
+```
+
+Extract either table as a regular `sf` object at any time:
+
+```r
+nodes <- st_as_sf(net, "nodes")
+edges <- st_as_sf(net, "edges")
+```
+
+> After a `mutate()` on the network, re-run `st_as_sf()` to get the updated table.
+
+<!--
+sfnetworks combines two concepts: tidygraph (nodes/edges as tbl_graph) and sf (spatial geometry). activate() is the key concept: it determines which table subsequent dplyr operations apply to.
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Task 5: Degree Centrality
+# Task 3: Degree Centrality
 
-Number of edges connected to a node — direct neighbours only.
+- Number of edges connected to a node — direct neighbours only.
+- Which degree is most common?  What does degree = 1 represent?
 
 ::left::
 
@@ -813,45 +817,65 @@ Number of edges connected to a node — direct neighbours only.
 net <- net |>
   activate("nodes") |>
   mutate(degree = centrality_degree())
+
+# export to sf to make a ggplot
 nodes <- st_as_sf(net, "nodes")
 
-ggplot(nodes, aes(x = degree)) +
-  geom_histogram(binwidth = 1) + theme_minimal()
+ggplot() +
+  geom_sf(data = edges, color = "gray85") +
+  geom_sf(data = nodes, aes(color = degree)) 
+
+# optionally use a nice colour scale (scale_color_...)
 ```
-
-Which degree is most common?
-What does degree = 1 represent?
-
-<img src="/netzwerkanalyse-r/degree_hist.png" class="w-full object-contain" />
 
 ::right::
 
 <img src="/netzwerkanalyse-r/degree_map.png" class="h-full object-contain" />
 
 <!--
-Knotengrad 3 und 4 sind am häufigsten (typische Kreuzungen). Grad 1 = Sackgasse. Grad 2 = Durchgangspunkt ohne echte Verzweigung. Räumlich: hohe Degree-Werte im Zentrum und an Knotenpunkten.
+Degree 3 and 4 are most common (typical intersections). Degree 1 = dead end. Degree 2 = through point without a real branch. Spatially: high degree values in the centre and at junctions.
 -->
 
 ---
-layout: two-cols
+
+# Task 4: Edge weights
+
+Closeness and betweenness centrality measures are based on **shortest paths** — but shortest by what measure?
+
+- **Discuss:** What different weighting schemes are possible for a street network? What does each one optimise, and for which application would you use it?
+- Then add physical length (in meters) as a weight:
+
+```r
+
+net <- net |>
+  activate("edges") |>              # we need to activate the edges to add edge weight
+  mutate(length = edge_length())    # we can use mutate to add the weight
+```
+
+- Look at the result, visualize to verify
+
+<!--
+Expected answers: physical length (shortest route), travel time (fastest route, needs speed limit), road type (e.g. pedestrian vs. car), gradient (elevation for cyclists), number of turns... Important: the choice of weight determines what "shortest path" means – and therefore also what the centrality measures capture.
+-->
+
+---
+layout: two-cols-header
 ---
 
-# Task 6: Closeness Centrality
-
-$$C_{i}^{C} = \frac{N-1}{\sum_{j \neq i} d_{ij}}$$
+# Task 5: Closeness Centrality
 
 How efficiently can a node reach all others?
+
+::left::
 
 ```r
 net <- net |>
   activate("nodes") |>
   mutate(closeness = centrality_closeness(weights = length))
+
 nodes <- st_as_sf(net, "nodes")
 
-ggplot() +
-  geom_sf(data = edges, color = "gray85") +
-  geom_sf(data = nodes, aes(color = closeness)) +
-  scale_color_viridis_c() + theme_void()
+# visualize using ggplot2
 ```
 
 ::right::
@@ -859,71 +883,46 @@ ggplot() +
 <img src="/netzwerkanalyse-r/closeness_map.png" class="h-full object-contain" />
 
 <!--
-Closeness misst die durchschnittliche Erreichbarkeit – nicht nur direkte Nachbarn. Räumlich: hohe Werte im Zentrum des Netzes, niedrig an der Peripherie. Anders als Degree: Auch ein Knoten mit wenigen Kanten kann hohe Closeness haben, wenn er gut gelegen ist.
+Closeness measures average reachability – not just direct neighbours. Spatially: high values in the centre of the network, low at the periphery. Unlike degree: even a node with few edges can have high closeness if it is well located.
 -->
 
 ---
-layout: two-cols
+layout: two-cols-header
 ---
 
-# Task 7: Betweenness Centrality
-
-$$C_i^B = \frac{1}{(N-1)(N-2)} \sum_{j \neq k \neq i} \frac{n_{jk}(i)}{n_{jk}}$$
+# Task 6: Betweenness Centrality
 
 How often does a node lie on shortest paths between other nodes?
+
+::left::
 
 ```r
 net <- net |>
   activate("nodes") |>
-  mutate(betweenness = centrality_betweenness(weights = length))
-nodes <- st_as_sf(net, "nodes")
+  mutate(betweenness = ...) # find the correct function
 
-ggplot() +
-  geom_sf(data = edges, color = "gray85") +
-  geom_sf(data = nodes, aes(color = betweenness)) +
-  scale_color_viridis_c() + theme_void()
+# Computation might take a while...
 ```
 
-> ~2600 nodes — computation takes several minutes.
+
 
 ::right::
 
 <img src="/netzwerkanalyse-r/betweenness_map.png" class="h-full object-contain" />
 
 <!--
-Betweenness zeigt Brückenknoten – Knoten, die viele kürzeste Pfade bündeln. Im Strassennetz sind das oft die wenigen Hauptachsen, die Stadtteile verbinden. Fällt so ein Knoten aus, bricht die Konnektivität stark ein.
-
-Typisch für Wädenswil: Hohe Betweenness entlang der Hauptstrassen und am Seeufer.
+Betweenness reveals bridge nodes – nodes that concentrate many shortest paths. In a road network these are often the few main axes connecting neighbourhoods. If such a node fails, connectivity drops sharply. Typical for Wädenswil: high betweenness along the main roads and along the lakeshore.
 -->
 
 ---
-layout: two-cols
----
 
-# Task 8: Compare all three measures
-
-```r
-library(patchwork)
-
-p1 <- ggplot() +
-  geom_sf(data = nodes, aes(color = degree)) +
-  scale_color_viridis_c() + theme_void()
-p2 <- ggplot() +
-  geom_sf(data = nodes, aes(color = closeness)) +
-  scale_color_viridis_c() + theme_void()
-p3 <- ggplot() +
-  geom_sf(data = nodes, aes(color = betweenness)) +
-  scale_color_viridis_c() + theme_void()
-p1 + p2 + p3
-```
+# Task 7: Compare all three measures
 
 - Which parts are most central by each measure?
 - How do the spatial patterns differ?
 
-::right::
-
-<img src="/netzwerkanalyse-r/comparison.png" class="h-full object-contain" />
+![](/netzwerkanalyse-r/comparison.png)
 
 <!--
-Kernbotschaft: "Zentralität" ist keine eindeutige Grösse. Degree zeigt lokale Verbundenheit, Closeness globale Erreichbarkeit, Betweenness strukturelle Brückenfunktion. Je nach Anwendung (Notfallplanung, Geomarketing, Verkehrsplanung) ist ein anderes Mass relevant.
+Key message: "centrality" is not a single unambiguous quantity. Degree shows local connectivity, closeness global reachability, betweenness structural bridging function. Depending on the application (emergency planning, geomarketing, transport planning), a different measure is relevant.
 -->
