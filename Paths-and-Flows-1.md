@@ -12,6 +12,8 @@ sections:
   - Einleitender Rundgang – Netzwerke in der Geoinformatik
   - Graphentheorie 1.0 für die Netzwerkanalyse
   - Zentralitätsmasse
+  - Gruppenübung
+  - R-Übungen
 ---
 
 <!-- title slide: content is defined in frontmatter -->
@@ -221,16 +223,18 @@ Die Graphentheorie ist die mathematische Grundlage der Netzwerkanalyse. Die Begr
 -->
 
 ---
+class: text-sm
+---
 
 # Graphen-Typen
 
-| Typ | Beschreibung | Anwendung |
-|-----|-------------|-----------|
-| zyklisch | Zyklus ist ein Pfad, bei dem erster und letzter Knoten identisch sind | Verkehrsnetze |
-| gerichtet | Kanten sind gerichtet, können nur in einer Richtung durchquert werden | Strassennetz mit Einbahnstrassen |
-| gewichtet | Kanten oder Knoten haben Gewichte resp. Durchquerungs-Kosten | Höchstgeschwindigkeiten pro Kante, Maut pro Kante |
-| planar | Graphen, die auf einer Ebene abgebildet werden können, ohne dass ihre Kanten sich schneiden | Im planaren Strassennetz kreuzen alle Kanten in Knoten |
-| hierarchisch | Ein Graph ohne Zyklen | Baumstrukturen zur Indizierung von Geodaten (quadtree, R-tree) |
+| | Typ | Beschreibung | Anwendung |
+|:---:|-----|-------------|-----------|
+| <img src="/graph-types/zyklisch.png" class="h-14 object-contain" /> | zyklisch | Zyklus ist ein Pfad, bei dem erster und letzter Knoten identisch sind | Verkehrsnetze |
+| <img src="/graph-types/gerichtet.png" class="h-14 object-contain" /> | gerichtet | Kanten sind gerichtet, können nur in einer Richtung durchquert werden | Strassennetz mit Einbahnstrassen |
+| <img src="/graph-types/gewichtet.png" class="h-14 object-contain" /> | gewichtet | Kanten oder Knoten haben Gewichte resp. Durchquerungs-Kosten | Höchstgeschwindigkeiten pro Kante, Maut pro Kante, Höhenmeter |
+| <img src="/graph-types/planar.png" class="h-14 object-contain" /> | planar | Graphen, die auf einer Ebene abgebildet werden können, ohne dass ihre Kanten sich schneiden | Im planaren Strassennetz kreuzen alle Kanten in Knoten |
+| <img src="/graph-types/hierarchisch.png" class="h-14 object-contain" /> | hierarchisch | Ein Graph ohne Zyklen | Baumstrukturen zur Indizierung von Geodaten (quadtree, R-tree) |
 
 <SlideFooter>Quelle: gitta.info</SlideFooter>
 
@@ -245,49 +249,57 @@ Fünf Graphen-Typen kurz erklären:
 -->
 
 ---
-
+layout: two-cols
+---
 
 # Knotengrade
 
+**im ungerichteten Graph**
 
-- **im ungerichteten Graph**
-  - Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
-  - Loops (wie in B) werden 2 mal gezählt.
-
-- **im gerichteten Graph**
-  - indegree: Anzahl gerichteter Kanten, die im Knoten enden
-  - outdegree: Anzahl gerichteter Kanten, die am Knoten starten
-  - $\sum$ indegree = $\sum$ outdegree = 7
-  - Quellen und Senken
-    - **Quelle** (source): Knoten mit indegree = 0
-    - **Senke** (sink): Knoten mit outdegree = 0
-    - C ist eine Senke, Quellen hat es keine
+- Knotengrad: Anzahl Kanten, die am Knoten zusammenlaufen
+- Loops (wie in B) werden **2 mal** gezählt.
 
 ::right::
 
-<!-- check with slide 15 -->
-
-<!-- ![](/AGI_HS25_Netzwerk1/_page_15_Picture_16.jpeg) -->
-
-
-<!-- <img src="/AGI_HS25_Netzwerk1/_page_14_Picture_17.jpeg" class="h-44 object-contain" /> -->
+<img src="/graph-types/knotengrad-ungerichtet.png" class="h-80 object-contain" />
 
 <SlideFooter>Quelle: Lipschutz & Lipson (1997)</SlideFooter>
 
 <!--
-**Ungerichteter Graph**: Knotengrad = Anzahl Kanten, die am Knoten zusammenlaufen. Loops werden zweimal gezählt.
+Knotengrad = Anzahl Kanten am Knoten. Loops zählen doppelt.
 Beispielwerte: A = 3, D = 3, C = 2, B = 6 (höchster Grad).
+-->
 
-**Gerichteter Graph**: Unterscheidung in In-Degree (Kanten, die reinkommen) und Out-Degree (Kanten, die rausgehen).
+---
+layout: two-cols
+---
+
+# Knotengrade
+
+**im gerichteten Graph**
+
+- **indegree**: Anzahl gerichteter Kanten, die im Knoten enden
+- **outdegree**: Anzahl gerichteter Kanten, die am Knoten starten
+- $\sum$ indegree = $\sum$ outdegree = 7
+- Quellen und Senken
+  - **Quelle** (source): Knoten mit indegree = 0
+  - **Senke** (sink): Knoten mit outdegree = 0
+  - C ist eine Senke, Quellen hat es keine
+
+::right::
+
+<img src="/graph-types/knotengrad-gerichtet.png" class="h-80 object-contain" />
+
+<SlideFooter>Quelle: Lipschutz & Lipson (1997)</SlideFooter>
+
+<!--
+In-Degree: Kanten, die reinkommen. Out-Degree: Kanten, die rausgehen.
 - A: indegree = 2, outdegree = 1
 - D: indegree = 1, outdegree = 2
-- C: indegree = 2, outdegree = 0 → C ist eine **Senke** (sink)
-- B: indegree = 2, outdegree = 4
+- C: indegree = 2, outdegree = 0 → Senke (sink)
+- B: indegree = 2, outdegree = 4 ← Studierende sollen B selber berechnen
 
-**Wichtige Regel**: Die Summe aller In-Degrees muss gleich der Summe aller Out-Degrees sein.
-Probe: 2+1+2+2 = 7 (indegree), 1+2+0+4 = 7 (outdegree) ✓
-
-Kurze Pause einplanen: Studierende sollen B selber berechnen, bevor die Lösung gezeigt wird.
+Wichtige Regel: ∑ indegree = ∑ outdegree. Probe: 2+2+2+1 = 7, 1+4+0+2 = 7 ✓
 -->
 
 
@@ -299,6 +311,11 @@ Kurze Pause einplanen: Studierende sollen B selber berechnen, bevor die Lösung 
 - Die Nachbarschafts-Matrix zeigt, welche Knoten in einem Graphen benachbart sind.
   - 1 heisst, es gibt eine Kante zwischen zwei Knoten (z.B. von *a* nach *b*)
   - 0 heisst, es gibt keine Kante (z.B. zwischen a und d)
+
+
+<img src="/graph-types/zyklisch.png" class="h-14 object-contain" />
+
+
 - Zusätzlich können die Kanten auch gewichtet werden (Durchquerungs-Kosten oder –Zeiten)
   - Im Beispiel sind die Gewichte symmetrisch (von *a* nach *b* kostet 80, von *b* nach *a* kostet auch 80)
   - Gewichte könnten auch asymmetrisch sein (von *d* nach *e* kostet 200, von *e* nach *d* kostet 225)
@@ -531,23 +548,6 @@ Alle vier Masse auf demselben Netzwerk – die Resultate sind ganz unterschiedli
 Für uns besonders wichtig: **Closeness** und **Betweenness** Centrality – diese unbedingt merken (auch im Paper von Wang et al. verwendet).
 -->
 
----
-layout: two-cols-header
----
-
-# Kurze Kontext-Aufgabe
-
-## Aufgabe (5 Min)
-
-«Welche GIS-Techniken, die Du kennst, haben die Autoren im Paper verwendet?»
-
-<!--
-**Aufgabe (ca. 5 Minuten)**: Studierende gehen nochmals kurz durch das Paper von Wang et al. (2011) und machen eine Liste von GIS-Methoden, die sie bereits aus ihrer Ausbildung kennen.
-
-Ziel: Zeigen, dass GIS-Journal-Artikel viele bekannte Methoden verwenden. Lösung folgt am Ende der Präsentation.
--->
-
----
 
 
 
@@ -579,20 +579,55 @@ layout: two-cols
 layout: two-cols-header
 ---
 
-# Praktischer Teil
+# Gruppenarbeit: Zentralitätsmasse berechnen
 
-**Gruppenarbeit** Zentralitätsmasse für einen einfachen Graphen selber berechnen.
+Berechnet Degree, Closeness und Betweenness Centrality für den Graphen rechts.
 
 ::left::
 
-1. Bildet Gruppen mit Nachbarn
-2. Tragt Euch ein in der Liste
-3. Bearbeitet Euer Google Spreadsheet
+1. Bildet Gruppen zu 3–4 Personen mit Euren Nachbarn
+2. Tragt Eure Namen in die Liste ein
+3. Öffnet das Google Spreadsheet für Eure Gruppe (Link auf Moodle)
+
+**Ca. 50 Minuten**
 
 ::right::
 
-<img src="/AGI_HS25_Netzwerk1/_page_37_Figure_10.jpeg" class="h-48 object-contain mb-2" />
-<img src="/AGI_HS25_Netzwerk1/_page_37_Figure_11.jpeg" class="h-48 object-contain" />
+<img src="/AGI_HS25_Netzwerk1/_page_37_Figure_10.jpeg" class="h-80 object-contain" />
+
+<!--
+Studierende berechnen Degree, Closeness und Betweenness Centrality von Hand für den Graphen mit Knoten A–H. Die Google-Sheets-Vorlage führt sie durch die Berechnung.
+
+Hilfe zur Selbsthilfe: «Big Data Analytics» by Anuradha Bhatia, https://www.youtube.com/watch?v=ptqt2zr9ZRE (hilfreich für Betweenness)
+-->
+
+---
+layout: exercises
+---
+
+# Berechnungsregeln
+
+## Degree Centrality
+
+Zählt für jeden Knoten die Anzahl Kanten, die zusammenlaufen. Rangiert die Knoten nach ihrer Zentralität.
+
+## Closeness Centrality
+
+Bestimmt die kürzesten Pfade von jedem Knoten zu allen anderen (= Anzahl Kanten). Tragt die Werte in die Distanzmatrix ein — die Tabelle berechnet den Kehrwert der Summe automatisch.
+
+## Betweenness Centrality (nur für Knoten B, C und F)
+
+Für jedes Knotenpaar:
+- Wie viele kürzeste Pfade gibt es?
+- Wie viele davon verlaufen durch den untersuchten Knoten?
+
+Summiert die Verhältnisse dieser Werte auf.
+
+<!--
+Betweenness Centrality ist die aufwändigste Berechnung — deshalb nur für B, C, F. Die Formel aus der Vorlesung gilt; das Video von Bhatia zeigt die Methode anschaulich.
+
+Nach ca. 50 Minuten: Gruppen vergleichen ihre Resultate. Diskussion: Welche Knoten sind nach welcher Methode am zentralsten? Was bedeutet das für die Eignung verschiedener Masse in verschiedenen Anwendungen?
+-->
 
 ---
 
