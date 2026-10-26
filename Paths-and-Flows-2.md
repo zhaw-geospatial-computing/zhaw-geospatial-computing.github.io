@@ -1,52 +1,52 @@
 ---
 theme: default
-title: Netzwerkanalysen II
+title: Paths and Flows 2
 favicon: /favicon.png
 transition: none
 layout: zhaw-cover
-subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik
+subtitle: BSc Environmental Engineering · Applied Geoinformatics
 authors: Nils Ratnaweera
 email: rata@zhaw.ch
-heading: Netzwerkanalysen II
+heading: Paths and Flows 2
 sections:
-  - Anwendungen des kürzesten Pfads
-  - Algorithmen in GIS
-  - Der kürzeste Pfad nach Dijkstra
+  - Applications of Shortest Path
+  - Algorithms in GIS
+  - Dijkstra's Shortest Path
 ---
 
 <!-- title slide: content is defined in frontmatter -->
 
 <!--
-Zweite Veranstaltung Netzwerkanalyse. Letztes Mal: Zentralitätsmasse – dabei wurde der kürzeste Pfad verwendet, aber nicht explizit berechnet. Heute: den kürzesten Pfad als konkretes Problem + Algorithmen als übergeordnetes Thema.\n\n**Struktur**: Screencasts vorab (Flipped Classroom), dann Gruppenarbeit Dijkstra (Zürcher Tramnetz), dann QGIS-Übung (kürzeste Pfade in Wädenswil).
+Second lecture on network analysis. Last time: centrality measures — shortest path was used there but not explicitly calculated. Today: shortest path as a concrete problem + algorithms as the overarching theme.\n\n**Structure**: Screencasts beforehand (Flipped Classroom), then group work on Dijkstra (Zurich tram network), then QGIS exercises (shortest paths in Wädenswil).
 -->
 
 ---
 layout: lernziele
 ---
 
-# Lernziele
+# Learning Objectives
 
-- Sie sind in der Lage 2–3 einfache klassische **Algorithmen** der Geodatenverarbeitung mit einfachen Skizzen einem Laien zu erklären
-- Sie verstehen die Funktionsweise des **shortest path** Algorithmus nach Dijkstra als exemplarische Geodatenverarbeitungs-Routine auf Netzwerk-Geodaten.
-- Sie erkennen den Nutzen und die entsprechende Bedeutung von Algorithmen in der Geodatenverarbeitung und erlangen ein einfaches Verständnis über die **Bewertung von Algorithmen** nach der „big-O"-Notation der komputationellen Komplexität.
-- Sie sind in der Lage einfache Netzwerkanalysen (Streckenfindung, Routing) in **QGIS** mit gegebenen Werkzeugen der Netzwerk-Geodatenverarbeitung selbständig durchzuführen.
+- You can explain 2–3 simple classical **algorithms** in geodata processing using simple sketches to a non-expert.
+- You understand how Dijkstra's **shortest path** algorithm works as an exemplary geodata processing routine on network data.
+- You recognise the value and significance of algorithms in geodata processing and gain a basic understanding of **algorithm evaluation** using the big-O notation of computational complexity.
+- You can independently perform simple **network analyses** (route finding, routing) in **QGIS** using the available tools for network geodata processing.
 
 <!--
-Kurz durchgehen, nicht detaillieren – dienen als Orientierungsrahmen. Das vierte Lernziel (QGIS) betrifft den Übungsteil. Algorithmus schreiben als «Dijkstra» – die Transkription schreibt ihn phonetisch falsch («Jaikstra», «Jigstra» etc.).
+Go through briefly, don't elaborate — serves as an orientation framework. The fourth objective (QGIS) relates to the exercise part. Dijkstra — the transcript spells it phonetically wrong ('Jaikstra', 'Jigstra' etc.).
 -->
 
 ---
 
-# Zeitplan heute
+# Today's Schedule
 
-| Zeitplan        | Was                                                                | Form                          |
+| Time            | What                                                               | Format                        |
 |-----------------|--------------------------------------------------------------------|-------------------------------|
-| 13:00 – 13:45   | Theorie-Recap Algorithmen & Dijkstras kürzester Pfad               | Vorlesung, Info Leistungsnachweise |
-| 14:00 – 15:00   | Gruppenarbeit: Dijkstra selber rechnen                             | Gruppenarbeit in 3er/4er Gruppen |
-| 15:10 – 16:35   | QGIS-Übung: Kürzeste Pfade mit QGIS berechnen für Wädenswil        | Übungen, betreute Einzelarbeit |
+| 13:00 – 13:45   | Theory recap: algorithms & Dijkstra's shortest path                | Lecture, assessment information |
+| 14:00 – 15:00   | Group work: calculate Dijkstra yourselves                          | Group work in groups of 3–4   |
+| 15:10 – 16:35   | QGIS exercise: calculate shortest paths with QGIS for Wädenswil   | Exercises, supervised individual work |
 
 <!--
-Aufbau ähnlich wie letztes Mal. Screencasts zum Vorschauen, dann Gruppenarbeit: Dijkstra selber nachrechnen – etwas komplexer als letzte Mal, am konkreten Beispiel des Zürcher Tramnetzes (Berninaplatz → Staufacher). Dann QGIS-Übung: kürzeste Pfade auf OSM-Strassendaten von Wädenswil. Zoom-Links wie gewohnt auf Moodle.
+Structure similar to last time. Screencasts to watch beforehand, then group work: step through Dijkstra manually — slightly more complex than last time, using the Zurich tram network as a concrete example (Berninaplatz → Staufacher). Then QGIS exercise: shortest paths on OSM street data in Wädenswil. Zoom links as usual on Moodle.
 -->
 
 ---
@@ -54,18 +54,18 @@ Aufbau ähnlich wie letztes Mal. Screencasts zum Vorschauen, dann Gruppenarbeit:
 <Inhalt :active="1" />
 
 <!--
-Drei Teile: Zuerst Anwendungen (greifbare Beispiele), dann Algorithmen in GIS (Was sind sie? Big-O-Notation, klassische Beispiele inkl. Douglas-Peucker), dann Dijkstras kürzester Pfad.
+Three parts: applications first (tangible examples), then algorithms in GIS (what are they? Big-O notation, classic examples including Douglas-Peucker), then Dijkstra's shortest path.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Anwendungen: Vehicle Routing
+# Applications: Vehicle Routing
 
 - Vehicle Routing
-  - z.B. Uber
-  - z.B. Dispatching Schutz & Rettung
+  - e.g. Uber
+  - e.g. Dispatching emergency services
 
 ::right::
 
@@ -74,19 +74,19 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_5_Figure_10.jpeg" class="h-40 object-contain mt-2" />
 
 <!--
-Greifbares Beispiel: Lime-Scooter / E-Trottinette – viele Studierende kennen das. Die App berechnet das nächste verfügbare Fahrzeug über ein Strassennetz. Gleiches Prinzip bei Uber-Dispatching und Schutz & Rettung. Bezug zur letzten Sitzung: auch bei der Berechnung von Zentralitätsmassen wurden implizit kürzeste Pfade verwendet.
+Relatable example: Lime scooters / e-scooters — many students will have used them. The app calculates the nearest available vehicle via a street network. Same principle for Uber dispatching and emergency services. Connection to last session: calculating centrality measures also implicitly used shortest paths.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Anwendungen: Einzugsgebiete
+# Applications: Catchment Areas
 
-- Einzugsgebiete und nächste Einrichtung
-  - Zentralitätsmasse («Gruppenarbeit 1»)
-  - Reisezeiten (Netzwerkanalyse III)
-  - Geomarketing und Immobilien-Bewertung
+- Catchment areas and nearest facility
+  - Centrality measures ("Group exercise 1")
+  - Travel times (Network Analysis III)
+  - Geomarketing and real estate valuation
 
 ::right::
 
@@ -94,72 +94,72 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk2/_page_6_Figure_12.jpeg" class="h-36 object-contain mt-2" />
 
-<SlideFooter>Quellen: walkalytics.com, esri.ch</SlideFooter>
+<SlideFooter>Sources: walkalytics.com, esri.ch</SlideFooter>
 
 <!--
-Reisezeiten: Ich bin an einem Ort, wie weit komme ich innerhalb von 5 Minuten über das Wegenetz? → braucht kürzeste Pfade. Das schauen wir nächstes Mal im Detail an. Geomarketing: Wie viele Einwohner können eine neue Filiale in 5–10 Minuten zu Fuss erreichen?
+Travel times: I'm at a location — how far can I get within 5 minutes via the road network? → needs shortest paths. We'll look at this in detail next session. Geomarketing: how many residents can reach a new branch on foot within 5–10 minutes?
 -->
 
 ---
 layout: two-cols
 ---
 
-# Mehrere Stops (Travelling Salesperson Problem)
+# Multiple Stops (Travelling Salesperson Problem)
 
-Reihenfolge für den Besuch mehrerer Knoten so wählen, dass:
-- kein Knoten ausser des ersten mehr als einmal besucht wird,
-- die gesamte Reisestrecke/-zeit möglichst kurz ist, und
-- die erste Station gleich der letzten Station ist.
+Choose the order for visiting multiple nodes such that:
+- no node except the first is visited more than once,
+- the total travel distance/time is minimised, and
+- the first stop equals the last stop.
 
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_7_Figure_6.jpeg" class="h-64 object-contain" />
 
 <!--
-TSP: «Politisch unkorrekt» auch Travelling Salesman Problem. Muss n Punkte anlaufen und das möglichst effizient machen. Beispiel aus interaktiver Web-App: Sightseeing-Tour San Francisco – manuelle Reihenfolge ergibt 26,3 Meilen, berechnete Optimal-Route ist kürzer. Computationell sehr teuer: viele kürzeste-Pfad-Berechnungen, jede traversiert viele Kanten → exponentiell in der Anzahl Stops.
+TSP: also known (less politically correctly) as the Travelling Salesman Problem. Must visit n points as efficiently as possible. Example from an interactive web app: sightseeing tour of San Francisco — manual ordering gives 26.3 miles, the computed optimal route is shorter. Computationally very expensive: many shortest-path calculations, each traversing many edges → exponential in the number of stops.
 -->
 
 ---
 layout: two-cols
 ---
 
-# z.B. Forschungsprojekt Gruppe Theo Smits, fürs BLW
+# e.g. Research Project – Theo Smits Group, for FOAG
 
-Optimierung von Probenahme-Standorten für 2 Tage Feldkampagne
+Optimising sampling locations for a 2-day field campaign
 
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_8_Figure_6.jpeg" class="h-72 object-contain" />
 
 <!--
-Konkretes Beispiel vom ZHAW-Kollegen Theo Smits (Forschungsgruppe): Feldkampagne in der ganzen Schweiz, 2 Tage, ~30 Probestandorte – genau das Travelling Salesperson Problem. Sie haben es «von Hand» gemacht und sind gut durchgekommen. Mit TSP-Optimierung hätten sie vielleicht eine halbe Stunde mehr Pause gehabt.
+Concrete example from ZHAW colleague Theo Smits (research group): field campaign across Switzerland, 2 days, ~30 sampling sites — exactly the Travelling Salesperson Problem. They did it by hand and got through fine. With TSP optimisation they might have had half an hour more of breaks.
 -->
 
 ---
 
-# Anwendungen des kürzesten Pfads – Übersicht
+# Applications of Shortest Path – Overview
 
 <div class="grid grid-cols-2 gap-4">
 <div>
 
-**Kürzester Pfad**
-- Mehrere Stops (Travelling Salesperson Problem)
-- Für unterschiedliche Reisemodi (Velo, Auto, Fussgänger), schön vs. schnell
+**Shortest Path**
+- Multiple stops (Travelling Salesperson Problem)
+- For different travel modes (bike, car, pedestrian), scenic vs. fast
 
-**Nächste Einrichtung**
+**Nearest Facility**
 - Location-based services (LBS)
-- LimeScooters
+- Lime scooters
 
 </div>
 <div>
 
-**Flotten-Optimierung**
-- Multi-Vehicle Routing
-- Flotten-Optimierung (Lieferdienst, Müllfahrzeuge)
-- Mehrere Fahrzeuge möglichst wenig Weg
+**Fleet Optimisation**
+- Multi-vehicle routing
+- Fleet optimisation (delivery services, waste collection)
+- Minimise total distance across multiple vehicles
 
-**Einzugsgebiete**
-- Entlang des Netzwerkes
+**Catchment Areas**
+- Along the network
 - Geomarketing
 
 </div>
@@ -172,7 +172,7 @@ Konkretes Beispiel vom ZHAW-Kollegen Theo Smits (Forschungsgruppe): Feldkampagne
 </div>
 
 <!--
-Unterschiedliche Reisemodi: Google Maps hat Icons für Auto, Zug, zu Fuss, Velo, Flugzeug – dahinter liegen völlig unterschiedliche Transportnetzwerke (Kanten = Flugkorridore vs. Velowege). Nächste Einrichtung: Wo ist mein nächster McDonalds, nächste Tankstelle? → kürzester Pfad zu allen Kandidaten. Flottenoptimierung: DHL belädt morgens den Lieferwagen und optimiert die Reihenfolge der Haltestellen.
+Different travel modes: Google Maps has icons for car, train, walking, bike, plane — completely different transport networks behind each (edges = flight corridors vs. cycle paths). Nearest facility: Where is my nearest McDonald's, nearest petrol station? → shortest path to all candidates. Fleet optimisation: DHL loads the van in the morning and optimises the order of stops.
 -->
 
 ---
@@ -180,29 +180,29 @@ Unterschiedliche Reisemodi: Google Maps hat Icons für Auto, Zug, zu Fuss, Velo,
 <Inhalt :active="2" />
 
 <!--
-Übergang zum Algorithmen-Teil. Wir verlassen nun die Anwendungen und schauen uns an, was Algorithmen eigentlich sind und wie man sie bewertet.
+Transition to the algorithms section. We now leave the applications and look at what algorithms actually are and how they are evaluated.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Was ist ein Algorithmus?
+# What is an Algorithm?
 
-- Ein Algorithmus ist die Spezifikation des **Datenverarbeitungsprozesses**, welcher für eine bestimmte Operation nötig ist. ¹
-- Ein Algorithmus ist ein **Verfahren** zur Problemlösung, das sich für eine **Implementierung** als Computerprogramm eignet. ²
-- Algorithmen bestimmen oft auch, wie die an der Verarbeitung beteiligten Daten zu organisieren sind, d.h. in welchen **Datenstrukturen** sie abgelegt werden müssen. ²
-- Bsp. Sortieren einer Liste
+- An algorithm is the specification of the **data processing procedure** required for a particular operation. ¹
+- An algorithm is a **procedure** for solving a problem that lends itself to **implementation** as a computer program. ²
+- Algorithms often also determine how the data involved in processing must be organised, i.e. which **data structures** they must be stored in. ²
+- e.g. sorting a list
 
 <small>¹ Worboys & Duckham (2004). GIS: a computing perspective.</small><br>
-<small>² Sedgewick (2003). Algorithmen in Java.</small>
+<small>² Sedgewick (2003). Algorithms in Java.</small>
 
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_12_Picture_9.jpeg" class="h-72 object-contain" />
 
 <!--
-Wichtige Unterscheidung: Der Algorithmus ist nicht das Computerprogramm selbst, sondern das **Verfahren** – der Ablauf. Hat oft Implikationen für Datenstrukturen: Die Daten müssen so organisiert sein, dass der Algorithmus effizient darüber «turnen» kann. Beispiel zum Illustrieren: Sortieren einer Liste (C, A, G, B, D, H, E, F). Es folgt ein kurzes Video, das zwei verschiedene Sortieralgorithmen zeigt.
+Key distinction: the algorithm is not the computer program itself, but the **procedure** — the sequence of steps. Often has implications for data structures: the data must be organised so the algorithm can traverse it efficiently. Illustrating example: sorting a list (C, A, G, B, D, H, E, F). A short video follows showing two different sorting algorithms.
 -->
 
 ---
@@ -222,7 +222,7 @@ Wichtige Unterscheidung: Der Algorithmus ist nicht das Computerprogramm selbst, 
 </div>
 
 <!--
-Video läuft hier (~3 Minuten). Zwei Sortieralgorithmen werden visuell dargestellt. Keine Erklärung nötig – Video spielt durch. Danach Besprechung auf der nächsten Folie.
+Video plays here (~3 minutes). Two sorting algorithms are shown visually. No explanation needed — let the video run. Discussion on the next slide.
 -->
 
 ---
@@ -240,16 +240,16 @@ layout: two-cols
 $$O(n\log_2(n))$$
 
 <!--
-Nach dem Video. **Bubble Sort**: Einfache Anweisung (vergleiche Paare, tausche wenn falsche Reihenfolge), x-mal wiederholen. Code ist simpel, aber O(n²) → jedes Element mit jedem anderen vergleichen. **Merge Sort**: Liste aufteilen bis atomare Elemente, sortieren, wieder zusammenfügen. Code deutlich komplexer (mehr Zeilen, mehr Hirnschmalz), dafür O(n log n) – signifikant schneller.\n\nO(n²) ist in der Praxis kaum brauchbar: Wenn n grösser wird, wächst die Rechenzeit quadratisch → irgendwann nicht mehr berechenbar.
+After the video. **Bubble Sort**: simple instruction (compare pairs, swap if wrong order), repeated many times. Code is simple but O(n²) → every element compared with every other. **Merge Sort**: split list down to atomic elements, sort them, merge back up. Code considerably more complex (more lines, more brainpower), but O(n log n) — significantly faster.\n\nO(n²) is barely usable in practice: as n grows, computation time grows quadratically → eventually uncomputable.
 -->
 
 ---
 
-# Algorithmische Komplexität («big O»)
+# Algorithmic Complexity ("big O")
 
-- «big O»-Notation $O(f(n))$: Verhältnis zwischen Inputgrösse und Berechnungszeit
-- Normalerweise wird das **«worst case»**-Verhalten angegeben.
-- $O(n^2)$ in Praxis kaum brauchbar, ein Erfolg ist Reduktion auf $O(n \log n)$.
+- Big-O notation $O(f(n))$: relationship between input size and computation time
+- The **worst-case** behaviour is normally given.
+- $O(n^2)$ is barely usable in practice; reducing to $O(n \log n)$ is considered a success.
 
 <div class="grid grid-cols-2 gap-4 mt-2">
 <div>
@@ -265,7 +265,7 @@ Nach dem Video. **Bubble Sort**: Einfache Anweisung (vergleiche Paare, tausche w
 </div>
 <div>
 
-| Notation | Klasse | Beispiel |
+| Notation | Class | Example |
 |---|---|---|
 | $O(1)$ | Constant | — |
 | $O(\log n)$ | Logarithmic | Binary search |
@@ -278,17 +278,17 @@ Nach dem Video. **Bubble Sort**: Einfache Anweisung (vergleiche Paare, tausche w
 </div>
 
 <!--
-O = «Ordnung» oder Grössenordnung. n = Anzahl der zu prüfenden Elemente (Punkte, Kanten, Polygone …). Normalerweise Worst-Case-Szenario. Die Tabelle zeigt konkret: bei n=100 ist 2^n bereits 1,3×10^30 → völlig unberechenbar.\n\nWie leitet man Big-O ab? Das müssen wir nicht können – das ist die Kunst der theoretischen Informatik / Computational Geometry. Wir müssen nur verstehen, was es bedeutet, wenn ein Algorithmus O(n²) vs. O(n log n) hat.
+O = "order" or magnitude. n = number of elements to examine (points, edges, polygons …). Normally worst-case scenario. The table shows concretely: at n=100, 2^n is already 1.3×10^30 → completely uncomputable.\n\nHow to derive Big-O? We don't need to know — that is the domain of theoretical computer science / computational geometry. We just need to understand what it means when an algorithm is O(n²) vs. O(n log n).
 -->
 
 ---
 layout: two-cols
 ---
 
-# z.B. Sichtbarkeit entlang einer Strasse
+# e.g. Visibility Along a Road
 
-- Berechne eine Sichtlinie zwischen allen Punktpaaren
-- Zu rechenintensiv $O(n^2)$?
+- Compute a line of sight between all pairs of points
+- Too computationally expensive at $O(n^2)$?
 
 <img src="/AGI_HS25_Netzwerk2/_page_16_Picture_7.jpeg" class="h-48 object-contain mt-4" />
 
@@ -297,20 +297,20 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_16_Picture_9.jpeg" class="h-80 object-contain" />
 
 <!--
-Konkretes Projektbeispiel (Bundesamt für Strassen ASTRA): Kollisionen von Wildtieren mit Autos. Ansatz: Viele Punkte entlang des Strassenabschnitts setzen, von jedem Punkt zu jedem anderen Punkt Sichtlinie berechnen. Orange = unsichtbar (Wald im Weg), grüne Linien = sichtbar (Lichtung). Problem: Jeden Punkt mit jedem verbinden = O(n²) → so langsam, dass es nicht eingesetzt werden konnte. Mussten einen anderen Ansatz suchen.
+Concrete project example (Federal Roads Office ASTRA): wildlife-vehicle collisions. Approach: place many points along the road section, compute a line of sight from every point to every other point. Orange = not visible (forest in the way), green lines = visible (clearing). Problem: connecting every point with every other = O(n²) → so slow it could not be used in practice. Had to find a different approach.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Minimales umschreibendes Rechteck
+# Minimal Bounding Rectangle
 
-Entwickle einen Algorithmus zur Bestimmung des kleinsten umschreibenden Rechtecks (**minimal bounding rectangle, MBR**) für ein Polygon gegeben als Liste all seiner Stützpunkte.
+Design an algorithm to determine the smallest bounding rectangle (**minimal bounding rectangle, MBR**) for a polygon given as a list of all its vertices.
 
-*Nimm Dir Zeit …*
+*Take your time …*
 
-Koordinaten-Beispiel:
+Coordinate example:
 - 2'529'500.0, 1'204'150.0
 - 2'512'000.0, 1'175'150.0
 - 2'496'500.0, 1'153'150.0
@@ -324,37 +324,37 @@ Koordinaten-Beispiel:
 <img src="/AGI_HS25_Netzwerk2/_page_17_Figure_8.jpeg" class="h-44 object-contain mt-2" />
 
 <!--
-**Denkpause ~2 Minuten.** Studierende sollen sich selber einen Algorithmus überlegen. Gegeben: Stützpunkte (Vertices) des Polygons als x/y-Koordinatenliste. Hinweis: Denkt in Datenstrukturen – was braucht ihr eigentlich, um die Boundingbox zu definieren? (Antwort auf nächster Folie am Ende des Decks.)
+**Thinking pause ~2 minutes.** Students should work out an algorithm themselves. Given: polygon vertices as a list of x/y coordinates. Hint: think in data structures — what do you actually need to define the bounding box? (Answer on the last slide of the deck.)
 -->
 
 ---
 layout: two-cols
 ---
 
-# Zusammenfassung (Teil 1)
+# Summary (Part 1)
 
 <img src="/AGI_HS25_Netzwerk2/_page_18_Picture_5.jpeg" class="h-32 object-contain mb-4" />
 
-- Der kürzeste Pfad bildet die Grundlage für viele **Mobilitäts-Anwendungen**: Routensuche, LBS, Reisezeiten, Versorgungsgebiete.
-- **Algorithmen** sind Verfahren zur Problemlösung, die eng mit **Datenstrukturen** zusammenarbeiten.
-- «big O»-Notation bezeichnet das Verhältnis zwischen Inputgrösse und Berechnungszeit.
+- The shortest path is the foundation for many **mobility applications**: route finding, LBS, travel times, service areas.
+- **Algorithms** are procedures for problem-solving that work closely with **data structures**.
+- Big-O notation describes the relationship between input size and computation time.
 
 ::right::
 
-## Algorithmische Geometrie
+## Algorithmic Geometry
 
-Teil der (Geo-)Informatik, welche die algorithmische Lösung von geometrischen Problemen untersucht.
+The branch of (geo-)informatics that studies algorithmic solutions to geometric problems.
 
-- Gibt es überhaupt einen Algorithmus, der ein bestimmtes Problem lösen kann?
-- Was ist der **effizienteste** Algorithmus?
-  - bezüglich Rechenzeit?
-  - bezüglich Speicherplatz?
-- Wie werden die Daten am besten strukturiert (**Datenstruktur**)?
+- Does an algorithm even exist that can solve a given problem?
+- What is the **most efficient** algorithm?
+  - in terms of computation time?
+  - in terms of memory?
+- How should the data be best structured (**data structure**)?
 
 <img src="/AGI_HS25_Netzwerk2/_page_19_Picture_11.jpeg" class="h-36 object-contain mt-2" />
 
 <!--
-**Links**: Abschluss Screencast 1. Kurze Zusammenfassung der drei Kernaussagen.\n\n**Rechts**: Beginn Screencast 2. Algorithmische Geometrie = Teildisziplin der (Geo-)Informatik. Drei Leitfragen: (1) Gibt es überhaupt eine algorithmische Lösung? Für manche Probleme gibt es keine. (2) Was ist der effizienteste Algorithmus – bezüglich Rechenzeit oder Speicherplatz? (3) Wie Daten am besten strukturieren? Einstiegsbeispiel: der Point-in-Polygon-Test.
+**Left**: end of Screencast 1. Brief summary of the three key points.\n\n**Right**: start of Screencast 2. Algorithmic geometry = sub-discipline of (geo-)informatics. Three guiding questions: (1) Does an algorithmic solution even exist? For some problems there is none. (2) What is the most efficient algorithm — in terms of time or memory? (3) How best to structure the data? Entry example: the Point-in-Polygon test.
 -->
 
 ---
@@ -363,15 +363,15 @@ layout: two-cols
 
 # Muddiest Points: Point-in-Polygon Test
 
-**Halblinien-Algorithmus.** Prüfe, wie oft eine vom Punkt ausgehende Halblinie das Polygon schneidet.
-- Gerade Anzahl Schnitte → ausserhalb
-- Ungerade Anzahl Schnitte → innerhalb
+**Ray casting algorithm.** Count how often a ray from the point intersects the polygon.
+- Even number of intersections → outside
+- Odd number of intersections → inside
 
-**Aufwickel-Algorithmus.** Ein Betrachter bewegt sich gegen den Uhrzeigersinn auf dem Polygon. Wenn er nach einer Runde:
-- eine komplette Drehung gemacht hat → P innerhalb
-- sonst → P ausserhalb
+**Winding number algorithm.** An observer walks counterclockwise around the polygon. After one full circuit:
+- completed a full rotation → P inside
+- otherwise → P outside
 
-Beide *O(n)*, mit *n* = Anzahl Kanten
+Both *O(n)*, where *n* = number of edges
 
 ::right::
 
@@ -380,22 +380,22 @@ Beide *O(n)*, mit *n* = Anzahl Kanten
 <img src="/AGI_HS25_Netzwerk2/_page_20_Figure_13.jpeg" class="h-48 object-contain mt-2" />
 
 <!--
-Klassische GIS-Operation: Jede räumliche Abfrage mit Polygon-Containment braucht einen Point-in-Polygon-Test (z.B. «gib mir alle Bars innerhalb der Gemeinde Wädenswil»).\n\n**Halblinien-Algorithmus**: Eine Halblinie vom Punkt in beliebige Richtung zeichnen. Anzahl Schnitte mit Polygon zählen: ungerade = innerhalb (Beispiel: 5 Schnitte = innen), gerade = ausserhalb (2 Schnitte = aussen). Clever und elegant!\n\n**Aufwickel-Algorithmus**: Beobachter geht gegen Uhrzeigersinn auf dem Polygon, schaut immer zum Punkt. Komplette 360°-Drehung = innen; keine vollständige Drehung = aussen.\n\nBeide O(n), n = Anzahl Kanten – schnelle Algorithmen.
+Classic GIS operation: every spatial query involving polygon containment requires a point-in-polygon test (e.g. "give me all bars within the municipality of Wädenswil").\n\n**Ray casting algorithm**: draw a ray from the point in any direction. Count intersections with the polygon: odd = inside (example: 5 intersections = inside), even = outside (2 intersections = outside). Clever and elegant!\n\n**Winding number algorithm**: observer walks counterclockwise around the polygon, always looking at the point. Full 360° rotation = inside; no complete rotation = outside.\n\nBoth O(n), n = number of edges — fast algorithms.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Linienvereinfachung nach Douglas-Peucker
+# Line Simplification: Douglas-Peucker
 
-Vereinfachung der Linie unter Bewahrung der essentielle Form (z.B. kartographische Generalisierung)
+Simplify the line while preserving its essential form (e.g. cartographic generalisation)
 
-1. Verbinde Start–Ende
-2. Suche weitest entfernten Stützpunkt, splitte dort
-3. Wiederhole **rekursiv** für alle Teile, bis *dist* unter Schwellenwert
+1. Connect start–end
+2. Find the most distant vertex, split there
+3. Repeat **recursively** for all parts, until *dist* is below threshold
 
-**Rekursiver** Code ruft sich selber auf, meist in «verkleinerter Form», bis eine Abbruchbedingung erreicht ist.
+**Recursive** code calls itself, usually in a "reduced form", until a stopping condition is met.
 
 ::right::
 
@@ -409,20 +409,20 @@ Vereinfachung der Linie unter Bewahrung der essentielle Form (z.B. kartographisc
 </div>
 
 <!--
-Klassischer Geoinformatik-Algorithmus, der zweite Klassiker neben Dijkstra. Anwendung: kartographische Generalisierung, z.B. Strassenlinie von 1:25'000 → 1:50'000 vereinfachen.\n\nAlgorithmus: (1) Verbinde Start und Ende. (2) Suche den weitest entferntesten Stützpunkt von dieser Verbindungslinie. (3) Splitte dort, führe neue Teillinien ein. (4) Gleich für alle Unterteile wiederholen, bis Distanz unter Schwellenwert.\n\n**Rekursion** = Code ruft sich selber auf, in «verkleinerter Form», bis Abbruchbedingung. Auch Merge Sort war rekursiv. Kann den Kopf zerlegen, aber ist ein mächtiges Konzept.
+Classic GIS algorithm — the second classic alongside Dijkstra. Application: cartographic generalisation, e.g. simplifying a road line from 1:25,000 → 1:50,000.\n\nAlgorithm: (1) Connect start and end. (2) Find the most distant vertex from this connecting line. (3) Split there, introduce new sub-lines. (4) Repeat for all sub-parts until the distance is below the threshold.\n\n**Recursion** = code calls itself in a "reduced form" until a stopping condition is met. Merge Sort was also recursive. It can make your head spin, but it is a powerful concept.
 -->
 
 ---
 layout: two-cols
 ---
 
-# 3 Datenstrukturen für Netzwerkdaten
+# 3 Data Structures for Network Data
 
-**Datenstruktur 1: Gelabelte Kanten**
-Menge (set) von Kanten je mit Reisezeiten
+**Data Structure 1: Labelled Edges**
+A set of edges each with travel times
 
-**Datenstruktur 2: Nachbarschafts-Matrix**
-Viel Redundanz
+**Data Structure 2: Adjacency Matrix**
+Much redundancy
 
 | | a | b | c | d | e | f | g | h |
 |---|---|---|---|---|---|---|---|---|
@@ -433,32 +433,32 @@ Viel Redundanz
 | e | 0 | 0 | 15 | 7 | | | 18 | 0 |
 | g | 15 | 0 | 0 | 0 | 18 | 0 | 0 | 0 |
 
-**Datenstruktur 3: Nachbarschafts-Liste**
-Kompromiss: nur Kanten mit Wert ≠ 0
+**Data Structure 3: Adjacency List**
+Compromise: only edges with value ≠ 0
 
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_22_Figure_9.jpeg" class="h-96 object-contain" />
 
 <!--
-Algorithmen arbeiten eng mit Datenstrukturen zusammen. Drei Optionen für Netzwerkdaten:\n\n1. **Gelabelte Kanten**: Einfache Liste – jede Kante mit Kosten (AB=20, AG=15, BC=8). Sehr simpel.\n2. **Nachbarschafts-Matrix**: Spärlich besiedelt (viele Nullen), da bei a–e keine Verbindung → 0. Zeigt alle möglichen Verbindungen + Kosten. Viel Redundanz.\n3. **Nachbarschafts-Liste** (Kompromiss): Für jeden Knoten: Liste der Nachbarn + Distanzen. Knoten A hat Nachbarn B (20) und G (15). Eignet sich besonders gut für die algorithmische Durchquerung → wird für Dijkstra verwendet.\n\nStudierende müssen das nicht selber herleiten – zur Illustration der Verbindung Algorithmus↔Datenstruktur.
+Algorithms work closely with data structures. Three options for network data:\n\n1. **Labelled Edges**: Simple list — each edge with costs (AB=20, AG=15, BC=8). Very simple.\n2. **Adjacency Matrix**: Sparsely populated (many zeros), since there is no connection between a and e → 0. Shows all possible connections + costs. Much redundancy.\n3. **Adjacency List** (compromise): For each node: list of neighbours + distances. Node A has neighbours B (20) and G (15). Particularly well suited for algorithmic traversal → used for Dijkstra.\n\nStudents do not need to derive this themselves — it illustrates the link between algorithm ↔ data structure.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Systematisches Durchsuchen: Breadth-first vs. Depth-first
+# Systematic Traversal: Breadth-first vs. Depth-first
 
 <img src="/AGI_HS25_Netzwerk2/_page_23_Figure_6.jpeg" class="h-40 object-contain" />
 
 **Queue (Breadth-first)**
 - FIFO: First in, first out
-- Das Element was zuerst eingefügt wird, kommt auch zuerst wieder raus
+- The element inserted first is also the first to come out
 
 **Stack (Depth-first)**
 - LIFO: Last in, first out
-- Elemente können nur von oben weggenommen (pop) bzw. draufgelegt (push) werden
+- Elements can only be removed (pop) or added (push) from the top
 
 ::right::
 
@@ -469,12 +469,12 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_23_Picture_26.jpeg" class="h-24 object-contain mt-2" />
 
 <!--
-Zwei Strategien, ein Netzwerk vollständig zu durchqueren. Start in B:\n\n**BFS / Queue (FIFO)**: Zuerst alle direkten Nachbarn von B (breadth = Breite), dann deren Nachbarn usw. Analogie: Post-Warteschlange (Zalando-Päcklischlange) – hinten anstellen, vorne raus. Hinzugefügt wird hinten, weggenommen wird vorne.\n\n**DFS / Stack (LIFO)**: So weit wie möglich in die Tiefe (B→A→G→E→F→C…), erst bei Sackgasse zurückgehen. Analogie: Tellerstapel in der Mensa – immer von vorne rauf und vorne runter. Last in, first out.\n\nVerschiedene Algorithmen verwenden verschiedene Durchquerungsstrategien.
+Two strategies for traversing a network completely. Starting at B:\n\n**BFS / Queue (FIFO)**: First all direct neighbours of B (breadth), then their neighbours, etc. Analogy: post office queue — join at the back, leave from the front. Added at the back, removed from the front.\n\n**DFS / Stack (LIFO)**: Go as deep as possible (B→A→G→E→F→C…), only backtrack at a dead end. Analogy: stack of plates in the canteen — always added and removed from the top. Last in, first out.\n\nDifferent algorithms use different traversal strategies.
 -->
 
 ---
 
-# Systematisches Durchsuchen: Animiert
+# Systematic Traversal: Animated
 
 <div class="grid grid-cols-2 gap-4">
 <div>
@@ -494,7 +494,7 @@ Zwei Strategien, ein Netzwerk vollständig zu durchqueren. Start in B:\n\n**BFS 
 </div>
 
 <!--
-Animationen zeigen BFS und DFS in Aktion. Queue: hinten hinzufügen, vorne wegnehmen (FIFO). Stack: vorne hinzufügen und vorne wegnehmen (LIFO). Kurz kommentieren, dann weiter zu Dijkstra – das ist der eigentliche Grund, warum wir das alles angeschaut haben.
+Animations show BFS and DFS in action. Queue: add at the back, remove from the front (FIFO). Stack: add at the top and remove from the top (LIFO). Brief comment, then move on to Dijkstra — that is the actual reason we looked at all of this.
 -->
 
 ---
@@ -502,24 +502,24 @@ Animationen zeigen BFS und DFS in Aktion. Queue: hinten hinzufügen, vorne wegne
 <Inhalt :active="3" />
 
 <!--
-Übergang zu Dijkstra. Die ganze Vorbereitung (Algorithmen, Datenstrukturen, BFS) führt jetzt hier zusammen. «Jetzt solltet ihr fit sein, um euch Dijkstra einzuverleiben.»
+Transition to Dijkstra. All the preparation (algorithms, data structures, BFS) now comes together here. "You should now be ready to take on Dijkstra."
 -->
 
 ---
 layout: two-cols
 ---
 
-# Der kürzeste Pfad nach Dijkstra
+# Dijkstra's Shortest Path
 
-- **1. Iteration**: Alle Knoten auf ∞, ausser Nachbarn von *b*: a, c, d
-- **2. Iteration**: *t(c)* hat kleinsten Wert (8) → wird besucht. Nachbarn *t(h)*=18 und *t(e)*=23 aufdatiert.
-- **3. Iteration**: *t(d)*=9 am kleinsten → d wird besucht. *b→d→e* = 16 < *b→c→e* = 23 → *t(e)* = 16
-- **4. Iteration**: *e* wird besucht, *f* und *g* aufdatiert.
-- Wenn alle Knoten besucht → Algorithmus endet.
+- **1. Iteration**: All nodes set to ∞, except neighbours of *b*: a, c, d
+- **2. Iteration**: *t(c)* has the smallest value (8) → visited. Neighbours *t(h)*=18 and *t(e)*=23 updated.
+- **3. Iteration**: *t(d)*=9 is smallest → d visited. *b→d→e* = 16 < *b→c→e* = 23 → *t(e)* = 16
+- **4. Iteration**: *e* visited, *f* and *g* updated.
+- When all nodes visited → algorithm terminates.
 
-Dijkstra hat $O(n^2)$.
+Dijkstra has $O(n^2)$.
 
-A* braucht eine Heuristik (besuche nahe Knoten zuerst) → in Praxis schneller.
+A* uses a heuristic (visit nearby nodes first) → faster in practice.
 
 ::right::
 
@@ -528,32 +528,32 @@ A* braucht eine Heuristik (besuche nahe Knoten zuerst) → in Praxis schneller.
 <img src="/AGI_HS25_Netzwerk2/_page_27_Figure_11.jpeg" class="h-44 object-contain mt-2" />
 
 <!--
-Alltagsbeispiel: Wie komme ich vom Bahnhof Wädenswil zum Campus Grüntal mit dem Velo? Zwei Alternativen, welche ist kürzer? → Dijkstra berechnet das.\n\nAlgorithmus auf dem Beispiel-Netzwerk, Start bei B:\n- **Init**: Alle Distanzen = ∞, ausser direkte Nachbarn: A=20, C=8, D=9.\n- **Iter. 2**: Kleinster Knoten = C (8). Nachbarn aufdatieren: H=8+10=18, E=8+15=23.\n- **Iter. 3**: Kleinster = D (9). Prüfe E: B→D→E = 9+7=16 < 23 → E überschreiben mit 16.\n- **Iter. 4**: E=16 besuchen, Rest aufdatieren.\n\nBei jedem Schritt: prüfen ob eine kürzere Distanz gefunden wurde → kürzeste überschreibt vorherige. Am Ende steht bei jedem Knoten der kürzeste Pfad von B.\n\nDijkstra O(n²). A* mit Heuristik «besuche nahe Knoten zuerst» → in Praxis deutlich schneller.
+Everyday example: how do I get from Wädenswil station to the Grüntal campus by bike? Two alternatives — which is shorter? → Dijkstra calculates this.\n\nAlgorithm on the example network, starting at B:\n- **Init**: All distances = ∞, except direct neighbours: A=20, C=8, D=9.\n- **Iter. 2**: Smallest node = C (8). Update neighbours: H=8+10=18, E=8+15=23.\n- **Iter. 3**: Smallest = D (9). Check E: B→D→E = 9+7=16 < 23 → overwrite E with 16.\n- **Iter. 4**: Visit E=16, update the rest.\n\nAt each step: check whether a shorter distance has been found → shortest overwrites previous. At the end, each node holds the shortest path from B.\n\nDijkstra O(n²). A* with heuristic "visit nearby nodes first" → significantly faster in practice.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Der kürzeste Pfad nach Dijkstra (Schritt für Schritt)
+# Dijkstra's Shortest Path (Step by Step)
 
-- **1. Iteration**: Alle Knoten auf ∞, ausser Nachbarn von *b*: a, c, d
-- **2. Iteration**: *t(c)*=8 → besucht. *t(h)*=18, *t(e)*=23
-- **3. Iteration**: *t(d)*=9 → besucht. *t(e)*=16
-- **4. Iteration**: *e* besucht, *f* und *g* aufdatiert.
-- Wenn alle Knoten besucht → fertig.
+- **1. Iteration**: All nodes set to ∞, except neighbours of *b*: a, c, d
+- **2. Iteration**: *t(c)*=8 → visited. *t(h)*=18, *t(e)*=23
+- **3. Iteration**: *t(d)*=9 → visited. *t(e)*=16
+- **4. Iteration**: *e* visited, *f* and *g* updated.
+- When all nodes visited → done.
 
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_28_Figure_10.jpeg" class="h-80 object-contain" />
 
 <!--
-Schritt-für-Schritt-Darstellung der vier Iterationen. Für tieferes Verständnis: Worboys & Duckham, Kap. 5 – dort ist jede Iteration schön beschrieben. Wenn die Erklärung hier nicht vollständig klar ist, unbedingt im Buch nachschlagen.
+Step-by-step illustration of the four iterations. For deeper understanding: Worboys & Duckham, Ch. 5 — each iteration is described clearly there. If the explanation here is not completely clear, consult the book.
 -->
 
 ---
 
-# Teste eine der vielen Web-Applikationen
+# Try One of the Many Web Applications
 
 <div class="flex gap-4">
 <img src="/AGI_HS25_Netzwerk2/_page_29_Figure_5.jpeg" class="h-72 object-contain" />
@@ -561,188 +561,68 @@ Schritt-für-Schritt-Darstellung der vier Iterationen. Für tieferes Verständni
 </div>
 
 <!--
-Empfehlung: Vor der Übung 1–2 dieser interaktiven Animationen ausprobieren. Man kann einen neuen Graphen eingeben und den Algorithmus Schritt für Schritt durchspielen. Hilft das Verständnis signifikant – die Animationen sind gut gemacht. Links auf der Literatur-Folie.
+Recommendation: try out 1–2 of these interactive animations before the exercise. You can enter a new graph and step through the algorithm. Significantly aids understanding — the animations are well made. Links on the reading slide.
 -->
 
 ---
 layout: two-cols
 ---
 
-# Zusammenfassung
+# Summary
 
 <img src="/AGI_HS25_Netzwerk2/_page_30_Picture_5.jpeg" class="h-32 object-contain mb-4" />
 
-- Die **algorithmische Geometrie** ist der Teil der (Geo-)informatik, welcher sich mit der Lösung geometrischer Probleme zur Geodatenverarbeitung befasst: Point-in-Polygon, Linienvereinfachung, kürzester Pfad.
-- **Dijkstras** Algorithmus zur Berechnung des kürzesten Pfads ist ein schönes Beispiel. Fast alle Funktionen in einem GIS verwenden vergleichbare Algorithmen.
+- **Algorithmic geometry** is the branch of (geo-)informatics that deals with solving geometric problems for geodata processing: point-in-polygon, line simplification, shortest path.
+- **Dijkstra's** algorithm for calculating the shortest path is a fine example. Almost all functions in a GIS use comparable algorithms.
 
 ::right::
 
-## Praktischer Teil
+## Practical Part
 
-**Gruppenarbeit**
-Dijkstra für eine Abfrage übers VBZ-Netz selber nachrechnen.
+**Group Work**
+Calculate Dijkstra yourselves for a query on the VBZ tram network.
 
-**Übungen mit QGIS**
-Kürzeste Pfade für OSM-Strassendaten von Wädenswil mit QGIS berechnen.
+**QGIS Exercises**
+Calculate shortest paths for OSM street data of Wädenswil with QGIS.
 
 <img src="/AGI_HS25_Netzwerk2/_page_31_Figure_7.jpeg" class="h-36 object-contain mt-4" />
 
 <!--
-**Links**: Zusammenfassung. Fast alle GIS-Funktionen verwenden vergleichbare Algorithmen – wenn man tief in die Dokumentation schaut, findet man meistens Referenzen auf die Papers, in denen diese dokumentiert sind.\n\n**Rechts**: Übergang zum praktischen Teil. Gruppenarbeit: Dijkstra manuell nachrechnen auf dem Zürcher VBZ-Tramnetz (Berninaplatz → Staufacher). QGIS-Übung: Kürzeste Pfade berechnen, z.B. vom Campus Grüntal runter auf die Halbinsel.
+**Left**: Summary. Almost all GIS functions use comparable algorithms — if you look deep into the documentation, you usually find references to the papers in which they are documented.\n\n**Right**: Transition to the practical part. Group work: calculate Dijkstra manually on the Zurich VBZ tram network (Berninaplatz → Staufacher). QGIS exercise: calculate shortest paths, e.g. from the Grüntal campus down to the peninsula.
 -->
 
 ---
 
-# Lesematerial & Literatur
+# Reading Material & Literature
 
 <img src="/AGI_HS25_Netzwerk2/_page_32_Picture_5.jpeg" class="float-right h-40 ml-4" />
 
-- Inhalte der Vorlesung basieren im Wesentlichen auf Worboys, M. F., & Duckham, M. (2004). *GIS: a computing perspective*. CRC press, Kapitel 5.
-- Resp. in Neuauflage (2023) Kap. 5.5, S. 206ff.
-- GITTA-Lektion zu Accessibility (e-Learning): http://www.gitta.info/Accessibiliti/en/html/index.html
-- Interaktive Apps zum kürzesten Pfad:
+- Lecture content is based primarily on Worboys, M. F., & Duckham, M. (2004). *GIS: a computing perspective*. CRC press, Chapter 5.
+- Or in the new edition (2023) Ch. 5.5, pp. 206ff.
+- GITTA lesson on Accessibility (e-learning): http://www.gitta.info/Accessibiliti/en/html/index.html
+- Interactive apps for shortest path:
   - https://www.cs.usfca.edu/~galles/visualization/Dijkstra.html
   - https://algorithms.discrete.ma.tum.de/graph-algorithms/spp-dijkstra/index_en.html
 
 <!--
-Pflichtlektüre: Worboys & Duckham Kap. 5. GITTA-Lektion zu Accessibility als ergänzendes E-Learning. Die zwei interaktiven Dijkstra-Apps sind empfehlenswert vor der Übung – Studierende können einen Graphen eingeben und den Algorithmus animiert beobachten.
+Required reading: Worboys & Duckham Ch. 5. GITTA lesson on Accessibility as supplementary e-learning. The two interactive Dijkstra apps are recommended before the exercise — students can enter a graph and observe the algorithm animated.
 -->
 
----
-layout: cover
----
-
-# Semesterprojekt
-
-<img src="/AGI_HS25_Netzwerk2/_page_33_Picture_3.jpeg" class="h-48 object-contain" />
-
-BSc Umweltingenieurwesen · Angewandte Geoinformatik
 
 ---
 
-# LN2: Dokumentation Spezialisierung
+# MBR – Solution
 
-- Eigenes Semesterprojekt, exemplifiziert, schafft etwas Sinnvolles
-  - kann eine der ersten 4 Aufgaben ausbauen,
-  - kann ein Teilaspekt eines anderen Projekts sein, oder
-  - kann ein Teilaspekt der anstehenden BSc-Arbeit umfassen (Delta dokumentieren!)
-- Muss technische Fertigkeiten aus **2 der ersten 4** thematischen Blöcken aufgreifen:
-  - *Datenqualität & Unsicherheit, Programmieren, Geodatenbanken, Netzwerkanalyse*
-  - z.B. Netzwerkanalyse zur Erreichbarkeit im urbanen Raum
-  - z.B. Kombiniert mit Unsicherheits-Aspekten zur Datenlage
+Examine all vertices, i.e. their list of *x*/*y* coordinates.
 
----
-
-# Semester-Projekte: Beispiele
-
-<div class="grid grid-cols-2 gap-2">
-<img src="/AGI_HS25_Netzwerk2/_page_35_Picture_6.jpeg" class="h-44 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_35_Picture_12.jpeg" class="h-44 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_35_Picture_16.jpeg" class="h-44 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_35_Picture_21.jpeg" class="h-44 object-contain" />
-</div>
-
-**Abgabe Proposal: Do. 20.11.2025, 23:00**
-
----
-
-# Semester-Projekte: Bewertungsraster
-
-<img src="/AGI_HS25_Netzwerk2/_page_36_Picture_6.jpeg" class="h-80 object-contain" />
-
-<SlideFooter>basierend auf Z-RL-Richtlinie KI bei Leistungsnachweisen sowie Z-RL-Richtlinie Anhang Deklarationspflicht KI bei Arbeiten (Version 1.1.0, 01.03.2025)</SlideFooter>
-
----
-
-# Bewertungsraster (Forts.)
-
-<div class="flex gap-2">
-<img src="/AGI_HS25_Netzwerk2/_page_39_Picture_5.jpeg" class="h-48 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_39_Picture_9.jpeg" class="h-48 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_40_Picture_6.jpeg" class="h-48 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_40_Figure_8.jpeg" class="h-48 object-contain" />
-</div>
-
----
-layout: image
-image: /AGI_HS25_Netzwerk2/_page_41_Picture_6.jpeg
-backgroundSize: contain
----
-
-# AI / KI zitieren?
-
----
-
-# AI / KI zitieren?
-
-<div class="flex gap-4">
-<img src="/AGI_HS25_Netzwerk2/_page_42_Figure_6.jpeg" class="h-80 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_42_Picture_7.jpeg" class="h-80 object-contain" />
-</div>
-
----
-layout: two-cols
----
-
-# Reminder: Proposal & Coaching
-
-- Proposal schreiben ist **schwierig**: ihr sollt beschreiben, wie ihr ein Problem lösen werdet, ohne alle Herausforderungen zu kennen.
-- Wir können nur Feedback geben wenn ihr **konkret** beschreibt, was ihr zu machen gedenkt. Je detaillierter, desto besser.
-- Die Vorgabe 1×A4 ist sowohl als **Minimal-** als auch als **Maximalumfang** zu verstehen.
-- Schreibt **ausformulierte Sätze statt Stichworte** – letztere lassen zu viel Interpretationsspielraum.
-
-::right::
-
-<img src="/AGI_HS25_Netzwerk2/_page_43_Picture_4.jpeg" class="h-80 object-contain" />
-
----
-
-# Proposal: so nicht …
-
-<div class="flex gap-4">
-<img src="/AGI_HS25_Netzwerk2/_page_44_Picture_6.jpeg" class="h-64 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_44_Picture_20.jpeg" class="h-64 object-contain" />
-<img src="/AGI_HS25_Netzwerk2/_page_44_Picture_22.jpeg" class="h-64 object-contain" />
-</div>
-
----
-layout: image
-image: /AGI_HS25_Netzwerk2/_page_45_Picture_5.jpeg
-backgroundSize: contain
----
-
-# Proposal: viel besser!
-
----
-layout: image
-image: /AGI_HS25_Netzwerk2/_page_46_Picture_6.jpeg
-backgroundSize: contain
----
-
-# Proposal: viel besser! (2)
-
----
-layout: image
-image: /AGI_HS25_Netzwerk2/_page_47_Picture_5.jpeg
-backgroundSize: contain
----
-
-# Proposal: viel besser! (3)
-
----
-
-# MBR – Lösung
-
-Prüfe alle Stützpunkte (Vertices), d.h. deren Liste mit *x*-/*y*-Koordinaten.
-
-Speichere immer die vier Werte für:
-- tiefster x-Wert
-- tiefster y-Wert
-- höchster x-Wert
-- höchster y-Wert
+Always store the four values for:
+- lowest x value
+- lowest y value
+- highest x value
+- highest y value
 
 <img src="/AGI_HS25_Netzwerk2/_page_49_Figure_10.jpeg" class="h-56 object-contain mt-4" />
 
 <!--
-Lösung zur MBR-Denkpause von vorhin. In Datenstrukturen denken: Stützpunkte als zwei Listen (x-Koordinaten, y-Koordinaten). Man braucht nur zwei Punkte: lower-left und upper-right.\n\nAlgorithmus: Vier Variablen anlegen (min_x, min_y, max_x, max_y). Durch alle Stützpunkte loopen. Wenn aktueller Wert kleiner als min → überschreiben, wenn grösser als max → überschreiben. Nach dem Loop: Boundingbox ist definiert. O(n) – sehr schnell.
+Solution to the MBR thinking pause from earlier. Think in data structures: vertices as two lists (x-coordinates, y-coordinates). You only need two points: lower-left and upper-right.\n\nAlgorithm: create four variables (min_x, min_y, max_x, max_y). Loop through all vertices. If the current value is smaller than min → overwrite; if larger than max → overwrite. After the loop: the bounding box is defined. O(n) — very fast.
 -->
