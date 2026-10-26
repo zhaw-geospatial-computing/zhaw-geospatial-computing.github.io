@@ -1,3 +1,9 @@
+/* Disable font ligatures in code blocks so |> renders as two characters, not a triangle. */
+code, pre, .slidev-code {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
 /* Remove the theme's implicit subtitle treatment (h1 + p → dimmed, negative margin).
    Use subtitle: in slide frontmatter for explicit subtitles instead. */
 .slidev-layout h1 + p {
