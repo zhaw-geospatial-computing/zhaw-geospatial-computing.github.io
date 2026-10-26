@@ -1,21 +1,26 @@
 ---
 theme: default
-title: AGI HS25 Netzwerk2
+title: Netzwerkanalysen II
+favicon: /favicon.png
 transition: none
-layout: cover
+layout: zhaw-cover
+subtitle: BSc Umweltingenieurwesen · Angewandte Geoinformatik
+authors: Nils Ratnaweera
+email: rata@zhaw.ch
+heading: Netzwerkanalysen II
+sections:
+  - Anwendungen des kürzesten Pfads
+  - Algorithmen in GIS
+  - Der kürzeste Pfad nach Dijkstra
 ---
 
-# Netzwerkanalysen II
-
-<img src="/AGI_HS25_Netzwerk2/_page_0_Picture_3.jpeg" class="h-48 object-contain" />
-
-BSc Umweltingenieurwesen Angewandte Geoinformatik
+<!-- title slide: content is defined in frontmatter -->
 
 ---
+layout: lernziele
+---
 
-## Lernziele
-
-<img src="/AGI_HS25_Netzwerk2/_page_1_Picture_4.jpeg" class="float-right h-40 ml-4" />
+# Lernziele
 
 - Sie sind in der Lage 2–3 einfache klassische **Algorithmen** der Geodatenverarbeitung mit einfachen Skizzen einem Laien zu erklären
 - Sie verstehen die Funktionsweise des **shortest path** Algorithmus nach Dijkstra als exemplarische Geodatenverarbeitungs-Routine auf Netzwerk-Geodaten.
@@ -24,31 +29,23 @@ BSc Umweltingenieurwesen Angewandte Geoinformatik
 
 ---
 
-## Zeitplan heute
+# Zeitplan heute
 
-| Zeitplan | Was | Form |
-|---|---|---|
-| 13:00 – 13:45 | Theorie-Recap Algorithmen & Dijkstras kürzester Pfad | Vorlesung, Info Leistungsnachweise |
-| 14:00 – 15:00 | Gruppenarbeit: Dijkstra selber rechnen | Gruppenarbeit in 3er/4er Gruppen |
-| 15:10 – 16:35 | QGIS-Übung: Kürzeste Pfade mit QGIS berechnen für Wädenswil | Übungen, betreute Einzelarbeit |
+| Zeitplan        | Was                                                                | Form                          |
+|-----------------|--------------------------------------------------------------------|-------------------------------|
+| 13:00 – 13:45   | Theorie-Recap Algorithmen & Dijkstras kürzester Pfad               | Vorlesung, Info Leistungsnachweise |
+| 14:00 – 15:00   | Gruppenarbeit: Dijkstra selber rechnen                             | Gruppenarbeit in 3er/4er Gruppen |
+| 15:10 – 16:35   | QGIS-Übung: Kürzeste Pfade mit QGIS berechnen für Wädenswil        | Übungen, betreute Einzelarbeit |
 
 ---
 
-## Inhalt
-
-- **1. Anwendungen des kürzesten Pfads**
-- 2. Algorithmen in GIS
-  - 2.1 Grundlagen und Begriffe
-  - 2.2 Einige Klassiker: Point-in-Polygon, MBR, Douglas-Peucker
-- 3. Der kürzeste Pfad (*shortest path*) nach Dijkstra
-
-<img src="/AGI_HS25_Netzwerk2/_page_4_Picture_0.jpeg" class="h-52 object-contain mt-4" />
+<Inhalt :active="1" />
 
 ---
 layout: two-cols
 ---
 
-## Anwendungen: Vehicle Routing
+# Anwendungen: Vehicle Routing
 
 - Vehicle Routing
   - z.B. Uber
@@ -64,14 +61,12 @@ layout: two-cols
 layout: two-cols
 ---
 
-## Anwendungen: Einzugsgebiete
+# Anwendungen: Einzugsgebiete
 
 - Einzugsgebiete und nächste Einrichtung
   - Zentralitätsmasse («Gruppenarbeit 1»)
   - Reisezeiten (Netzwerkanalyse III)
   - Geomarketing und Immobilien-Bewertung
-
-<small>Quellen: walkalytics.com, esri.ch</small>
 
 ::right::
 
@@ -79,11 +74,13 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk2/_page_6_Figure_12.jpeg" class="h-36 object-contain mt-2" />
 
+<SlideFooter>Quellen: walkalytics.com, esri.ch</SlideFooter>
+
 ---
 layout: two-cols
 ---
 
-## Mehrere Stops (Travelling Salesperson Problem)
+# Mehrere Stops (Travelling Salesperson Problem)
 
 Reihenfolge für den Besuch mehrerer Knoten so wählen, dass:
 - kein Knoten ausser des ersten mehr als einmal besucht wird,
@@ -98,7 +95,7 @@ Reihenfolge für den Besuch mehrerer Knoten so wählen, dass:
 layout: two-cols
 ---
 
-## z.B. Forschungsprojekt Gruppe Theo Smits, fürs BLW
+# z.B. Forschungsprojekt Gruppe Theo Smits, fürs BLW
 
 Optimierung von Probenahme-Standorten für 2 Tage Feldkampagne
 
@@ -108,7 +105,7 @@ Optimierung von Probenahme-Standorten für 2 Tage Feldkampagne
 
 ---
 
-## Anwendungen des kürzesten Pfads – Übersicht
+# Anwendungen des kürzesten Pfads – Übersicht
 
 <div class="grid grid-cols-2 gap-4">
 <div>
@@ -144,19 +141,13 @@ Optimierung von Probenahme-Standorten für 2 Tage Feldkampagne
 
 ---
 
-## Inhalt
-
-- 1. Anwendungen des kürzesten Pfads
-- **2. Algorithmen in GIS**
-  - 2.1 Grundlagen und Begriffe
-  - 2.2 Einige Klassiker: Point-in-Polygon, MBR, Douglas-Peucker
-- 3. Der kürzeste Pfad (*shortest path*) nach Dijkstra
+<Inhalt :active="2" />
 
 ---
 layout: two-cols
 ---
 
-## Was ist ein Algorithmus?
+# Was ist ein Algorithmus?
 
 - Ein Algorithmus ist die Spezifikation des **Datenverarbeitungsprozesses**, welcher für eine bestimmte Operation nötig ist. ¹
 - Ein Algorithmus ist ein **Verfahren** zur Problemlösung, das sich für eine **Implementierung** als Computerprogramm eignet. ²
@@ -172,7 +163,7 @@ layout: two-cols
 
 ---
 
-## Bubble-Sort vs. Merge-Sort
+# Bubble-Sort vs. Merge-Sort
 
 <div class="grid grid-cols-3 gap-1">
 <img src="/AGI_HS25_Netzwerk2/_page_13_Picture_6.jpeg" class="h-32 object-contain" />
@@ -190,7 +181,7 @@ layout: two-cols
 layout: two-cols
 ---
 
-## Bubble-Sort vs. Merge-Sort
+# Bubble-Sort vs. Merge-Sort
 
 <img src="/AGI_HS25_Netzwerk2/_page_14_Picture_5.jpeg" class="h-64 object-contain" />
 
@@ -202,7 +193,7 @@ $$O(n\log_2(n))$$
 
 ---
 
-## Algorithmische Komplexität («big O»)
+# Algorithmische Komplexität («big O»)
 
 - «big O»-Notation $O(f(n))$: Verhältnis zwischen Inputgrösse und Berechnungszeit
 - Normalerweise wird das **«worst case»**-Verhalten angegeben.
@@ -238,7 +229,7 @@ $$O(n\log_2(n))$$
 layout: two-cols
 ---
 
-## z.B. Sichtbarkeit entlang einer Strasse
+# z.B. Sichtbarkeit entlang einer Strasse
 
 - Berechne eine Sichtlinie zwischen allen Punktpaaren
 - Zu rechenintensiv $O(n^2)$?
@@ -253,7 +244,7 @@ layout: two-cols
 layout: two-cols
 ---
 
-## Minimales umschreibendes Rechteck
+# Minimales umschreibendes Rechteck
 
 Entwickle einen Algorithmus zur Bestimmung des kleinsten umschreibenden Rechtecks (**minimal bounding rectangle, MBR**) für ein Polygon gegeben als Liste all seiner Stützpunkte.
 
@@ -276,7 +267,7 @@ Koordinaten-Beispiel:
 layout: two-cols
 ---
 
-## Zusammenfassung (Teil 1)
+# Zusammenfassung (Teil 1)
 
 <img src="/AGI_HS25_Netzwerk2/_page_18_Picture_5.jpeg" class="h-32 object-contain mb-4" />
 
@@ -302,7 +293,7 @@ Teil der (Geo-)Informatik, welche die algorithmische Lösung von geometrischen P
 layout: two-cols
 ---
 
-## Muddiest Points: Point-in-Polygon Test
+# Muddiest Points: Point-in-Polygon Test
 
 **Halblinien-Algorithmus.** Prüfe, wie oft eine vom Punkt ausgehende Halblinie das Polygon schneidet.
 - Gerade Anzahl Schnitte → ausserhalb
@@ -324,7 +315,7 @@ Beide *O(n)*, mit *n* = Anzahl Kanten
 layout: two-cols
 ---
 
-## Linienvereinfachung nach Douglas-Peucker
+# Linienvereinfachung nach Douglas-Peucker
 
 Vereinfachung der Linie unter Bewahrung der essentielle Form (z.B. kartographische Generalisierung)
 
@@ -349,7 +340,7 @@ Vereinfachung der Linie unter Bewahrung der essentielle Form (z.B. kartographisc
 layout: two-cols
 ---
 
-## 3 Datenstrukturen für Netzwerkdaten
+# 3 Datenstrukturen für Netzwerkdaten
 
 **Datenstruktur 1: Gelabelte Kanten**
 Menge (set) von Kanten je mit Reisezeiten
@@ -377,7 +368,7 @@ Kompromiss: nur Kanten mit Wert ≠ 0
 layout: two-cols
 ---
 
-## Systematisches Durchsuchen: Breadth-first vs. Depth-first
+# Systematisches Durchsuchen: Breadth-first vs. Depth-first
 
 <img src="/AGI_HS25_Netzwerk2/_page_23_Figure_6.jpeg" class="h-40 object-contain" />
 
@@ -399,7 +390,7 @@ layout: two-cols
 
 ---
 
-## Systematisches Durchsuchen: Animiert
+# Systematisches Durchsuchen: Animiert
 
 <div class="grid grid-cols-2 gap-4">
 <div>
@@ -420,21 +411,13 @@ layout: two-cols
 
 ---
 
-## Inhalt
-
-- 1. Anwendungen des kürzesten Pfads
-- 2. Algorithmen in GIS
-  - 2.1 Grundlagen und Begriffe
-  - 2.2 Einige Klassiker: Point-in-Polygon, MBR, Douglas-Peucker
-- **3. Der kürzeste Pfad (*shortest path*) nach Dijkstra**
-
-<img src="/AGI_HS25_Netzwerk2/_page_26_Figure_0.jpeg" class="h-52 object-contain mt-4" />
+<Inhalt :active="3" />
 
 ---
 layout: two-cols
 ---
 
-## Der kürzeste Pfad nach Dijkstra
+# Der kürzeste Pfad nach Dijkstra
 
 - **1. Iteration**: Alle Knoten auf ∞, ausser Nachbarn von *b*: a, c, d
 - **2. Iteration**: *t(c)* hat kleinsten Wert (8) → wird besucht. Nachbarn *t(h)*=18 und *t(e)*=23 aufdatiert.
@@ -456,7 +439,7 @@ A* braucht eine Heuristik (besuche nahe Knoten zuerst) → in Praxis schneller.
 layout: two-cols
 ---
 
-## Der kürzeste Pfad nach Dijkstra (Schritt für Schritt)
+# Der kürzeste Pfad nach Dijkstra (Schritt für Schritt)
 
 - **1. Iteration**: Alle Knoten auf ∞, ausser Nachbarn von *b*: a, c, d
 - **2. Iteration**: *t(c)*=8 → besucht. *t(h)*=18, *t(e)*=23
@@ -470,7 +453,7 @@ layout: two-cols
 
 ---
 
-## Teste eine der vielen Web-Applikationen
+# Teste eine der vielen Web-Applikationen
 
 <div class="flex gap-4">
 <img src="/AGI_HS25_Netzwerk2/_page_29_Figure_5.jpeg" class="h-72 object-contain" />
@@ -481,7 +464,7 @@ layout: two-cols
 layout: two-cols
 ---
 
-## Zusammenfassung
+# Zusammenfassung
 
 <img src="/AGI_HS25_Netzwerk2/_page_30_Picture_5.jpeg" class="h-32 object-contain mb-4" />
 
@@ -502,7 +485,7 @@ Kürzeste Pfade für OSM-Strassendaten von Wädenswil mit QGIS berechnen.
 
 ---
 
-## Lesematerial & Literatur
+# Lesematerial & Literatur
 
 <img src="/AGI_HS25_Netzwerk2/_page_32_Picture_5.jpeg" class="float-right h-40 ml-4" />
 
@@ -521,24 +504,24 @@ layout: cover
 
 <img src="/AGI_HS25_Netzwerk2/_page_33_Picture_3.jpeg" class="h-48 object-contain" />
 
-BSc Umweltingenieurwesen Angewandte Geoinformatik
+BSc Umweltingenieurwesen · Angewandte Geoinformatik
 
 ---
 
-## LN2: Dokumentation Spezialisierung
+# LN2: Dokumentation Spezialisierung
 
 - Eigenes Semesterprojekt, exemplifiziert, schafft etwas Sinnvolles
   - kann eine der ersten 4 Aufgaben ausbauen,
   - kann ein Teilaspekt eines anderen Projekts sein, oder
   - kann ein Teilaspekt der anstehenden BSc-Arbeit umfassen (Delta dokumentieren!)
-- Muss technische Fertigkeiten aus **2 der ersten 4** thematischen Blöcke aufgreifen:
+- Muss technische Fertigkeiten aus **2 der ersten 4** thematischen Blöcken aufgreifen:
   - *Datenqualität & Unsicherheit, Programmieren, Geodatenbanken, Netzwerkanalyse*
   - z.B. Netzwerkanalyse zur Erreichbarkeit im urbanen Raum
   - z.B. Kombiniert mit Unsicherheits-Aspekten zur Datenlage
 
 ---
 
-## Semester-Projekte: Beispiele
+# Semester-Projekte: Beispiele
 
 <div class="grid grid-cols-2 gap-2">
 <img src="/AGI_HS25_Netzwerk2/_page_35_Picture_6.jpeg" class="h-44 object-contain" />
@@ -551,15 +534,15 @@ BSc Umweltingenieurwesen Angewandte Geoinformatik
 
 ---
 
-## Semester-Projekte: Bewertungsraster
+# Semester-Projekte: Bewertungsraster
 
 <img src="/AGI_HS25_Netzwerk2/_page_36_Picture_6.jpeg" class="h-80 object-contain" />
 
-<small>basierend auf Z-RL-Richtlinie KI bei Leistungsnachweisen sowie Z-RL-Richtlinie Anhang Deklarationspflicht KI bei Arbeiten (Version 1.1.0, 01.03.2025)</small>
+<SlideFooter>basierend auf Z-RL-Richtlinie KI bei Leistungsnachweisen sowie Z-RL-Richtlinie Anhang Deklarationspflicht KI bei Arbeiten (Version 1.1.0, 01.03.2025)</SlideFooter>
 
 ---
 
-## Bewertungsraster (Forts.)
+# Bewertungsraster (Forts.)
 
 <div class="flex gap-2">
 <img src="/AGI_HS25_Netzwerk2/_page_39_Picture_5.jpeg" class="h-48 object-contain" />
@@ -571,13 +554,14 @@ BSc Umweltingenieurwesen Angewandte Geoinformatik
 ---
 layout: image
 image: /AGI_HS25_Netzwerk2/_page_41_Picture_6.jpeg
+backgroundSize: contain
 ---
 
-## AI / KI zitieren?
+# AI / KI zitieren?
 
 ---
 
-## AI / KI zitieren?
+# AI / KI zitieren?
 
 <div class="flex gap-4">
 <img src="/AGI_HS25_Netzwerk2/_page_42_Figure_6.jpeg" class="h-80 object-contain" />
@@ -588,7 +572,7 @@ image: /AGI_HS25_Netzwerk2/_page_41_Picture_6.jpeg
 layout: two-cols
 ---
 
-## Reminder: Proposal & Coaching
+# Reminder: Proposal & Coaching
 
 - Proposal schreiben ist **schwierig**: ihr sollt beschreiben, wie ihr ein Problem lösen werdet, ohne alle Herausforderungen zu kennen.
 - Wir können nur Feedback geben wenn ihr **konkret** beschreibt, was ihr zu machen gedenkt. Je detaillierter, desto besser.
@@ -601,7 +585,7 @@ layout: two-cols
 
 ---
 
-## Proposal: so nicht …
+# Proposal: so nicht …
 
 <div class="flex gap-4">
 <img src="/AGI_HS25_Netzwerk2/_page_44_Picture_6.jpeg" class="h-64 object-contain" />
@@ -612,27 +596,30 @@ layout: two-cols
 ---
 layout: image
 image: /AGI_HS25_Netzwerk2/_page_45_Picture_5.jpeg
+backgroundSize: contain
 ---
 
-## Proposal: viel besser!
+# Proposal: viel besser!
 
 ---
 layout: image
 image: /AGI_HS25_Netzwerk2/_page_46_Picture_6.jpeg
+backgroundSize: contain
 ---
 
-## Proposal: viel besser! (2)
+# Proposal: viel besser! (2)
 
 ---
 layout: image
 image: /AGI_HS25_Netzwerk2/_page_47_Picture_5.jpeg
+backgroundSize: contain
 ---
 
-## Proposal: viel besser! (3)
+# Proposal: viel besser! (3)
 
 ---
 
-## MBR – Lösung
+# MBR – Lösung
 
 Prüfe alle Stützpunkte (Vertices), d.h. deren Liste mit *x*-/*y*-Koordinaten.
 
