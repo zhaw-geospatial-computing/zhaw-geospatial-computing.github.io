@@ -161,15 +161,15 @@ pos <- data.frame(
 get_lay <- function(g) pos[match(V(g)$name, pos$name), c("x", "y")]
 
 # ── 6a. Ungerichteter Graph ───────────────────────────────────────────────────
-# Multigraph: A-B(×2), A-D, B-C, B-D, B-B(loop), C-D → degrees A=3, B=6, C=2, D=3
+# Multigraph: A-D, B-A(×2), B-B(loop), B-C, D-B, D-C → degrees A=3, B=6, C=2, D=3
 g_u <- graph_from_edgelist(rbind(
-  c("A", "B"),
-  c("A", "B"),
   c("A", "D"),
-  c("B", "C"),
-  c("B", "D"),
+  c("B", "A"),
+  c("B", "A"),
   c("B", "B"),
-  c("C", "D")
+  c("B", "C"),
+  c("D", "B"),
+  c("D", "C")
 ), directed = FALSE)
 l_u <- get_lay(g_u)
 
@@ -206,24 +206,24 @@ p_u <- ggraph(g_u, layout = "manual", x = l_u$x, y = l_u$y) +
 ggsave(
   file.path(out, "knotengrad-ungerichtet.png"),
   p_u,
-  width = 3,
-  height = 3,
-  dpi = 120,
+  width = 6,
+  height = 6,
+  dpi = 300,
   bg = "transparent"
 )
 
 # ── 6b. Gerichteter Graph ─────────────────────────────────────────────────────
-# Edges: A→C, B→A, B→B(loop), B→C, B→D, D→A, D→B
+# Edges: A→D, B→A(×2), B→B(loop), B→C, D→B, D→C
 # indegree  A=2, B=2(incl.loop), C=2, D=1
 # outdegree A=1, B=4(incl.loop), C=0, D=2  – B shown as "?"
 g_dir <- graph_from_edgelist(rbind(
-  c("A", "C"),
+  c("A", "D"),
+  c("B", "A"),
   c("B", "A"),
   c("B", "B"),
   c("B", "C"),
-  c("B", "D"),
-  c("D", "A"),
-  c("D", "B")
+  c("D", "B"),
+  c("D", "C")
 ), directed = TRUE)
 l_dir <- get_lay(g_dir)
 
@@ -303,9 +303,9 @@ p_dir <- ggraph(g_dir, layout = "manual", x = l_dir$x, y = l_dir$y) +
 ggsave(
   file.path(out, "knotengrad-gerichtet.png"),
   p_dir,
-  width = 3,
-  height = 3.3,
-  dpi = 120,
+  width = 6,
+  height = 3.6,
+  dpi = 300,
   bg = "transparent"
 )
 
