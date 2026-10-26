@@ -16,6 +16,10 @@ sections:
 
 <!-- title slide: content is defined in frontmatter -->
 
+<!--
+Zweite Veranstaltung Netzwerkanalyse. Letztes Mal: Zentralitätsmasse – dabei wurde der kürzeste Pfad verwendet, aber nicht explizit berechnet. Heute: den kürzesten Pfad als konkretes Problem + Algorithmen als übergeordnetes Thema.\n\n**Struktur**: Screencasts vorab (Flipped Classroom), dann Gruppenarbeit Dijkstra (Zürcher Tramnetz), dann QGIS-Übung (kürzeste Pfade in Wädenswil).
+-->
+
 ---
 layout: lernziele
 ---
@@ -27,6 +31,10 @@ layout: lernziele
 - Sie erkennen den Nutzen und die entsprechende Bedeutung von Algorithmen in der Geodatenverarbeitung und erlangen ein einfaches Verständnis über die **Bewertung von Algorithmen** nach der „big-O"-Notation der komputationellen Komplexität.
 - Sie sind in der Lage einfache Netzwerkanalysen (Streckenfindung, Routing) in **QGIS** mit gegebenen Werkzeugen der Netzwerk-Geodatenverarbeitung selbständig durchzuführen.
 
+<!--
+Kurz durchgehen, nicht detaillieren – dienen als Orientierungsrahmen. Das vierte Lernziel (QGIS) betrifft den Übungsteil. Algorithmus schreiben als «Dijkstra» – die Transkription schreibt ihn phonetisch falsch («Jaikstra», «Jigstra» etc.).
+-->
+
 ---
 
 # Zeitplan heute
@@ -37,9 +45,17 @@ layout: lernziele
 | 14:00 – 15:00   | Gruppenarbeit: Dijkstra selber rechnen                             | Gruppenarbeit in 3er/4er Gruppen |
 | 15:10 – 16:35   | QGIS-Übung: Kürzeste Pfade mit QGIS berechnen für Wädenswil        | Übungen, betreute Einzelarbeit |
 
+<!--
+Aufbau ähnlich wie letztes Mal. Screencasts zum Vorschauen, dann Gruppenarbeit: Dijkstra selber nachrechnen – etwas komplexer als letzte Mal, am konkreten Beispiel des Zürcher Tramnetzes (Berninaplatz → Staufacher). Dann QGIS-Übung: kürzeste Pfade auf OSM-Strassendaten von Wädenswil. Zoom-Links wie gewohnt auf Moodle.
+-->
+
 ---
 
 <Inhalt :active="1" />
+
+<!--
+Drei Teile: Zuerst Anwendungen (greifbare Beispiele), dann Algorithmen in GIS (Was sind sie? Big-O-Notation, klassische Beispiele inkl. Douglas-Peucker), dann Dijkstras kürzester Pfad.
+-->
 
 ---
 layout: two-cols
@@ -56,6 +72,10 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_5_Picture_6.jpeg" class="h-40 object-contain" />
 
 <img src="/AGI_HS25_Netzwerk2/_page_5_Figure_10.jpeg" class="h-40 object-contain mt-2" />
+
+<!--
+Greifbares Beispiel: Lime-Scooter / E-Trottinette – viele Studierende kennen das. Die App berechnet das nächste verfügbare Fahrzeug über ein Strassennetz. Gleiches Prinzip bei Uber-Dispatching und Schutz & Rettung. Bezug zur letzten Sitzung: auch bei der Berechnung von Zentralitätsmassen wurden implizit kürzeste Pfade verwendet.
+-->
 
 ---
 layout: two-cols
@@ -76,6 +96,10 @@ layout: two-cols
 
 <SlideFooter>Quellen: walkalytics.com, esri.ch</SlideFooter>
 
+<!--
+Reisezeiten: Ich bin an einem Ort, wie weit komme ich innerhalb von 5 Minuten über das Wegenetz? → braucht kürzeste Pfade. Das schauen wir nächstes Mal im Detail an. Geomarketing: Wie viele Einwohner können eine neue Filiale in 5–10 Minuten zu Fuss erreichen?
+-->
+
 ---
 layout: two-cols
 ---
@@ -91,6 +115,10 @@ Reihenfolge für den Besuch mehrerer Knoten so wählen, dass:
 
 <img src="/AGI_HS25_Netzwerk2/_page_7_Figure_6.jpeg" class="h-64 object-contain" />
 
+<!--
+TSP: «Politisch unkorrekt» auch Travelling Salesman Problem. Muss n Punkte anlaufen und das möglichst effizient machen. Beispiel aus interaktiver Web-App: Sightseeing-Tour San Francisco – manuelle Reihenfolge ergibt 26,3 Meilen, berechnete Optimal-Route ist kürzer. Computationell sehr teuer: viele kürzeste-Pfad-Berechnungen, jede traversiert viele Kanten → exponentiell in der Anzahl Stops.
+-->
+
 ---
 layout: two-cols
 ---
@@ -102,6 +130,10 @@ Optimierung von Probenahme-Standorten für 2 Tage Feldkampagne
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_8_Figure_6.jpeg" class="h-72 object-contain" />
+
+<!--
+Konkretes Beispiel vom ZHAW-Kollegen Theo Smits (Forschungsgruppe): Feldkampagne in der ganzen Schweiz, 2 Tage, ~30 Probestandorte – genau das Travelling Salesperson Problem. Sie haben es «von Hand» gemacht und sind gut durchgekommen. Mit TSP-Optimierung hätten sie vielleicht eine halbe Stunde mehr Pause gehabt.
+-->
 
 ---
 
@@ -139,9 +171,17 @@ Optimierung von Probenahme-Standorten für 2 Tage Feldkampagne
 <img src="/AGI_HS25_Netzwerk2/_page_9_Picture_20.jpeg" class="h-28 object-contain" />
 </div>
 
+<!--
+Unterschiedliche Reisemodi: Google Maps hat Icons für Auto, Zug, zu Fuss, Velo, Flugzeug – dahinter liegen völlig unterschiedliche Transportnetzwerke (Kanten = Flugkorridore vs. Velowege). Nächste Einrichtung: Wo ist mein nächster McDonalds, nächste Tankstelle? → kürzester Pfad zu allen Kandidaten. Flottenoptimierung: DHL belädt morgens den Lieferwagen und optimiert die Reihenfolge der Haltestellen.
+-->
+
 ---
 
 <Inhalt :active="2" />
+
+<!--
+Übergang zum Algorithmen-Teil. Wir verlassen nun die Anwendungen und schauen uns an, was Algorithmen eigentlich sind und wie man sie bewertet.
+-->
 
 ---
 layout: two-cols
@@ -161,6 +201,10 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk2/_page_12_Picture_9.jpeg" class="h-72 object-contain" />
 
+<!--
+Wichtige Unterscheidung: Der Algorithmus ist nicht das Computerprogramm selbst, sondern das **Verfahren** – der Ablauf. Hat oft Implikationen für Datenstrukturen: Die Daten müssen so organisiert sein, dass der Algorithmus effizient darüber «turnen» kann. Beispiel zum Illustrieren: Sortieren einer Liste (C, A, G, B, D, H, E, F). Es folgt ein kurzes Video, das zwei verschiedene Sortieralgorithmen zeigt.
+-->
+
 ---
 
 # Bubble-Sort vs. Merge-Sort
@@ -177,6 +221,10 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_13_Picture_14.jpeg" class="h-32 object-contain" />
 </div>
 
+<!--
+Video läuft hier (~3 Minuten). Zwei Sortieralgorithmen werden visuell dargestellt. Keine Erklärung nötig – Video spielt durch. Danach Besprechung auf der nächsten Folie.
+-->
+
 ---
 layout: two-cols
 ---
@@ -190,6 +238,10 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_14_Figure_6.jpeg" class="h-64 object-contain" />
 
 $$O(n\log_2(n))$$
+
+<!--
+Nach dem Video. **Bubble Sort**: Einfache Anweisung (vergleiche Paare, tausche wenn falsche Reihenfolge), x-mal wiederholen. Code ist simpel, aber O(n²) → jedes Element mit jedem anderen vergleichen. **Merge Sort**: Liste aufteilen bis atomare Elemente, sortieren, wieder zusammenfügen. Code deutlich komplexer (mehr Zeilen, mehr Hirnschmalz), dafür O(n log n) – signifikant schneller.\n\nO(n²) ist in der Praxis kaum brauchbar: Wenn n grösser wird, wächst die Rechenzeit quadratisch → irgendwann nicht mehr berechenbar.
+-->
 
 ---
 
@@ -225,6 +277,10 @@ $$O(n\log_2(n))$$
 </div>
 </div>
 
+<!--
+O = «Ordnung» oder Grössenordnung. n = Anzahl der zu prüfenden Elemente (Punkte, Kanten, Polygone …). Normalerweise Worst-Case-Szenario. Die Tabelle zeigt konkret: bei n=100 ist 2^n bereits 1,3×10^30 → völlig unberechenbar.\n\nWie leitet man Big-O ab? Das müssen wir nicht können – das ist die Kunst der theoretischen Informatik / Computational Geometry. Wir müssen nur verstehen, was es bedeutet, wenn ein Algorithmus O(n²) vs. O(n log n) hat.
+-->
+
 ---
 layout: two-cols
 ---
@@ -239,6 +295,10 @@ layout: two-cols
 ::right::
 
 <img src="/AGI_HS25_Netzwerk2/_page_16_Picture_9.jpeg" class="h-80 object-contain" />
+
+<!--
+Konkretes Projektbeispiel (Bundesamt für Strassen ASTRA): Kollisionen von Wildtieren mit Autos. Ansatz: Viele Punkte entlang des Strassenabschnitts setzen, von jedem Punkt zu jedem anderen Punkt Sichtlinie berechnen. Orange = unsichtbar (Wald im Weg), grüne Linien = sichtbar (Lichtung). Problem: Jeden Punkt mit jedem verbinden = O(n²) → so langsam, dass es nicht eingesetzt werden konnte. Mussten einen anderen Ansatz suchen.
+-->
 
 ---
 layout: two-cols
@@ -262,6 +322,10 @@ Koordinaten-Beispiel:
 <img src="/AGI_HS25_Netzwerk2/_page_17_Picture_5.jpeg" class="h-44 object-contain" />
 
 <img src="/AGI_HS25_Netzwerk2/_page_17_Figure_8.jpeg" class="h-44 object-contain mt-2" />
+
+<!--
+**Denkpause ~2 Minuten.** Studierende sollen sich selber einen Algorithmus überlegen. Gegeben: Stützpunkte (Vertices) des Polygons als x/y-Koordinatenliste. Hinweis: Denkt in Datenstrukturen – was braucht ihr eigentlich, um die Boundingbox zu definieren? (Antwort auf nächster Folie am Ende des Decks.)
+-->
 
 ---
 layout: two-cols
@@ -289,6 +353,10 @@ Teil der (Geo-)Informatik, welche die algorithmische Lösung von geometrischen P
 
 <img src="/AGI_HS25_Netzwerk2/_page_19_Picture_11.jpeg" class="h-36 object-contain mt-2" />
 
+<!--
+**Links**: Abschluss Screencast 1. Kurze Zusammenfassung der drei Kernaussagen.\n\n**Rechts**: Beginn Screencast 2. Algorithmische Geometrie = Teildisziplin der (Geo-)Informatik. Drei Leitfragen: (1) Gibt es überhaupt eine algorithmische Lösung? Für manche Probleme gibt es keine. (2) Was ist der effizienteste Algorithmus – bezüglich Rechenzeit oder Speicherplatz? (3) Wie Daten am besten strukturieren? Einstiegsbeispiel: der Point-in-Polygon-Test.
+-->
+
 ---
 layout: two-cols
 ---
@@ -310,6 +378,10 @@ Beide *O(n)*, mit *n* = Anzahl Kanten
 <img src="/AGI_HS25_Netzwerk2/_page_20_Figure_12.jpeg" class="h-48 object-contain" />
 
 <img src="/AGI_HS25_Netzwerk2/_page_20_Figure_13.jpeg" class="h-48 object-contain mt-2" />
+
+<!--
+Klassische GIS-Operation: Jede räumliche Abfrage mit Polygon-Containment braucht einen Point-in-Polygon-Test (z.B. «gib mir alle Bars innerhalb der Gemeinde Wädenswil»).\n\n**Halblinien-Algorithmus**: Eine Halblinie vom Punkt in beliebige Richtung zeichnen. Anzahl Schnitte mit Polygon zählen: ungerade = innerhalb (Beispiel: 5 Schnitte = innen), gerade = ausserhalb (2 Schnitte = aussen). Clever und elegant!\n\n**Aufwickel-Algorithmus**: Beobachter geht gegen Uhrzeigersinn auf dem Polygon, schaut immer zum Punkt. Komplette 360°-Drehung = innen; keine vollständige Drehung = aussen.\n\nBeide O(n), n = Anzahl Kanten – schnelle Algorithmen.
+-->
 
 ---
 layout: two-cols
@@ -335,6 +407,10 @@ Vereinfachung der Linie unter Bewahrung der essentielle Form (z.B. kartographisc
 <img src="/AGI_HS25_Netzwerk2/_page_21_Picture_14.jpeg" class="h-28 object-contain" />
 <img src="/AGI_HS25_Netzwerk2/_page_21_Figure_15.jpeg" class="h-28 object-contain" />
 </div>
+
+<!--
+Klassischer Geoinformatik-Algorithmus, der zweite Klassiker neben Dijkstra. Anwendung: kartographische Generalisierung, z.B. Strassenlinie von 1:25'000 → 1:50'000 vereinfachen.\n\nAlgorithmus: (1) Verbinde Start und Ende. (2) Suche den weitest entferntesten Stützpunkt von dieser Verbindungslinie. (3) Splitte dort, führe neue Teillinien ein. (4) Gleich für alle Unterteile wiederholen, bis Distanz unter Schwellenwert.\n\n**Rekursion** = Code ruft sich selber auf, in «verkleinerter Form», bis Abbruchbedingung. Auch Merge Sort war rekursiv. Kann den Kopf zerlegen, aber ist ein mächtiges Konzept.
+-->
 
 ---
 layout: two-cols
@@ -364,6 +440,10 @@ Kompromiss: nur Kanten mit Wert ≠ 0
 
 <img src="/AGI_HS25_Netzwerk2/_page_22_Figure_9.jpeg" class="h-96 object-contain" />
 
+<!--
+Algorithmen arbeiten eng mit Datenstrukturen zusammen. Drei Optionen für Netzwerkdaten:\n\n1. **Gelabelte Kanten**: Einfache Liste – jede Kante mit Kosten (AB=20, AG=15, BC=8). Sehr simpel.\n2. **Nachbarschafts-Matrix**: Spärlich besiedelt (viele Nullen), da bei a–e keine Verbindung → 0. Zeigt alle möglichen Verbindungen + Kosten. Viel Redundanz.\n3. **Nachbarschafts-Liste** (Kompromiss): Für jeden Knoten: Liste der Nachbarn + Distanzen. Knoten A hat Nachbarn B (20) und G (15). Eignet sich besonders gut für die algorithmische Durchquerung → wird für Dijkstra verwendet.\n\nStudierende müssen das nicht selber herleiten – zur Illustration der Verbindung Algorithmus↔Datenstruktur.
+-->
+
 ---
 layout: two-cols
 ---
@@ -388,6 +468,10 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk2/_page_23_Picture_26.jpeg" class="h-24 object-contain mt-2" />
 
+<!--
+Zwei Strategien, ein Netzwerk vollständig zu durchqueren. Start in B:\n\n**BFS / Queue (FIFO)**: Zuerst alle direkten Nachbarn von B (breadth = Breite), dann deren Nachbarn usw. Analogie: Post-Warteschlange (Zalando-Päcklischlange) – hinten anstellen, vorne raus. Hinzugefügt wird hinten, weggenommen wird vorne.\n\n**DFS / Stack (LIFO)**: So weit wie möglich in die Tiefe (B→A→G→E→F→C…), erst bei Sackgasse zurückgehen. Analogie: Tellerstapel in der Mensa – immer von vorne rauf und vorne runter. Last in, first out.\n\nVerschiedene Algorithmen verwenden verschiedene Durchquerungsstrategien.
+-->
+
 ---
 
 # Systematisches Durchsuchen: Animiert
@@ -409,9 +493,17 @@ layout: two-cols
 </div>
 </div>
 
+<!--
+Animationen zeigen BFS und DFS in Aktion. Queue: hinten hinzufügen, vorne wegnehmen (FIFO). Stack: vorne hinzufügen und vorne wegnehmen (LIFO). Kurz kommentieren, dann weiter zu Dijkstra – das ist der eigentliche Grund, warum wir das alles angeschaut haben.
+-->
+
 ---
 
 <Inhalt :active="3" />
+
+<!--
+Übergang zu Dijkstra. Die ganze Vorbereitung (Algorithmen, Datenstrukturen, BFS) führt jetzt hier zusammen. «Jetzt solltet ihr fit sein, um euch Dijkstra einzuverleiben.»
+-->
 
 ---
 layout: two-cols
@@ -435,6 +527,10 @@ A* braucht eine Heuristik (besuche nahe Knoten zuerst) → in Praxis schneller.
 
 <img src="/AGI_HS25_Netzwerk2/_page_27_Figure_11.jpeg" class="h-44 object-contain mt-2" />
 
+<!--
+Alltagsbeispiel: Wie komme ich vom Bahnhof Wädenswil zum Campus Grüntal mit dem Velo? Zwei Alternativen, welche ist kürzer? → Dijkstra berechnet das.\n\nAlgorithmus auf dem Beispiel-Netzwerk, Start bei B:\n- **Init**: Alle Distanzen = ∞, ausser direkte Nachbarn: A=20, C=8, D=9.\n- **Iter. 2**: Kleinster Knoten = C (8). Nachbarn aufdatieren: H=8+10=18, E=8+15=23.\n- **Iter. 3**: Kleinster = D (9). Prüfe E: B→D→E = 9+7=16 < 23 → E überschreiben mit 16.\n- **Iter. 4**: E=16 besuchen, Rest aufdatieren.\n\nBei jedem Schritt: prüfen ob eine kürzere Distanz gefunden wurde → kürzeste überschreibt vorherige. Am Ende steht bei jedem Knoten der kürzeste Pfad von B.\n\nDijkstra O(n²). A* mit Heuristik «besuche nahe Knoten zuerst» → in Praxis deutlich schneller.
+-->
+
 ---
 layout: two-cols
 ---
@@ -451,6 +547,10 @@ layout: two-cols
 
 <img src="/AGI_HS25_Netzwerk2/_page_28_Figure_10.jpeg" class="h-80 object-contain" />
 
+<!--
+Schritt-für-Schritt-Darstellung der vier Iterationen. Für tieferes Verständnis: Worboys & Duckham, Kap. 5 – dort ist jede Iteration schön beschrieben. Wenn die Erklärung hier nicht vollständig klar ist, unbedingt im Buch nachschlagen.
+-->
+
 ---
 
 # Teste eine der vielen Web-Applikationen
@@ -459,6 +559,10 @@ layout: two-cols
 <img src="/AGI_HS25_Netzwerk2/_page_29_Figure_5.jpeg" class="h-72 object-contain" />
 <img src="/AGI_HS25_Netzwerk2/_page_29_Figure_6.jpeg" class="h-72 object-contain" />
 </div>
+
+<!--
+Empfehlung: Vor der Übung 1–2 dieser interaktiven Animationen ausprobieren. Man kann einen neuen Graphen eingeben und den Algorithmus Schritt für Schritt durchspielen. Hilft das Verständnis signifikant – die Animationen sind gut gemacht. Links auf der Literatur-Folie.
+-->
 
 ---
 layout: two-cols
@@ -483,6 +587,10 @@ Kürzeste Pfade für OSM-Strassendaten von Wädenswil mit QGIS berechnen.
 
 <img src="/AGI_HS25_Netzwerk2/_page_31_Figure_7.jpeg" class="h-36 object-contain mt-4" />
 
+<!--
+**Links**: Zusammenfassung. Fast alle GIS-Funktionen verwenden vergleichbare Algorithmen – wenn man tief in die Dokumentation schaut, findet man meistens Referenzen auf die Papers, in denen diese dokumentiert sind.\n\n**Rechts**: Übergang zum praktischen Teil. Gruppenarbeit: Dijkstra manuell nachrechnen auf dem Zürcher VBZ-Tramnetz (Berninaplatz → Staufacher). QGIS-Übung: Kürzeste Pfade berechnen, z.B. vom Campus Grüntal runter auf die Halbinsel.
+-->
+
 ---
 
 # Lesematerial & Literatur
@@ -495,6 +603,10 @@ Kürzeste Pfade für OSM-Strassendaten von Wädenswil mit QGIS berechnen.
 - Interaktive Apps zum kürzesten Pfad:
   - https://www.cs.usfca.edu/~galles/visualization/Dijkstra.html
   - https://algorithms.discrete.ma.tum.de/graph-algorithms/spp-dijkstra/index_en.html
+
+<!--
+Pflichtlektüre: Worboys & Duckham Kap. 5. GITTA-Lektion zu Accessibility als ergänzendes E-Learning. Die zwei interaktiven Dijkstra-Apps sind empfehlenswert vor der Übung – Studierende können einen Graphen eingeben und den Algorithmus animiert beobachten.
+-->
 
 ---
 layout: cover
@@ -630,3 +742,7 @@ Speichere immer die vier Werte für:
 - höchster y-Wert
 
 <img src="/AGI_HS25_Netzwerk2/_page_49_Figure_10.jpeg" class="h-56 object-contain mt-4" />
+
+<!--
+Lösung zur MBR-Denkpause von vorhin. In Datenstrukturen denken: Stützpunkte als zwei Listen (x-Koordinaten, y-Koordinaten). Man braucht nur zwei Punkte: lower-left und upper-right.\n\nAlgorithmus: Vier Variablen anlegen (min_x, min_y, max_x, max_y). Durch alle Stützpunkte loopen. Wenn aktueller Wert kleiner als min → überschreiben, wenn grösser als max → überschreiben. Nach dem Loop: Boundingbox ist definiert. O(n) – sehr schnell.
+-->
