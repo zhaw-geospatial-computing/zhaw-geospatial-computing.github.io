@@ -96,29 +96,6 @@ net |> activate("nodes") |> as_tibble() |> nrow()
 net |> activate("edges") |> as_tibble() |> nrow()
 ```
 
----
-
-## Task 4: Compute edge weights
-
-Centrality measures like closeness and betweenness are based on shortest paths. To find the shortest path between two nodes, we need to know the **cost** of traversing each edge — this is the edge weight.
-
-Before adding weights to the network: think about what different weighting schemes are possible for a street network. What does each one prioritise, and in which application would you use it?
-
-:::{.callout-note}
-Think beyond geometry. The `osm_highway` layer contains attributes such as `highway`, `maxspeed`, `oneway`, and `surface`. Which of these could serve as — or help derive — an edge weight?
-:::
-
-For now, use **physical length** as the weight: add a column `length` to the network edges containing the length of each segment in metres.
-
-:::{.callout-note}
-`edge_length()` is a helper function from `sfnetworks` that computes edge lengths inside `mutate()` when edges are activated.
-:::
-
-```{r}
-net <- net |>
-  activate("edges") |>
-  mutate(length = edge_length())
-```
 
 ---
 
@@ -162,7 +139,34 @@ ggplot() +
   labs(title = "Degree Centrality – Wädenswil street network")
 ```
 
+
 ---
+
+## Task 4: Compute edge weights
+
+Centrality measures like closeness and betweenness are based on shortest paths. To find the shortest path between two nodes, we need to know the **cost** of traversing each edge — this is the edge weight.
+
+Before adding weights to the network: think about what different weighting schemes are possible for a street network. What does each one prioritise, and in which application would you use it?
+
+:::{.callout-note}
+Think beyond geometry. The `osm_highway` layer contains attributes such as `highway`, `maxspeed`, `oneway`, and `surface`. Which of these could serve as — or help derive — an edge weight?
+:::
+
+For now, use **physical length** as the weight: add a column `length` to the network edges containing the length of each segment in metres.
+
+:::{.callout-note}
+`edge_length()` is a helper function from `sfnetworks` that computes edge lengths inside `mutate()` when edges are activated.
+:::
+
+```{r}
+net <- net |>
+  activate("edges") |>
+  mutate(length = edge_length())
+```
+
+---
+
+
 
 ## Task 6: Closeness Centrality
 
