@@ -19,7 +19,7 @@ sections:
 <!-- title slide: content is defined in frontmatter -->
 
 <!--
-Welcome. This module accompanies students over three weeks into network analysis as a further application area of geoinformatics.\n\n**Flipped Classroom**: Students should have completed the reading assignments beforehand – the course only works with prior reading. Point this out explicitly.\n\n**Today's structure**: Theory recap (screencast), then Q&A session, group work (calculating centrality measures themselves) and QGIS exercises.
+Welcome. This module accompanies students over three weeks into network analysis as a further application area of geoinformatics.\n\n**Flipped Classroom**: Students should have completed the reading assignments beforehand – the course only works with prior reading. Point this out explicitly.\n\n**Today's structure**: Theory recap (screencast), then Q&A session, group work (calculating centrality measures themselves) and R exercises.
 -->
 
 ---
@@ -44,12 +44,12 @@ Five learning objectives — go through briefly, don't explain in detail – the
 
 | Time | What | Format |
 |------|------|--------|
-| 08:00 – 08:45 | **Theory** Graph theory and centrality | Theory recap |
+| 08:00 – 08:45 | **Theory** Graph theory and centralxity | Theory recap |
 | 09:00 – 10:00 | **Group work** Calculate centrality measures yourselves | Group work in groups of 3–4 |
-| 10:10 – 11:35 | **QGIS exercise** Calculate centrality measures with QGIS for Wädenswil | Exercises, supervised individual work |
+| 10:10 – 11:35 | **R exercise** Calculate centrality measures with R for Wädenswil | Exercises, supervised individual work |
 
 <!--
-**Schedule**: First theory recap (screencast or presented here), then short Q&A and introduction to the exercises. Then group work in groups of 3–4, finally supervised individual work on QGIS exercises.
+**Schedule**: First theory recap (screencast or presented here), then short Q&A and introduction to the exercises. Then group work in groups of 3–4, finally supervised individual work on R exercises.
 -->
 
 ---
