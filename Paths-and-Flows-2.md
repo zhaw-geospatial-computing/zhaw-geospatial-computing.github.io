@@ -419,7 +419,7 @@ Coordinate example:
 
 ---
 layout: two-cols-header
-hide: true
+hide: false
 ---
 
 ## Minimal Bounding Rectangle
@@ -685,7 +685,7 @@ Animations show BFS and DFS in action. Queue: add at the back, remove from the f
   1. Start: $t(\text{start}) = 0$, all others $= \infty$
   2. Pick the unvisited node with the **smallest** $t(x)$ → visit it
   3. For each unvisited neighbour $y$: if $t(x) + w(x,y) < t(y)$, update $t(y)$
-  4. Repeat until all nodes are visited
+  4. **Stop** when the *destination* node is visited (point-to-point routing), or when *all* nodes are visited (catchment areas, distance matrices)
 - **Note**: step 2 picks the globally smallest $t(x)$, not the nearest by number of hops. A direct neighbour with a high edge weight may be visited *after* a two-hop node reached cheaply.
 - Complexity: $O(n^2)$
 - **A\*** adds a heuristic (estimated remaining distance) → visits promising nodes first → faster in practice
@@ -818,6 +818,22 @@ Same as Part 1 — build an undirected `sfnetwork` and add edge lengths.
 
 ::left::
 
+**Getting started:**
+- Load packages: `sf`, `sfnetworks`, `tidygraph`, `dplyr`
+- Read both layers from `netzwerkanalyse.gpkg` using `read_sf(..., layer = "...")`
+- Convert to a network: `as_sfnetwork(streets, directed = FALSE)`
+- Add edge lengths: `activate("edges") |> mutate(length = edge_length())`
+- Extract as sf: `st_as_sf(net, "nodes")` and `st_as_sf(net, "edges")`
+
+::right::
+
+<img src="/netzwerkanalyse-r/strassennetz.png" class="h-full object-contain" />
+
+<!--
+- Quick recap — students who still have their Part 1 script can copy it directly.
+- Key addition over Part 1 Task 1: the `edge_length()` call, which we now need for weighted shortest paths.
+
+**Solution:**
 ```r
 library(sf); library(sfnetworks)
 library(tidygraph); library(dplyr)
@@ -834,14 +850,6 @@ net <- as_sfnetwork(streets, directed = FALSE) |>
 nodes <- st_as_sf(net, "nodes")
 edges <- st_as_sf(net, "edges")
 ```
-
-::right::
-
-<img src="/netzwerkanalyse-r/strassennetz.png" class="h-full object-contain" />
-
-<!--
-- Quick recap — students who still have their Part 1 script can copy it directly.
-- Key addition over Part 1 Task 1: the `edge_length()` call, which we now need for weighted shortest paths.
 -->
 
 ---
@@ -866,24 +874,17 @@ edges <- st_as_sf(net, "edges")
 layout: two-cols-header
 ---
 
-# Task 2: Load locations in R
+# Task 3: Load locations in R
 
 Load the GeoPackage and snap each location to the nearest network node.
 
 ::left::
 
-```r
-locations <- read_sf("routing_locations.gpkg")
-
-# snap all locations to network nodes
-loc_idx  <- st_nearest_feature(locations, nodes)
-snap_pts <- nodes[loc_idx, ] |>
-  mutate(name = locations$name)
-
-# origin / destination for Tasks 3–5
-from_idx <- loc_idx[locations$name == "Bahnhof"]
-to_idx   <- loc_idx[locations$name == "ZHAW Grüntal"]
-```
+**Getting started:**
+- Load `routing_locations.gpkg` with `read_sf()`
+- `st_nearest_feature(locations, nodes)` returns an integer index per location — the nearest node
+- Use those indices to subset `nodes`, then add a `name` column from `locations$name`
+- Extract `from_idx` and `to_idx` by filtering on `locations$name`
 
 Visualise `snap_pts` on the network. Do all nodes look right?
 
@@ -895,17 +896,44 @@ Visualise `snap_pts` on the network. Do all nodes look right?
 - `st_nearest_feature()` returns the row index in the second argument closest to each feature in the first.
 - Students should verify visually that snap points are in sensible locations — ZHAW Grüntal is up the hill, Strandbad is near the lake.
 - A missnapped point usually means the GeoPackage CRS is wrong.
+
+**Solution:**
+```r
+locations <- read_sf("routing_locations.gpkg")
+
+# snap all locations to network nodes
+loc_idx  <- st_nearest_feature(locations, nodes)
+snap_pts <- nodes[loc_idx, ] |>
+  mutate(name = locations$name)
+
+# origin / destination for Tasks 4–6
+from_idx <- loc_idx[locations$name == "Bahnhof"]
+to_idx   <- loc_idx[locations$name == "ZHAW Grüntal"]
+```
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Task 3: Find the shortest path
+# Task 4: Find the shortest path
 
 Find the shortest network route from the Bahnhof to ZHAW Grüntal. Visualise it.
 
+**Getting started:**
+- `st_network_paths(net, from = ..., to = ..., weights = "length")` — use the index variables from Task 3
+- The result has an `edge_paths` column containing the edge indices of the route
+- Extract them: `pull(edge_paths) |> unlist()`
+- Get those edges as sf: `activate("edges") |> slice(...) |> st_as_sf()`
+- Visualise `path_edges` on a map with `ggplot2`
 
+<!--
+- `st_network_paths()` returns a tibble — `edge_paths` is a list-column of edge index vectors.
+- `slice()` extracts those edges as sf.
+- Students produce the ggplot map themselves.
+- The route should climb from the lakeside station up to Grüntal — a good sanity check.
+
+**Solution:**
 ```r
 library(ggplot2)
 
@@ -923,6 +951,7 @@ path_edges <- net |>
 
 # visualise path_edges on a ggplot map
 ```
+-->
 
 ---
 
@@ -937,8 +966,23 @@ path_edges <- net |>
 
 ---
 
-# Task 4: Inspect the route
+# Task 5: Inspect the route
 
+- How long is the route in metres?
+- How many individual street segments does it traverse?
+- Change the destination to a point on the far east of the municipality. Does the result look plausible?
+
+**Hints:**
+- `sum(path_edges$length)` gives total length — wrap in `as.numeric()` to strip units, then `round()`
+- `nrow(path_edges)` counts the number of segments
+- To change destination: update `to_idx` and re-run Task 4
+
+<!--
+- Good discussion: does the computed route match what a cyclist or pedestrian would choose?
+- The network only uses roads — no shortcuts across fields or down steep paths.
+- Changing the destination tests whether students can adapt the code independently.
+
+**Solution:**
 ```r
 # Total length in metres
 cat("Route length:", round(sum(as.numeric(path_edges$length))), "m\n")
@@ -946,31 +990,34 @@ cat("Route length:", round(sum(as.numeric(path_edges$length))), "m\n")
 # Number of street segments
 cat("Segments:", nrow(path_edges), "\n")
 ```
-
-- How long is the route in metres?
-- How many individual street segments does it traverse?
-- Change the destination to a point on the far east of the municipality. Does the result look plausible?
-
-<!--
-- Good discussion: does the computed route match what a cyclist or pedestrian would choose?
-- The network only uses roads — no shortcuts across fields or down steep paths.
-- Changing the destination tests whether students can adapt the code independently.
 -->
 
 ---
 layout: two-cols-header
 ---
 
-# Task 5: Catchment area
+# Task 6: Catchment area
 
 From the Bahnhof, which parts of Wädenswil can be reached within 500 m / 1 000 m / 2 000 m?
 
+**Getting started:**
+- `st_network_cost(net, from = from_idx, weights = "length")` returns a 1×N matrix — one distance per node
+- Convert to a plain numeric vector: `as.numeric(costs[1, ])`
+- Add this as a column to `nodes` using `mutate()`
+- Use `case_when()` to label each node by zone (≤ 500 m, ≤ 1 000 m, ≤ 2 000 m, > 2 000 m)
+- Colour nodes by zone in a ggplot map
 
+<!--
+- `st_network_cost()` with a single `from` returns a 1×N distance matrix.
+- Colouring nodes by zone gives an isochrone-like service area.
+- Discussion: how does the shape compare to a circle? The lake and terrain constrain it strongly.
+- Connect to the Sharely example from the lecture.
+
+**Solution:**
 ```r
 costs <- st_network_cost(net,
   from = from_idx, weights = "length")
 
-# costs is a 1 × N matrix
 nodes_iso <- nodes |>
   mutate(
     dist_m = as.numeric(costs[1, ]),
@@ -983,6 +1030,7 @@ nodes_iso <- nodes |>
   )
 # → visualise nodes_iso, colour by zone
 ```
+-->
 
 ---
 
@@ -999,11 +1047,24 @@ nodes_iso <- nodes |>
 layout: two-cols-header
 ---
 
-# Task 6: Distance matrix
+# Task 7: Distance matrix
 
 Compute the pairwise network distance between all six locations.
 
+**Getting started:**
+- Same `st_network_cost()` as Task 6 — this time pass `loc_idx` to *both* `from` and `to`
+- Label rows and columns: `rownames(cost_mat) <- locations$name` (same for `colnames`)
+- `round()` the result for a clean printout
 
+- Which two locations are farthest apart by network distance?
+- How does network distance compare to straight-line distance for each pair?
+
+<!--
+- Passing vectors to both `from` and `to` gives a full n×n matrix.
+- The diagonal is 0. With an undirected network the matrix is symmetric.
+- Good discussion: which pairs diverge most between Euclidean and network distance? Likely the lake-facing pairs.
+
+**Solution:**
 ```r
 cost_mat <- st_network_cost(net,
   from    = loc_idx,
@@ -1015,9 +1076,7 @@ colnames(cost_mat) <- locations$name
 
 round(cost_mat)
 ```
-
-- Which two locations are farthest apart by network distance?
-- How does network distance compare to straight-line distance for each pair?
+-->
 
 ---
 
@@ -1033,11 +1092,28 @@ round(cost_mat)
 layout: two-cols-header
 ---
 
-# Task 7: Travelling Salesperson
+# Task 8: Travelling Salesperson
 
 Visit all six locations exactly once and return to the Bahnhof. Find the optimal order.
 
+**Getting started:**
+- Load `library(TSP)`
+- `units::drop_units(cost_mat)` strips the units before creating the TSP object: `TSP(...)`
+- `solve_TSP()` finds the optimal tour
+- `as.integer(tour)` gives the visit order as indices — use with `rownames(cost_mat)` to print location names
+- `tour_length(tour)` gives the total distance
+- For bonus: trace each leg with `st_network_paths()` and visualise the full route
 
+- Why is exact TSP feasible for 6 stops but not for 20?
+
+<!--
+- `TSP::solve_TSP()` wraps multiple solvers; for n=6 it is instantaneous.
+- `units::drop_units()` strips the units attribute that `edge_length()` attaches.
+- Key teaching point: this is O(k^n) — 6 stops is trivial, 20 stops has ~10^17 orderings.
+- Connect to the complexity table from the lecture.
+- The route visualisation uses `mapply(st_network_paths, ...)` to draw actual network paths per leg, not straight lines.
+
+**Solution:**
 ```r
 library(TSP)
 
@@ -1049,11 +1125,7 @@ cat(paste(
   collapse = " → "), "\n")
 cat("Total:", round(tour_length(tour)), "m\n")
 ```
-
-Trace the tour back to the actual network using `st_network_paths()` for each leg.
-
-- Why is exact TSP feasible for 6 stops but not for 20?
-
+-->
 
 ---
 
