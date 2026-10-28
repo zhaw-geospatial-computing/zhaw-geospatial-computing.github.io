@@ -818,22 +818,6 @@ Same as Part 1 — build an undirected `sfnetwork` and add edge lengths.
 
 ::left::
 
-**Getting started:**
-- Load packages: `sf`, `sfnetworks`, `tidygraph`, `dplyr`
-- Read both layers from `netzwerkanalyse.gpkg` using `read_sf(..., layer = "...")`
-- Convert to a network: `as_sfnetwork(streets, directed = FALSE)`
-- Add edge lengths: `activate("edges") |> mutate(length = edge_length())`
-- Extract as sf: `st_as_sf(net, "nodes")` and `st_as_sf(net, "edges")`
-
-::right::
-
-<img src="/netzwerkanalyse-r/strassennetz.png" class="h-full object-contain" />
-
-<!--
-- Quick recap — students who still have their Part 1 script can copy it directly.
-- Key addition over Part 1 Task 1: the `edge_length()` call, which we now need for weighted shortest paths.
-
-**Solution:**
 ```r
 library(sf); library(sfnetworks)
 library(tidygraph); library(dplyr)
@@ -850,6 +834,14 @@ net <- as_sfnetwork(streets, directed = FALSE) |>
 nodes <- st_as_sf(net, "nodes")
 edges <- st_as_sf(net, "edges")
 ```
+
+::right::
+
+<img src="/netzwerkanalyse-r/strassennetz.png" class="h-full object-contain" />
+
+<!--
+- Quick recap — students who still have their Part 1 script can copy it directly.
+- Key addition over Part 1 Task 1: the `edge_length()` call, which we now need for weighted shortest paths.
 -->
 
 ---
