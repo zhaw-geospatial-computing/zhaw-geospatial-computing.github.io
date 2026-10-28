@@ -21,7 +21,10 @@ sections:
 <!-- title slide: content is defined in frontmatter -->
 
 <!--
-Second lecture on network analysis. Last time: centrality measures — shortest path was used there but not explicitly calculated. Today: shortest path as a concrete problem + algorithms as the overarching theme.\n\n**Structure**: Screencasts beforehand (Flipped Classroom), then group work on Dijkstra (Zurich tram network), then R exercises (shortest paths in Wädenswil).
+- Second lecture on network analysis. 
+- Last time: centrality measures — shortest path was used there but not explicitly calculated. 
+- Today: shortest path as a concrete problem + algorithms as the overarching theme.
+- **Structure**: Screencasts beforehand (Flipped Classroom), then group work on Dijkstra (Zurich tram network), then R exercises (shortest paths in Wädenswil).
 -->
 
 ---
@@ -36,7 +39,9 @@ layout: lernziele
 - You can independently perform simple **network analyses** (route finding, routing) in **R** using the available tools for network geodata processing.
 
 <!--
-Go through briefly, don't elaborate — serves as an orientation framework. The fourth objective (R) relates to the exercise part. Dijkstra — the transcript spells it phonetically wrong ('Jaikstra', 'Jigstra' etc.).
+- Go through briefly, don't elaborate — serves as an orientation framework.
+- The fourth objective (R) relates to the exercise part.
+- Note: the transcript spells Dijkstra phonetically wrong ('Jaikstra', 'Jigstra' etc.).
 -->
 
 ---
@@ -50,7 +55,10 @@ Go through briefly, don't elaborate — serves as an orientation framework. The 
 | 15:10 – 16:35   | R exercise: calculate shortest paths with R for Wädenswil          | Exercises, supervised individual work |
 
 <!--
-Structure similar to last time. Screencasts to watch beforehand, then group work: step through Dijkstra manually — slightly more complex than last time, using the Zurich tram network as a concrete example (Berninaplatz → Staufacher). Then R exercise: shortest paths on OSM street data in Wädenswil. Zoom links as usual on Moodle.
+- Structure similar to last time: screencasts to watch beforehand.
+- Group work: step through Dijkstra manually — slightly more complex than last time, using the Zurich tram network (Berninaplatz → Staufacher).
+- R exercise: shortest paths on OSM street data in Wädenswil.
+- Zoom links as usual on Moodle.
 -->
 
 ---
@@ -58,11 +66,13 @@ Structure similar to last time. Screencasts to watch beforehand, then group work
 <Inhalt :active="1" />
 
 <!--
-Three parts: applications first (tangible examples), then algorithms in GIS (what are they? Big-O notation, classic examples including Douglas-Peucker), then Dijkstra's shortest path.
+Three parts:
+1. Applications — tangible examples
+2. Algorithms in GIS — what are they? Big-O notation, classic examples including Douglas-Peucker
+3. Dijkstra's shortest path
 -->
 
 ---
-
 
 # Applications: Vehicle Routing
 
@@ -71,10 +81,13 @@ Three parts: applications first (tangible examples), then algorithms in GIS (wha
   - e.g. Dispatching emergency services
 
 
-<img src="/AGI_HS25_Netzwerk1/google-maps.png" class="h-80 object-contain" /> 
+<img src="/AGI_HS25_Netzwerk1/google-maps.png" class="h-80 object-contain" />
 
 <!--
-Relatable example: Lime scooters / e-scooters — many students will have used them. The app calculates the nearest available vehicle via a street network. Same principle for Uber dispatching and emergency services. Connection to last session: calculating centrality measures also implicitly used shortest paths.
+- Relatable example: Lime scooters / e-scooters — many students will have used them.
+- The app calculates the nearest available vehicle via a street network.
+- Same principle for Uber dispatching and emergency services.
+- Connection to last session: calculating centrality measures also implicitly used shortest paths.
 -->
 
 ---
@@ -114,21 +127,21 @@ layout: two-cols-header
 
 Choose the order for visiting multiple nodes such that:
 
-::left::
 
 1. every node is visited once
 1. the total travel distance/time is minimised
 1. the first stop equals the last stop.
 
-::right::
+---
 
-<img src="/book-crawls.jpeg" class="h-64 object-contain" />
-
+<img src="/book-crawls.jpeg" class="h-full object-contain" />
 
 <!--
-TSP: also known (less politically correctly) as the Travelling Salesman Problem. Must visit n points as efficiently as possible. Example from an interactive web app: sightseeing tour of San Francisco — manual ordering gives 26.3 miles, the computed optimal route is shorter. Computationally very expensive: many shortest-path calculations, each traversing many edges → exponential in the number of stops.
+- TSP: also known (less politically correctly) as the Travelling Salesman Problem.
+- Must visit n points as efficiently as possible.
+- Example from an interactive web app: sightseeing tour of San Francisco — manual ordering gives 26.3 miles, the computed optimal route is shorter.
+- Computationally very expensive: many shortest-path calculations, each traversing many edges → exponential in the number of stops.
 -->
-
 
 ---
 
@@ -139,11 +152,10 @@ TSP: also known (less politically correctly) as the Travelling Salesman Problem.
 - **Fleet Optimisation** — DHL van scheduling, waste collection, field campaigns
 - **Catchment Areas** — geomarketing, travel-time service areas
 
-
-
-
 <!--
-Different travel modes: Google Maps has icons for car, train, walking, bike, plane — completely different transport networks behind each (edges = flight corridors vs. cycle paths). Nearest facility: Where is my nearest McDonald's, nearest petrol station? → shortest path to all candidates. Fleet optimisation: DHL loads the van in the morning and optimises the order of stops.
+- **Shortest path / travel modes**: Google Maps has icons for car, train, walking, bike, plane — completely different transport networks behind each (edges = flight corridors vs. cycle paths).
+- **Nearest facility**: Where is my nearest McDonald's, nearest petrol station? → shortest path to all candidates.
+- **Fleet optimisation**: DHL loads the van in the morning and optimises the order of stops.
 -->
 
 ---
@@ -151,7 +163,8 @@ Different travel modes: Google Maps has icons for car, train, walking, bike, pla
 <Inhalt :active="2" />
 
 <!--
-Transition to the algorithms section. We now leave the applications and look at what algorithms actually are and how they are evaluated.
+- Transition to the algorithms section.
+- We now leave the applications and look at what algorithms actually are and how they are evaluated.
 -->
 
 ---
@@ -169,13 +182,12 @@ layout: two-cols-header
 
 <SlideFooter>Sources: Worboys & Duckham (2004). GIS: a computing perspective. Sedgewick (2003). Algorithms in Java. </SlideFooter>
 
-
-
-
 <!--
-Key distinction: the algorithm is not the computer program itself, but the **procedure** — the sequence of steps. Often has implications for data structures: the data must be organised so the algorithm can traverse it efficiently. Illustrating example: sorting a list (C, A, G, B, D, H, E, F). A short video follows showing two different sorting algorithms.
+- Key distinction: the algorithm is not the computer program itself, but the **procedure** — the sequence of steps.
+- Often has implications for data structures: the data must be organised so the algorithm can traverse it efficiently.
+- Illustrating example: sorting a list (C, A, G, B, D, H, E, F).
+- A short video follows showing two different sorting algorithms.
 -->
-
 
 ---
 layout: image
@@ -194,6 +206,16 @@ image: /quittungen.png
 - Are there better ways?
 - Lets use a list of books that need to be sorted alphabetically
  -->
+
+---
+
+
+## Sorting receipts
+
+How would you explain to a child is the best way to sort a big pile of receipts?
+
+<CountdownTimer :minutes="1" />
+
 
 ---
 
@@ -241,7 +263,7 @@ layout: two-cols-header
 
 1. Split the list of books into two (roughly equal) halves
 2. If a list has 1 element, its sorted. Otherwise, return to step 1
-3. Merge the two sorted lists at a time
+3. *Merge* two sorted lists at a time
 
 
 <MergeSort />
@@ -352,7 +374,12 @@ layout: two-cols-header
 <img src="/astra.jpeg" class="h-80 object-contain" />
 
 <!--
-Concrete project example (Federal Roads Office ASTRA): wildlife-vehicle collisions. Approach: place many points along the road section, compute a line of sight from every point to every other point. Orange = not visible (forest in the way), green lines = visible (clearing). Problem: connecting every point with every other = O(n²) → so slow it could not be used in practice. Had to find a different approach.
+- Concrete project example (Federal Roads Office ASTRA): wildlife-vehicle collisions.
+- Approach: place many points along the road section, compute a line of sight from every point to every other point.
+  - Orange = not visible (forest in the way)
+  - Green = visible (clearing)
+- Problem: connecting every point with every other = O(n²) → so slow it could not be used in practice.
+- Had to find a different approach.
 -->
 
 ---
@@ -384,7 +411,10 @@ Coordinate example:
 <img src="/AGI_HS25_Netzwerk2/_page_17_Figure_8.jpeg" class="h-44 object-contain mt-2" />
 
 <!--
-**Thinking pause ~2 minutes.** Students should work out an algorithm themselves. Given: polygon vertices as a list of x/y coordinates. Hint: think in data structures — what do you actually need to define the bounding box? (Answer on the last slide of the deck.)
+- **Thinking pause ~2 minutes** — students should work out an algorithm themselves.
+- Given: polygon vertices as a list of x/y coordinates.
+- Hint: think in data structures — what do you actually need to define the bounding box?
+- Answer on the last slide of the deck.
 -->
 
 ---
@@ -441,10 +471,13 @@ A branch of (geo-)informatics that studies algorithmic solutions to geometric pr
 
 <img src="/AGI_HS25_Netzwerk2/_page_19_Picture_11.jpeg" class="h-48 object-contain" />
 
-
-
 <!--
-** Algorithmic geometry = sub-discipline of (geo-)informatics. Three guiding questions: (1) Does an algorithmic solution even exist? For some problems there is none. (2) What is the most efficient algorithm — in terms of time or memory? (3) How best to structure the data? Entry example: the Point-in-Polygon test.
+- Algorithmic geometry = sub-discipline of (geo-)informatics.
+- Three guiding questions:
+  1. Does an algorithmic solution even exist? For some problems there is none.
+  2. What is the most efficient algorithm — in terms of time or memory?
+  3. How best to structure the data?
+- Entry example: the Point-in-Polygon test.
 -->
 
 ---
@@ -485,7 +518,17 @@ layout: two-cols-header
 <img src="/AGI_HS25_Netzwerk2/_page_20_Figure_13.jpeg" class="h-48 object-contain mt-2" />
 
 <!--
-Classic GIS operation: every spatial query involving polygon containment requires a point-in-polygon test (e.g. "give me all bars within the municipality of Wädenswil").\n\n**Ray casting algorithm**: draw a ray from the point in any direction. Count intersections with the polygon: odd = inside (example: 5 intersections = inside), even = outside (2 intersections = outside). Clever and elegant!\n\n**Winding number algorithm**: observer walks counterclockwise around the polygon, always looking at the point. Full 360° rotation = inside; no complete rotation = outside.\n\nBoth O(n), n = number of edges — fast algorithms.
+- Classic GIS operation: every spatial query involving polygon containment requires a point-in-polygon test (e.g. "give me all bars within the municipality of Wädenswil").
+
+**Ray casting algorithm:**
+- Draw a ray from the point in any direction.
+- Count intersections with the polygon: odd = inside, even = outside. Clever and elegant!
+
+**Winding number algorithm:**
+- Observer walks counterclockwise around the polygon, always looking at the point.
+- Full 360° rotation = inside; no complete rotation = outside.
+
+- Both are O(n), where n = number of edges → fast.
 -->
 
 ---
@@ -514,7 +557,17 @@ Simplify the line while preserving its essential form (e.g. cartographic general
 <img v-else                  src="/douglas-peucker-5.png" class="h-44 object-contain" />
 
 <!--
-Classic GIS algorithm — the second classic alongside Dijkstra. Application: cartographic generalisation, e.g. simplifying a road line from 1:25,000 → 1:50,000.\n\nAlgorithm: (1) Connect start and end. (2) Find the most distant vertex from this connecting line. (3) Split there, introduce new sub-lines. (4) Repeat for all sub-parts until the distance is below the threshold.\n\n**Recursion** = code calls itself in a "reduced form" until a stopping condition is met. Merge Sort was also recursive. It can make your head spin, but it is a powerful concept.
+- Classic GIS algorithm — the second classic alongside Dijkstra.
+- Application: cartographic generalisation, e.g. simplifying a road line from 1:25,000 → 1:50,000.
+
+**Algorithm steps:**
+1. Connect start and end.
+2. Find the most distant vertex from this connecting line.
+3. Split there, introduce new sub-lines.
+4. Repeat for all sub-parts until the distance is below the threshold.
+
+- **Recursion** = code calls itself in a "reduced form" until a stopping condition is met.
+- Merge Sort was also recursive. It can make your head spin, but it is a powerful concept.
 -->
 
 ---
@@ -619,11 +672,12 @@ Animations show BFS and DFS in action. Queue: add at the back, remove from the f
 <Inhalt :active="4" />
 
 <!--
-Transition to Dijkstra. All the preparation (algorithms, data structures, BFS) now comes together here. "You should now be ready to take on Dijkstra."
+- Transition to Dijkstra.
+- All the preparation (algorithms, data structures, BFS) now comes together here.
+- "You should now be ready to take on Dijkstra."
 -->
 
 ---
-
 
 # Dijkstra's Shortest Path
 
@@ -636,13 +690,11 @@ Transition to Dijkstra. All the preparation (algorithms, data structures, BFS) n
 - Complexity: $O(n^2)$
 - **A\*** adds a heuristic (estimated remaining distance) → visits promising nodes first → faster in practice
 
-
 <!--
-Everyday example: how do I get from Wädenswil station to the Grüntal campus by bike? Two alternatives — which is shorter? → Dijkstra calculates this.
-
-The graph shown: 8 nodes a–h, starting at b. Edge weights are travel costs. The algorithm is worked through step by step on the next slide.
-
-Key guarantee: because all weights are ≥ 0, visiting the smallest known distance first is always safe — no future discovery can produce a shorter path to an already-visited node.
+- Everyday example: how do I get from Wädenswil station to the Grüntal campus by bike? Two alternatives — which is shorter? → Dijkstra calculates this.
+- The graph shown: 8 nodes a–h, starting at b. Edge weights are travel costs.
+- The algorithm is worked through step by step on the next slide.
+- Key guarantee: because all weights are ≥ 0, visiting the smallest known distance first is always safe — no future discovery can produce a shorter path to an already-visited node.
 -->
 
 ---
@@ -667,9 +719,10 @@ Key guarantee: because all weights are ≥ 0, visiting the smallest known distan
 </div>
 
 <!--
-Step-by-step illustration of Dijkstra on the Worboys & Duckham example graph (8 nodes, start b).
-Key moment: step 4 — visiting d (t=9) reveals that b→d→e = 16, which beats the previously known b→c→e = 23. The algorithm always visits the globally smallest unvisited distance next, which guarantees correctness.
-For deeper understanding: Worboys & Duckham, Ch. 5.
+- Step-by-step illustration of Dijkstra on the Worboys & Duckham example graph (8 nodes, start b).
+- Key moment: step 4 — visiting d (t=9) reveals that b→d→e = 16, which beats the previously known b→c→e = 23.
+- The algorithm always visits the globally smallest unvisited distance next, which guarantees correctness.
+- For deeper understanding: Worboys & Duckham, Ch. 5.
 -->
 
 ---
@@ -689,14 +742,16 @@ Recommendation: try out 1–2 of these interactive animations before the exercis
 
 ---
 
-
 # Summary
 
 
 - **Algorithmic geometry** is the branch of (geo-)informatics that deals with solving geometric problems for geodata processing: point-in-polygon, line simplification, shortest path.
 - **Dijkstra's** algorithm for calculating the shortest path is a fine example. Almost all functions in a GIS use comparable algorithms.
 
-<!-- Summary. Almost all GIS functions use comparable algorithms — if you look deep into the documentation, you usually find references to the papers in which they are documented.\n\n**Right**: Transition to the practical part.  -->
+<!--
+- Summary: almost all GIS functions use comparable algorithms — if you look deep into the documentation, you usually find references to the papers in which they are documented.
+- **Next**: Transition to the practical part.
+-->
 
 ---
 
@@ -710,9 +765,10 @@ Recommendation: try out 1–2 of these interactive animations before the exercis
   - https://algorithms.discrete.ma.tum.de/graph-algorithms/spp-dijkstra/index_en.html
 
 <!--
-Required reading: Worboys & Duckham Ch. 5. GITTA lesson on Accessibility as supplementary e-learning. The two interactive Dijkstra apps are recommended before the exercise — students can enter a graph and observe the algorithm animated.
+- Required reading: Worboys & Duckham Ch. 5.
+- GITTA lesson on Accessibility as supplementary e-learning.
+- The two interactive Dijkstra apps are recommended before the exercise — students can enter a graph and observe the algorithm animated.
 -->
-
 
 ---
 
@@ -725,11 +781,10 @@ Required reading: Worboys & Duckham Ch. 5. GITTA lesson on Accessibility as supp
 - Calculate Dijkstra yourselves for a query on the VBZ tram network.
 - Use the worksheet on moodle for this
 
-
 <!--
-Group work: calculate Dijkstra manually on the Zurich VBZ tram network (Berninaplatz → Staufacher). R exercise: calculate shortest paths, e.g. from the Grüntal campus down to the peninsula.
+- Group work: calculate Dijkstra manually on the Zurich VBZ tram network (Berninaplatz → Staufacher).
+- R exercise: calculate shortest paths, e.g. from the Grüntal campus down to the peninsula.
 -->
-
 
 ---
 
@@ -748,7 +803,9 @@ The exercises use the same GeoPackage as Part 1 and a new file you create in QGI
 | `routing_locations.gpkg` | — | 6 named locations (created in QGIS) |
 
 <!--
-Students work in R/RStudio. The routing_locations.gpkg is created by students in Task 2 using QGIS. A pre-made version is available on Moodle as a backup.
+- Students work in R/RStudio.
+- The `routing_locations.gpkg` is created by students in Task 2 using QGIS.
+- A pre-made version is available on Moodle as a backup.
 -->
 
 ---
@@ -783,7 +840,8 @@ edges <- st_as_sf(net, "edges")
 <img src="/netzwerkanalyse-r/strassennetz.png" class="h-full object-contain" />
 
 <!--
-Quick recap — students who still have their Part 1 script can copy it directly. The key addition over Part 1 Task 1 is the edge_length() call, which we now need for weighted shortest paths.
+- Quick recap — students who still have their Part 1 script can copy it directly.
+- Key addition over Part 1 Task 1: the `edge_length()` call, which we now need for weighted shortest paths.
 -->
 
 ---
@@ -799,7 +857,9 @@ Quick recap — students who still have their Part 1 script can copy it directly
 4. *Export → Save Features As* → GeoPackage → **`routing_locations.gpkg`**
 
 <!--
-Students digitise their own points — reinforces that coordinates come from GIS tools, not just typed into R. Emphasise: CRS must be LV95 / EPSG:2056 to match the street network. If QGIS causes issues, a pre-made file is available on Moodle.
+- Students digitise their own points — reinforces that coordinates come from GIS tools, not just typed into R.
+- Emphasise: CRS must be LV95 / EPSG:2056 to match the street network.
+- If QGIS causes issues, a pre-made file is available on Moodle.
 -->
 
 ---
@@ -832,7 +892,9 @@ Visualise `snap_pts` on the network. Do all nodes look right?
 <img src="/netzwerkanalyse-r/routing_snap.png" class="h-full object-contain" />
 
 <!--
-`st_nearest_feature()` returns a row index in the second argument closest to each feature in the first. Students should verify visually that snap points are in sensible locations — ZHAW Grüntal is up the hill, Strandbad is near the lake. A missnapped point usually means the GeoPackage CRS is wrong.
+- `st_nearest_feature()` returns the row index in the second argument closest to each feature in the first.
+- Students should verify visually that snap points are in sensible locations — ZHAW Grüntal is up the hill, Strandbad is near the lake.
+- A missnapped point usually means the GeoPackage CRS is wrong.
 -->
 
 ---
@@ -867,7 +929,10 @@ path_edges <- net |>
 <img src="/netzwerkanalyse-r/shortest_path.png" class="h-full object-contain" />
 
 <!--
-`st_network_paths()` returns a tibble — `edge_paths` is a list-column of edge index vectors. `slice()` extracts those edges as sf. Students produce the ggplot map themselves. The route should climb from the lakeside station up to Grüntal — a good sanity check.
+- `st_network_paths()` returns a tibble — `edge_paths` is a list-column of edge index vectors.
+- `slice()` extracts those edges as sf.
+- Students produce the ggplot map themselves.
+- The route should climb from the lakeside station up to Grüntal — a good sanity check.
 -->
 
 ---
@@ -887,7 +952,9 @@ cat("Segments:", nrow(path_edges), "\n")
 - Change the destination to a point on the far east of the municipality. Does the result look plausible?
 
 <!--
-Good discussion: does the computed route match what a cyclist or pedestrian would choose? The network only uses roads — no shortcuts across fields or down steep paths. Changing the destination tests whether students can adapt the code independently.
+- Good discussion: does the computed route match what a cyclist or pedestrian would choose?
+- The network only uses roads — no shortcuts across fields or down steep paths.
+- Changing the destination tests whether students can adapt the code independently.
 -->
 
 ---
@@ -922,7 +989,10 @@ nodes_iso <- nodes |>
 <img src="/netzwerkanalyse-r/catchment.png" class="h-full object-contain" />
 
 <!--
-`st_network_cost()` with a single `from` returns a 1×N distance matrix. Colouring nodes by zone gives an isochrone-like service area. Discussion: how does the shape compare to a circle? The lake and terrain constrain it strongly. Connect to the Sharely example from the lecture.
+- `st_network_cost()` with a single `from` returns a 1×N distance matrix.
+- Colouring nodes by zone gives an isochrone-like service area.
+- Discussion: how does the shape compare to a circle? The lake and terrain constrain it strongly.
+- Connect to the Sharely example from the lecture.
 -->
 
 ---
@@ -954,7 +1024,9 @@ round(cost_mat)
 <img src="/netzwerkanalyse-r/cost_matrix.png" class="h-full object-contain" />
 
 <!--
-Passing vectors to both `from` and `to` gives a full n×n matrix. The diagonal is 0. With an undirected network the matrix is symmetric. Good discussion: which pairs diverge most between Euclidean and network distance? Likely the lake-facing pairs.
+- Passing vectors to both `from` and `to` gives a full n×n matrix.
+- The diagonal is 0. With an undirected network the matrix is symmetric.
+- Good discussion: which pairs diverge most between Euclidean and network distance? Likely the lake-facing pairs.
 -->
 
 ---
@@ -988,8 +1060,9 @@ Trace the tour back to the actual network using `st_network_paths()` for each le
 <img src="/netzwerkanalyse-r/tsp_tour.png" class="h-full object-contain" />
 
 <!--
-`TSP::solve_TSP()` wraps multiple solvers; for n=6 it is instantaneous. `units::drop_units()` strips the units attribute that `edge_length()` attaches. Key teaching point: this is O(k^n) — 6 stops is trivial, 20 stops has ~10^17 orderings. Connect to the complexity table from the lecture. The route visualisation uses `mapply(st_network_paths, ...)` to draw actual network paths per leg, not straight lines.
+- `TSP::solve_TSP()` wraps multiple solvers; for n=6 it is instantaneous.
+- `units::drop_units()` strips the units attribute that `edge_length()` attaches.
+- Key teaching point: this is O(k^n) — 6 stops is trivial, 20 stops has ~10^17 orderings.
+- Connect to the complexity table from the lecture.
+- The route visualisation uses `mapply(st_network_paths, ...)` to draw actual network paths per leg, not straight lines.
 -->
-
-
-
