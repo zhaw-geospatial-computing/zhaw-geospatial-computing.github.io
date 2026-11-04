@@ -863,44 +863,22 @@ edges <- st_as_sf(net, "edges")
 -->
 
 ---
-layout: two-cols-header
----
 
 # Task 3: Load locations in R
 
-Load the GeoPackage and snap each location to the nearest network node.
-
-::left::
+Load the GeoPackage and visualise the locations on the network.
 
 **Getting started:**
 - Load `routing_locations.gpkg` with `read_sf()`
-- `st_nearest_feature(locations, nodes)` returns an integer index per location — the nearest node
-- Use those indices to subset `nodes`, then add a `name` column from `locations$name`
-- Extract `from_idx` and `to_idx` by filtering on `locations$name`
-
-Visualise `snap_pts` on the network. Do all nodes look right?
-
-::right::
-
-<img src="/netzwerkanalyse-r/routing_snap.png" class="h-full object-contain" />
+- Visualise the points on the map — do all locations look right?
 
 <!--
-- `st_nearest_feature()` returns the row index in the second argument closest to each feature in the first.
-- Students should verify visually that snap points are in sensible locations — ZHAW Grüntal is up the hill, Strandbad is near the lake.
-- A missnapped point usually means the GeoPackage CRS is wrong.
+- `sfnetworks` routing functions (`st_network_paths`, `st_network_cost`) accept sf point objects directly and snap to the nearest node automatically — no manual index lookup needed.
+- Students should verify visually that locations are in sensible positions (ZHAW Grüntal up the hill, Strandbad near the lake).
 
 **Solution:**
 ```r
 locations <- read_sf("routing_locations.gpkg")
-
-# snap all locations to network nodes
-loc_idx  <- st_nearest_feature(locations, nodes)
-snap_pts <- nodes[loc_idx, ] |>
-  mutate(name = locations$name)
-
-# origin / destination for Tasks 4–6
-from_idx <- loc_idx[locations$name == "Bahnhof"]
-to_idx   <- loc_idx[locations$name == "ZHAW Grüntal"]
 ```
 -->
 
@@ -913,7 +891,7 @@ layout: two-cols-header
 Find the shortest network route from the Bahnhof to ZHAW Grüntal. Visualise it.
 
 **Getting started:**
-- `st_network_paths(net, from = ..., to = ..., weights = "length")` — use the index variables from Task 3
+- `st_network_paths(net, from = ..., to = ..., weights = "length")` — pass sf objects filtered from `locations`
 - The result has an `edge_paths` column containing the edge indices of the route
 - Extract them: `pull(edge_paths) |> unlist()`
 - Get those edges as sf: `activate("edges") |> slice(...) |> st_as_sf()`
@@ -930,7 +908,8 @@ Find the shortest network route from the Bahnhof to ZHAW Grüntal. Visualise it.
 library(ggplot2)
 
 path_result   <- st_network_paths(net,
-  from = from_idx, to = to_idx,
+  from = locations |> filter(name == "Bahnhof"),
+  to   = locations |> filter(name == "ZHAW Grüntal"),
   weights = "length")
 
 path_edge_idx <- path_result |>
@@ -993,7 +972,7 @@ layout: two-cols-header
 From the Bahnhof, which parts of Wädenswil can be reached within 500 m / 1 000 m / 2 000 m?
 
 **Getting started:**
-- `st_network_cost(net, from = from_idx, weights = "length")` returns a 1×N matrix — one distance per node
+- `st_network_cost(net, from = ..., weights = "length")` returns a 1×N matrix — one distance per node — pass the Bahnhof row filtered from `locations`
 - Convert to a plain numeric vector: `as.numeric(costs[1, ])`
 - Add this as a column to `nodes` using `mutate()`
 - Use `case_when()` to label each node by zone (≤ 500 m, ≤ 1 000 m, ≤ 2 000 m, > 2 000 m)
@@ -1008,7 +987,8 @@ From the Bahnhof, which parts of Wädenswil can be reached within 500 m / 1 000 
 **Solution:**
 ```r
 costs <- st_network_cost(net,
-  from = from_idx, weights = "length")
+  from = locations |> filter(name == "Bahnhof"),
+  weights = "length")
 
 nodes_iso <- nodes |>
   mutate(
@@ -1037,6 +1017,7 @@ nodes_iso <- nodes |>
 
 ---
 layout: two-cols-header
+hide: true
 ---
 
 # Task 7: Distance matrix
@@ -1044,7 +1025,7 @@ layout: two-cols-header
 Compute the pairwise network distance between all six locations.
 
 **Getting started:**
-- Same `st_network_cost()` as Task 6 — this time pass `loc_idx` to *both* `from` and `to`
+- Same `st_network_cost()` as Task 6 — this time pass `locations` to *both* `from` and `to`
 - Label rows and columns: `rownames(cost_mat) <- locations$name` (same for `colnames`)
 - `round()` the result for a clean printout
 
@@ -1059,8 +1040,8 @@ Compute the pairwise network distance between all six locations.
 **Solution:**
 ```r
 cost_mat <- st_network_cost(net,
-  from    = loc_idx,
-  to      = loc_idx,
+  from    = locations,
+  to      = locations,
   weights = "length")
 
 rownames(cost_mat) <- locations$name
@@ -1070,6 +1051,8 @@ round(cost_mat)
 ```
 -->
 
+---
+hide: true
 ---
 
 <img src="/netzwerkanalyse-r/cost_matrix.png" class="h-full object-contain" />
@@ -1082,6 +1065,7 @@ round(cost_mat)
 
 ---
 layout: two-cols-header
+hide: true
 ---
 
 # Task 8: Travelling Salesperson
@@ -1119,6 +1103,8 @@ cat("Total:", round(tour_length(tour)), "m\n")
 ```
 -->
 
+---
+hide: true
 ---
 
 <img src="/netzwerkanalyse-r/tsp_tour.png" class="h-full object-contain" />

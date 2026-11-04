@@ -36,3 +36,6 @@ code, pre, .slidev-code {
   margin-bottom: 0;
   opacity: 1;
 }
+
+
+.cols-40-60 { grid-template-columns: 2fr 3fr !important; }
