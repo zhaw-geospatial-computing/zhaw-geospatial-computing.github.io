@@ -1,0 +1,18 @@
+classDiagram
+    class ImperfectionOfGeodata["Imperfection of Geodata"]
+    class Inaccuracy {
+        lack of correspondence with reality
+        example("The Eiger is in Canton Zurich")
+    }
+    class Imprecision {
+        too little specificity
+        example("The Eiger is in Switzerland")
+    }
+    class Vagueness {
+        existence of borderline cases
+        example("The Eiger is a high mountain")
+    }
+
+    ImperfectionOfGeodata --> Inaccuracy
+    ImperfectionOfGeodata --> Imprecision
+    Imprecision --> Vagueness
