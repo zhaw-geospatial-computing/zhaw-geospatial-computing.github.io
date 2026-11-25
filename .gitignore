@@ -8,3 +8,16 @@ components.d.ts
 *.log
 .~lock.*#
 archive/
+
+# R / Quarto output
+.Rhistory
+.quarto/
+proposal/.quarto/
+Paths-and-Flows-3c-solution.html
+Paths-and-Flows-3c-solution_cache/
+Paths-and-Flows-3c-solution_files/
+Semesterproject.html
+Semesterproject_files/
+
+# Local config
+.mcp.json
