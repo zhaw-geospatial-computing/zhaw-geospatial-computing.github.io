@@ -39,3 +39,10 @@ code, pre, .slidev-code {
 
 
 .cols-40-60 { grid-template-columns: 2fr 3fr !important; }
+
+/* Constrain markdown images (![]()) that have no explicit class to prevent overflow.
+   Leaves <img class="h-XX ..."> tags (used in Paths-and-Flows-3.md) untouched. */
+.slidev-layout img:not([class]) {
+  max-height: 60vh;
+  object-fit: contain;
+}

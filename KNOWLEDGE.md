@@ -21,6 +21,17 @@
 - **`activate()` concept**: The idea of activating nodes vs. edges in `sfnetworks`/`tidygraph` is hard to grasp and is currently glossed over. Needs a dedicated explanation or visual.
 - **Prerequisite R skills**: Piping (`|>`), `mutate()`, and `summarise()` must be taught in the introductory R lecture — students lack this foundation when it appears in the network exercises.
 
+## Semesterproject: Teaching Notes (last taught 2026-11-04)
+
+- **Introduction timing**: Takes ~15 min, not 35. Use the remaining time to introduce data sources or browse them live — the latter worked well and filled the slot naturally.
+- **Individual work (10 + 15 min)**: The two individual work blocks are okay but feel like a lot of unsupported time. Consider mixing in short input/discussion segments to break it up.
+- **Data speed-dating**:
+  - Format was well-received — especially having a clear system for pairing and who moves.
+  - Define the A/B roles and movement rules explicitly *before* starting; this must be unambiguous for the whole group (e.g. "A stays seated, B moves").
+  - Drop the micromanaged pitch/reaction structure — students ask questions mid-presentation anyway. Merge into one 3-minute slot per pair.
+  - Consider having partners switch after A presents to B, so B also presents. Adds movement and reciprocity, but requires consistent A/B labelling throughout.
+- **Quarto vs. Word**: The choice of Quarto feels unmotivated to students. Explicitly add "learning Markdown/Quarto" as a top-level learning goal so the tool choice makes sense from the start.
+
 ## Mermaid diagram styling in Slidev
 
 Slidev renders Mermaid diagrams inside a **Shadow DOM** (`ShadowRoot.vue`). This means **external CSS (including `style.css`) cannot reach Mermaid SVG elements** — any selector-based override from outside will silently do nothing.
