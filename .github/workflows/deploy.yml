@@ -54,7 +54,7 @@ jobs:
               --base "$BASE/$name/" \
               --out "dist/$name"
             echo "Exporting $deck -> dist/$name.pdf"
-            npx slidev export "$deck" --output "dist/$name.pdf"
+            npx slidev export "$deck" --output "dist/$name.pdf" --timeout 60000 --wait-until load
           done
 
       - name: Create index page
