@@ -1,0 +1,435 @@
+---
+title: "Paths and Flows 3c — Sample Solution"
+subtitle: "Monte Carlo Network Uncertainty · Wädenswil"
+author: "Nils Ratnaweera"
+date: today
+format:
+  html:
+    toc: true
+    self-contained: true
+    code-fold: false
+execute:
+  warning: false
+  message: false
+---
+
+## Setup & parameters
+
+Adjust `data_dir` to point to wherever the GeoPackage files live.
+Adjust `N` and the noise bounds to explore different parameter choices.
+
+```{r}
+#| label: setup
+
+set.seed(123)  # global seed for full reproducibility
+
+library(sf)
+library(sfnetworks)
+library(tidygraph)
+library(dplyr)
+library(ggplot2)
+library(tmap)
+
+# --- paths ---
+data_dir  <- "data"
+out_dir   <- "public/Paths-and-Flows-3"
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+# --- Monte Carlo parameters ---
+N          <- 500    # iterations (200 is fine for the exercise; 500 gives smoother results)
+noise_min  <- 0.8   # lower edge-weight multiplier (-20%)
+noise_max  <- 1.2   # upper edge-weight multiplier (+20%)
+```
+
+---
+
+## Part 1: Monte Carlo Pi
+
+### Estimate
+
+```{r}
+#| label: pi-estimate
+
+N_pi  <- 10000
+x     <- runif(N_pi, -1, 1)
+y     <- runif(N_pi, -1, 1)
+inside <- x^2 + y^2 <= 1
+pi_hat <- 4 * sum(inside) / N_pi
+
+cat("π estimate:", round(pi_hat, 5), "\n")
+cat("True π:    ", round(pi,     5), "\n")
+cat("Error:     ", round(abs(pi_hat - pi), 5), "\n")
+```
+
+### Plot — points inside / outside
+
+```{r}
+#| label: pi-plot
+
+data.frame(x, y, inside = factor(inside, labels = c("Outside", "Inside"))) |>
+  ggplot(aes(x, y, color = inside)) +
+  geom_point(size = 0.3, alpha = 0.4) +
+  coord_equal() +
+  scale_color_manual(values = c("Outside" = "gray70", "Inside" = "steelblue")) +
+  labs(
+    title    = paste0("Monte Carlo Pi · N = ", N_pi),
+    subtitle = paste0("π ≈ ", round(pi_hat, 4)),
+    color    = NULL
+  ) +
+  theme_minimal()
+```
+
+### Convergence with N
+
+Error decreases proportional to $1/\sqrt{N}$ — doubling accuracy requires 4× the samples.
+
+```{r}
+#| label: pi-convergence
+
+N_conv <- 100000
+xc <- runif(N_conv, -1, 1)
+yc <- runif(N_conv, -1, 1)
+pi_running <- cumsum(xc^2 + yc^2 <= 1) / seq_along(xc) * 4
+
+data.frame(n = 1:N_conv, pi_hat = pi_running) |>
+  ggplot(aes(n, pi_hat)) +
+  geom_line(alpha = 0.5, color = "steelblue") +
+  geom_hline(yintercept = pi, color = "tomato", linetype = "dashed") +
+  annotate("text", x = 2, y = pi + 0.05, label = "true π",
+           color = "tomato", hjust = 0, size = 3.5) +
+  scale_x_log10(labels = scales::comma) +
+  labs(
+    title    = "Convergence of Monte Carlo π estimate",
+    x        = "N (log scale)",
+    y        = "Estimated π"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## Part 2: Network Monte Carlo
+
+### Load data
+
+```{r}
+#| label: load-data
+
+streets      <- read_sf(file.path(data_dir, "netzwerkanalyse.gpkg"),
+                        layer = "osm_highway_prepared")
+municipality <- read_sf(file.path(data_dir, "netzwerkanalyse.gpkg"),
+                        layer = "Gemeinde_Waedenswil")
+locations    <- read_sf(file.path(data_dir, "routing_locations.gpkg"))
+
+net <- as_sfnetwork(streets, directed = FALSE) |>
+  activate("edges") |>
+  mutate(length = edge_length())
+
+edges <- st_as_sf(net, "edges")
+nodes <- st_as_sf(net, "nodes")
+
+cat("Nodes:    ", nrow(nodes), "\n")
+cat("Edges:    ", nrow(edges), "\n")
+cat("Locations:", nrow(locations), "—",
+    paste(sort(locations$name), collapse = ", "), "\n")
+```
+
+### Baseline route
+
+```{r}
+#| label: baseline
+
+spitzen <- locations |> filter(name == "Spitzen")
+bahnhof <- locations |> filter(name == "Bahnhof")
+
+baseline <- st_network_paths(net,
+  from    = spitzen,
+  to      = bahnhof,
+  weights = "length")
+
+baseline_idx   <- baseline |> pull(edge_paths) |> unlist()
+baseline_edges <- net |>
+  activate("edges") |>
+  slice(baseline_idx) |>
+  st_as_sf()
+
+cat("Baseline route:", nrow(baseline_edges), "segments,",
+    round(sum(as.numeric(baseline_edges$length))), "m\n")
+
+p_baseline <- tm_shape(edges) +
+  tm_lines(col = "gray85") +
+  tm_shape(baseline_edges, is.main = TRUE) +
+  tm_lines(col = "steelblue", lwd = 2) +
+  tm_shape(bind_rows(spitzen, bahnhof)) +
+  tm_dots() +
+  tm_text("name", ymod = 0.5) +
+  tm_layout(main.title = "Baseline shortest path: Spitzen → Bahnhof",
+            inner.margins = c(0.1, 0.1, 0.1, 0.1))
+
+tmap_save(p_baseline, file.path(out_dir, "task1-baseline.png"), width = 30, height = 20,units = "cm")
+p_baseline
+```
+
+### Single perturbation (sanity check)
+
+Run once with a fixed seed so the result is reproducible here.
+Overlay the perturbed route on the baseline — if they never differ, noise is too small.
+
+```{r}
+#| label: single-perturbation
+
+set.seed(42)
+
+net_noisy <- net |>
+  activate("edges") |>
+  mutate(length_noisy = as.numeric(length) *
+           runif(n(), min = noise_min, max = noise_max))
+
+noisy_path  <- st_network_paths(net_noisy,
+  from    = spitzen,
+  to      = bahnhof,
+  weights = "length_noisy")
+
+noisy_edges <- net_noisy |>
+  activate("edges") |>
+  slice(noisy_path |> pull(edge_paths) |> unlist()) |>
+  st_as_sf()
+
+# How many segments differ?
+n_differ <- length(setdiff(
+  baseline |> pull(edge_paths) |> unlist(),
+  noisy_path |> pull(edge_paths) |> unlist()
+))
+cat("Segments in baseline but not noisy path:", n_differ, "\n")
+
+p_perturb <- tm_shape(edges) +
+  tm_lines(col = "gray85") +
+  tm_shape(baseline_edges, is.main = TRUE) +
+  tm_lines(col = "steelblue", lwd = 2) +
+  tm_shape(noisy_edges) +
+  tm_lines(col = "tomato", lwd = 1.5) +
+  tm_shape(bind_rows(spitzen, bahnhof)) +
+  tm_dots() +
+  tm_text("name", ymod = 0.5) +
+  tm_layout(
+    main.title = paste0("Baseline (blue) vs. one perturbed route (red)"),
+  )
+
+tmap_save(p_perturb, file.path(out_dir, "task2-perturbation.png"), width = 30, height = 20,units = "cm")
+p_perturb
+```
+
+### Monte Carlo loop
+
+```{r}
+#| label: monte-carlo
+#| cache: true
+
+set.seed(123)
+
+edge_count    <- rep(0L, nrow(edges))
+route_true_m  <- numeric(N)   # true (unperturbed) length of each chosen route
+
+for (i in seq_len(N)) {
+  # 1. perturb
+  net_i <- net |>
+    activate("edges") |>
+    mutate(
+      length_noisy = as.numeric(length) *
+        runif(n(), min = noise_min, max = noise_max)
+    )
+
+  # 2. shortest path under perturbed weights
+  path_i <- st_network_paths(net_i,
+    from    = spitzen,
+    to      = bahnhof,
+    weights = "length_noisy")
+
+  idx <- path_i |> pull(edge_paths) |> unlist()
+
+  # 3. accumulate
+  edge_count[idx] <- edge_count[idx] + 1L
+
+  # 4. record the TRUE length of the chosen route (not the perturbed weight)
+  route_true_m[i] <- net |>
+    activate("edges") |>
+    slice(idx) |>
+    st_as_sf() |>
+    pull(length) |>
+    as.numeric() |>
+    sum()
+}
+
+edges <- edges |> mutate(freq = edge_count / N)
+
+cat("Monte Carlo loop complete.\n")
+```
+
+### Frequency map
+
+```{r}
+#| label: freq-map
+
+p_freq <- tm_shape(edges |> filter(freq == 0)) +
+  tm_lines(col = "gray90") +
+  tm_shape(edges |> filter(freq > 0), is.main = TRUE) +
+  tm_lines(col = "freq", palette = "inferno", style = "cont",
+           breaks = c(0, 1), title.col = "Route\nfrequency") +
+  tm_shape(bind_rows(spitzen, bahnhof)) +
+  tm_dots() +
+  tm_text("name", ymod = 0.5) +
+  tm_layout(
+    main.title = paste0("Route uncertainty: Spitzen → Bahnhof"),
+  )
+
+tmap_save(p_freq, file.path(out_dir, "task4-frequency.png"), width = 30, height = 20,units = "cm")
+p_freq
+```
+
+### Diagnostics
+
+Does the result look interesting? We want:
+
+- A non-trivial robust core (some segments always appear)
+- Some contested segments (intermediate freq) — if there are none, the noise is too small
+- Not everything contested (if most freq < 0.5, noise may be too large)
+
+```{r}
+#| label: diagnostics
+
+active <- edges |> filter(freq > 0)
+
+cat("=== Edge frequency summary ===\n")
+cat("Total edges in network:        ", nrow(edges), "\n")
+cat("Edges that appeared (freq > 0):", nrow(active), "\n")
+cat("Robust core    (freq > 0.9):   ", sum(edges$freq > 0.9), "\n")
+cat("Contested      (0.1–0.9 freq): ", sum(edges$freq > 0.1 & edges$freq < 0.9), "\n")
+cat("Rare           (0 < freq ≤ 0.1):", sum(edges$freq > 0 & edges$freq <= 0.1), "\n")
+cat("\n")
+cat("=== Route length (true, unperturbed) ===\n")
+cat("Deterministic baseline:  ", round(sum(as.numeric(baseline_edges$length))), "m\n")
+cat("Mean of MC routes:       ", round(mean(route_true_m)), "m\n")
+cat("SD of MC routes:         ", round(sd(route_true_m)), "m\n")
+cat("Range:                   ", round(min(route_true_m)), "–",
+    round(max(route_true_m)), "m\n")
+```
+
+```{r}
+#| label: freq-histogram
+
+ggplot(data.frame(freq = edges$freq[edges$freq > 0]), aes(x = freq)) +
+  geom_histogram(bins = 25, fill = "steelblue", color = "white") +
+  geom_vline(xintercept = c(0.1, 0.9), linetype = "dashed", color = "tomato") +
+  annotate("text", x = 0.05, y = Inf, label = "rare", vjust = 2,
+           color = "tomato", size = 3) +
+  annotate("text", x = 0.5, y = Inf, label = "contested", vjust = 2,
+           color = "tomato", size = 3) +
+  annotate("text", x = 0.95, y = Inf, label = "robust", vjust = 2,
+           color = "tomato", size = 3) +
+  labs(
+    title    = "Distribution of edge frequencies (edges with freq > 0 only)",
+    x        = "Frequency in optimal path",
+    y        = "Number of edges"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: route-length-dist
+
+ggplot(data.frame(length_m = route_true_m), aes(x = length_m)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white") +
+  geom_vline(xintercept = sum(as.numeric(baseline_edges$length)),
+             color = "tomato", linetype = "dashed") +
+  annotate("text", x = sum(as.numeric(baseline_edges$length)),
+           y = Inf, label = " deterministic\n baseline",
+           hjust = 0, vjust = 1.5, color = "tomato", size = 3) +
+  labs(
+    title    = "Distribution of route lengths across MC iterations",
+    subtitle = "True (unperturbed) length of whichever route was chosen",
+    x        = "Route length (m)",
+    y        = "Count"
+  ) +
+  theme_minimal()
+```
+
+### Sensitivity analysis — three noise levels
+
+```{r}
+#| label: sensitivity
+#| cache: true
+
+run_mc <- function(net, from, to, N, noise_min, noise_max) {
+  n_edges    <- nrow(st_as_sf(net, "edges"))
+  edge_count <- rep(0L, n_edges)
+
+  for (i in seq_len(N)) {
+    net_i <- net |>
+      activate("edges") |>
+      mutate(length_noisy = as.numeric(length) *
+               runif(n(), min = noise_min, max = noise_max))
+
+    path_i <- st_network_paths(net_i, from, to,
+                                weights = "length_noisy")
+    if (nrow(path_i) == 0) next
+
+    idx <- path_i |> pull(edge_paths) |> unlist()
+    edge_count[idx] <- edge_count[idx] + 1L
+  }
+  edge_count / N
+}
+
+set.seed(123)
+freq_low  <- run_mc(net, spitzen, bahnhof, N, 0.9, 1.1)   # ±10%
+freq_mid  <- run_mc(net, spitzen, bahnhof, N, 0.8, 1.2)   # ±20%
+freq_high <- run_mc(net, spitzen, bahnhof, N, 0.5, 1.5)   # ±50%
+```
+
+```{r}
+#| label: sensitivity-table
+
+data.frame(
+  noise     = c("±10%", "±20%", "±50%"),
+  robust    = c(sum(freq_low  > 0.9),
+                sum(freq_mid  > 0.9),
+                sum(freq_high > 0.9)),
+  contested = c(sum(freq_low  > 0.1 & freq_low  < 0.9),
+                sum(freq_mid  > 0.1 & freq_mid  < 0.9),
+                sum(freq_high > 0.1 & freq_high < 0.9)),
+  rare      = c(sum(freq_low  > 0  & freq_low  <= 0.1),
+                sum(freq_mid  > 0  & freq_mid  <= 0.1),
+                sum(freq_high > 0  & freq_high <= 0.1))
+)
+```
+
+```{r}
+#| label: sensitivity-maps
+#| fig-width: 12
+#| fig-height: 5
+
+edges_sens <- bind_rows(
+  edges |> mutate(freq = freq_low,  noise = "±10%"),
+  edges |> mutate(freq = freq_mid,  noise = "±20%"),
+  edges |> mutate(freq = freq_high, noise = "±50%")
+) |>
+  mutate(noise = factor(noise, levels = c("±10%", "±20%", "±50%")))
+
+tm_shape(edges_sens |> filter(freq == 0)) +
+  tm_lines(col = "gray90") +
+  tm_shape(edges_sens |> filter(freq > 0), is.main = TRUE) +
+  tm_lines(col = "freq", palette = "inferno", style = "cont",
+           breaks = c(0, 1), title.col = "Route\nfrequency") +
+  tm_facets(by = "noise", ncol = 3) +
+  tm_layout(main.title = paste0("Route uncertainty at three noise levels · N = ", N, " iterations"))
+```
+
+### Interpretation guide
+
+Use the sensitivity table and maps to decide whether the exercise parameters need adjustment:
+
+| What you see | Diagnosis | Fix |
+|---|---|---|
+| Most edges have `freq ≈ 1` even at ±20% | Noise too small, no interesting variation | Increase to ±50% |
+| `freq` is uniform ~0.1–0.3, no clear core | Noise too large, route is essentially random | Reduce to ±10% |
+| Clear bright core + some purple alternatives | **Sweet spot — interesting result** | Use these parameters |
+| Very few contested edges (< 5) | Route has no good alternatives; still pedagogically valid | Fine as-is, explain network structure |
